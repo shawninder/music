@@ -3,3 +3,7 @@ Delete all after quickly typing, results come in too late and you're left with a
 onKeyUp from first item focuses the field, but also displaces the caret to the beginning :(
 
 Playing a song from history will result in two entries having the same key once the track gets placed into history again, most probably a missing `cloneDeep` somewhere
+
+Why ain't history and upnext shared properly
+
+Get songs to start at the beginning again

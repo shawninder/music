@@ -31,7 +31,7 @@ svg {
 
 .omnibox {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .omnibox-field {
@@ -42,18 +42,27 @@ svg {
   padding: 5px 8px 5px 30px;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='30px'><text x='5px' y='1.3em' font-size='large'>🔍</text></svg>");
   background-repeat: no-repeat;
-  z-index: 1;
+  z-index: 4;
 }
 
 .omnibox-list {
   position: absolute;
   top: 35px;
-  z-index: 0;
+  z-index: 2;
 }
 
 .omnibox-list ol {
   border: 1px solid grey;
   background: white;
+}
+
+.omnibox-dismiss {
+  position: fixed;
+  top: 1px;
+  right: 1px;
+  font-size: large;
+  padding: 5px 8px 5px 8px;
+  z-index: 4;
 }
 
 .main {

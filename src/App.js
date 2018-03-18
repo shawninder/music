@@ -35,7 +35,7 @@ import contents from './contents'
 
 const dict = new Dict(contents, ['en', 'fr', 'es'])
 
-const socket = io('http://192.168.0.105:8000')
+const socket = io('http://192.168.0.105:8001')
 
 class ClearHistory extends Component {
   constructor (props) {

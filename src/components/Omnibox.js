@@ -11,10 +11,20 @@ class Omnibox extends Component {
     super(props)
     this.keyDown = this.keyDown.bind(this)
     this.focusList = this.focusList.bind(this)
+    this.dismiss = this.dismiss.bind(this)
 
     this.state = {
       query: ''
     }
+  }
+
+  dismiss (event) {
+    this.props.dispatch({
+      type: 'Omnibox:clear'
+    })
+    this.props.dispatch({
+      type: 'Omnibox:dismiss'
+    })
   }
 
   keyDown (event) {
@@ -26,12 +36,7 @@ class Omnibox extends Component {
     if (event.keyCode === 27) { // esc
       if (event.target === this.field) {
         if (trim(this.field.value) !== '') {
-          this.props.dispatch({
-            type: 'Omnibox:clear'
-          })
-          this.props.dispatch({
-            type: 'Omnibox:dismiss'
-          })
+          this.dismiss(event)
         } else {
           this.field.blur()
           event.stopPropagation()
@@ -101,6 +106,7 @@ class Omnibox extends Component {
           )
           : null
         }
+        <button className="omnibox-dismiss" onClick={this.dismiss}>x</button>
       </div>
     )
   }
