@@ -1,0 +1,27 @@
+{
+  "name": "sublime-music",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "0.17.1",
+    "fuzzaldrin": "2.1.0",
+    "lodash.clonedeep": "4.5.0",
+    "lodash.debounce": "4.0.8",
+    "lodash.difference": "4.5.0",
+    "lodash.get": "4.4.2",
+    "lodash.pullat": "4.6.0",
+    "lodash.trim": "4.5.1",
+    "qs": "6.5.1",
+    "react": "16.2.0",
+    "react-dom": "16.2.0",
+    "react-player": "1.1.2",
+    "react-scripts": "1.1.0",
+    "socket.io-client": "2.0.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

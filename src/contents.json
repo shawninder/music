@@ -1,0 +1,57 @@
+{
+  "omnibox.placeholder": {
+    "en": "Search",
+    "fr": "Recherche",
+    "es": "Buscar"
+  },
+  "party.h1": {
+    "en": "Party Mode",
+    "fr": "Mode Fête",
+    "es": "Modo Fiesta"
+  },
+  "party.p": {
+    "en": "Share control of the play queue!",
+    "fr": "Partagez le contrôle de la liste de lecture!",
+    "es": "¡Comparte el control de la lista de reproducción!"
+  },
+  "party.placeholder": {
+    "en": "Party Name",
+    "fr": "Nom de la Fête",
+    "es": "Nombre de la Fiesta"
+  },
+  "party.go": {
+    "en": "Party!",
+    "fr": "Fêter!",
+    "es": "Celebrar!"
+  },
+  "party.leave": {
+    "en": "Leave :(",
+    "fr": "Quitter :(",
+    "es": "Salir :("
+  },
+  "party.end": {
+    "en": "End :(",
+    "fr": "Fini :(",
+    "es": "Terminado :("
+  },
+  "party.attending": {
+    "en": "Attending party named ",
+    "fr": "Vous êtes dans une fête nommée ",
+    "es": "Asistir a una fiesta llamada "
+  },
+  "party.hosting": {
+    "en": "Hosting party named ",
+    "fr": "Vous êtes l'hôte d'une fête nomée ",
+    "es": "Fiesta anfitriona llamada "
+  },
+  "history.title": {
+    "en": "History",
+    "fr": "Historique",
+    "es": "Historia"
+  },
+  "upnext.title": {
+    "en": "Up Next",
+    "fr": "À venir",
+    "es": "Siguientes"
+  }
+}
