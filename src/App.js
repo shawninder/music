@@ -237,6 +237,16 @@ class App extends Component {
       console.log('connected to socket')
     })
 
+    socket.on('connect_error', () => {
+      this.dispatch({
+        type: 'Party:broken'
+      })
+    })
+
+    socket.on('reconnect_failed', () => {
+      console.log('reconnect_failed')
+    })
+
     socket.on('disconnect', () => {
       console.log('Lost socket connection')
     })
@@ -284,7 +294,9 @@ class App extends Component {
     })
 
     socket.on('partyEnded', () => {
-      this.setState(this.state.saved)
+      this.dispatch({
+        type: 'App:pop'
+      })
     })
 
     socket.on('leftParty', () => {
@@ -428,6 +440,7 @@ class App extends Component {
             transmitting={this.state.transmitting}
             dispatch={this.dispatch}
             dict={dict}
+            defaultValue={this.state.attending.name || this.state.transmitting.name || ''}
           />
           { this.state.includePlayer
             ? (

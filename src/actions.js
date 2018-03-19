@@ -35,6 +35,11 @@ function handler (fn) {
 }
 const actions = {
   App: {
+    pop: {
+      go: handler(function (action, socket) {
+        this.setState(this.state.saved)
+      })
+    },
     mergeState: {
       go: handler(function (action, socket) {
         this.setState(action.state)
@@ -770,6 +775,15 @@ const actions = {
           guestKey,
           hostKey
         })
+      })
+    },
+    broken: {
+      go: handler(function (action, socket) {
+        if (this.state.attending.name) {
+          this.dispatch({
+            type: 'App:pop'
+          })
+        }
       })
     }
   }

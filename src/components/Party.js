@@ -13,7 +13,7 @@ class Party extends Component {
     this.stop = this.stop.bind(this)
 
     this.state = {
-      name: ''
+      name: props.defaultValue
     }
   }
   party (event) {
@@ -58,6 +58,7 @@ class Party extends Component {
           autoFocus={this.props.autoFocus}
           onChange={this.onChange}
           onKeyDown={this.onKeyDown}
+          defaultValue={this.state.name}
         />
       )
       : (
@@ -112,6 +113,7 @@ const props = [
   { name: 'autoFocus', type: PropTypes.bool, val: false },
   { name: 'className', type: PropTypes.string, val: '' },
   { name: 'placeholder', type: PropTypes.string, val: '' },
+  { name: 'defaultValue', type: PropTypes.string, val: '' },
   { name: 'attending', type: PropTypes.object.isRequired },
   { name: 'transmitting', type: PropTypes.object.isRequired },
   { name: 'dispatch', type: PropTypes.func.isRequired }
