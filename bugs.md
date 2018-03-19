@@ -7,3 +7,5 @@ Playing a song from history will result in two entries having the same key once 
 Why ain't history and upnext shared properly
 
 Get songs to start at the beginning again
+
+Make sure scrolling omnibox results doesn't scroll the page
