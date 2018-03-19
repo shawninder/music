@@ -25,5 +25,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "startWs": "nodemon ./ws-server.js"
+  },
+  "devDependencies": {
+    "nodemon": "1.17.2"
   }
 }

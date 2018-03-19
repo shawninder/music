@@ -27,6 +27,12 @@ class Omnibox extends Component {
     })
   }
 
+  focus (event) {
+    this.props.dispatch({
+      type: 'Omnibox:focus'
+    })
+  }
+
   keyDown (event) {
     // TODO The following belongs in the App not the Omnibox
     if (event.keyCode === 32) { // space
@@ -37,6 +43,7 @@ class Omnibox extends Component {
       if (event.target === this.field) {
         if (trim(this.field.value) !== '') {
           this.dismiss(event)
+          this.focus(event)
         } else {
           this.field.blur()
           event.stopPropagation()

@@ -72,7 +72,8 @@ function startParty (client, data) {
           owner: client
         }
         client.emit('partyCreated', {
-          msg: `Party ${data.name} created`
+          msg: `Party ${data.name} created`,
+          name: data.name
         })
         client.once('disconnect', () => {
           if (parties[data.name]) {
@@ -80,7 +81,7 @@ function startParty (client, data) {
             delete parties[data.name]
             console.log(`Party ${data.name} ended`)
             Object.keys(party.guests).forEach((guestKey) => {
-              party.guests[guestKey].disconnect()
+              party.guests[guestKey].emit('partyEnded')
             })
           }
         })
@@ -135,7 +136,7 @@ function endParty (client, data) {
     delete parties[data.name]
     console.log(`Party ${data.name} ended`)
     Object.keys(party.guests).forEach((guestKey) => {
-      party.guests[guestKey].disconnect()
+      party.guests[guestKey].emit('partyEnded')
     })
     client.emit('endedParty')
   }
@@ -178,12 +179,10 @@ function leaveParty (client, data) {
   } else if (parties[data.name] && parties[data.name].guests[data.guestKey]) {
     console.log(`Guest ${data.guestKey} left ${data.name}`);
     client.emit('leftParty')
-    client.disconnect()
     parties[data.name].guests[data.guestKey] = null
     delete parties[data.name].guests[data.guestKey]
   } else {
     client.emit('leftParty')
-    client.disconnect()
   }
 }
 
@@ -210,4 +209,4 @@ function onConnection (client) {
   client.on('disconnect', handleClientDisconnect)
 }
 io.on('connection', onConnection)
-io.listen(8001)
+io.listen(8000)

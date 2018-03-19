@@ -35,7 +35,7 @@ import contents from './contents'
 
 const dict = new Dict(contents, ['en', 'fr', 'es'])
 
-const socket = io('http://192.168.0.105:8001')
+const socket = io('http://192.168.0.105:8000')
 
 class ClearHistory extends Component {
   constructor (props) {
@@ -195,9 +195,25 @@ class App extends Component {
     let transmitting = {
       name: ''
     }
+    try {
+      const str = localStorage.getItem('transmitting')
+      if (str) {
+        transmitting = JSON.parse(str)
+      }
+    } catch (ex) {
+      // ignore
+    }
 
     let attending = {
       name: ''
+    }
+    try {
+      const str = localStorage.getItem('attending')
+      if (str) {
+        attending = JSON.parse(str)
+      }
+    } catch (ex) {
+      // ignore
     }
 
     this.state = {
@@ -251,35 +267,53 @@ class App extends Component {
       }
     })
 
-    socket.on('endedParty', () => {
-      this.setState({
-        transmitting: {
-          name: ''
-        }
-      })
+    socket.on('partyCreated', (data) => {
+      const transmitting = {
+        name: data.name
+      }
+      this.setState({ transmitting })
+      localStorage.setItem('transmitting', JSON.stringify(transmitting))
     })
 
-    socket.on('leftParty', () => {
-      console.log('this.state.saved', this.state.saved)
+    socket.on('endedParty', () => {
+      const transmitting = {
+        name: ''
+      }
+      this.setState({ transmitting })
+      localStorage.setItem('transmitting', JSON.stringify(transmitting))
+    })
+
+    socket.on('partyEnded', () => {
       this.setState(this.state.saved)
     })
 
+    socket.on('leftParty', () => {
+      this.setState(this.state.saved)
+      this.dispatch({
+        type: 'App:saveState'
+      })
+    })
+
     socket.on('state', (state) => {
-      console.log('state', state)
       this.setState(state)
     })
 
     socket.on('joinedParty', (party) => {
+      const attending = {
+        name: party.name,
+      }
       this.setState({
         includePlayer: false,
-        attending: {
-          name: party.name,
-        }
+        attending
       })
+      localStorage.setItem('attending', JSON.stringify(attending))
     })
 
     socket.on('guestRequest', (state) => {
-      this.setState(state)
+      this.dispatch({
+        type: 'App:mergeState',
+        state
+      })
     })
 
     socket.on('malformed', (data) => {
@@ -291,7 +325,34 @@ class App extends Component {
     })
     // end
 
-    global.state = this.state
+    global.state = () => {
+      return this.state
+    }
+  }
+
+  componentDidMount () {
+    document.addEventListener('keydown', this.keyDown, false)
+    if (!!this.state.transmitting.name) {
+      this.dispatch({
+        type: 'Party:start',
+        data: {
+          name: this.state.transmitting.name
+        }
+      })
+    }
+
+    if (!!this.state.attending.name) {
+      this.dispatch({
+        type: 'Party:join',
+        data: {
+          name: this.state.attending.name
+        }
+      })
+    }
+  }
+
+  componentWillUnmount () {
+    document.removeEventListener('keydown', this.keyDown, false)
   }
 
   dispatch (action) {
@@ -329,14 +390,6 @@ class App extends Component {
         })
       }
     }
-  }
-
-  componentDidMount () {
-    document.addEventListener('keydown', this.keyDown, false)
-  }
-
-  componentWillUnmount () {
-    document.removeEventListener('keydown', this.keyDown, false)
   }
 
   render () {

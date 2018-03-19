@@ -34,6 +34,33 @@ function handler (fn) {
   }
 }
 const actions = {
+  App: {
+    mergeState: {
+      go: handler(function (action, socket) {
+        this.setState(action.state)
+        this.dispatch({
+          type: 'App:saveState'
+        })
+        if (this.state.transmitting.name !== '') {
+          socket.emit('state', {
+            name: this.state.transmitting.name,
+            hostKey,
+            state: action.state
+          })
+        }
+      })
+    },
+    saveState: {
+      go: handler(function (action, socket) {
+        localStorage.setItem('history', JSON.stringify(this.state.history))
+        localStorage.setItem('playingNow', JSON.stringify(this.state.playingNow))
+        localStorage.setItem('upNext', JSON.stringify(this.state.upNext))
+        localStorage.setItem('t', JSON.stringify(this.state.t))
+        localStorage.setItem('f', JSON.stringify(this.state.f))
+        localStorage.setItem('playing', JSON.stringify(this.state.playing))
+      })
+    }
+  },
   Music: {
     search: {
       go: search
@@ -66,6 +93,7 @@ const actions = {
             })
           }
         }
+        // end
 
         const val = trim(action.data)
         if (val === '') {
@@ -116,9 +144,6 @@ const actions = {
   Player: {
     setPlaying: {
       go: handler(function (action, socket) {
-        this.setState({
-          playing: true
-        })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
@@ -127,40 +152,45 @@ const actions = {
               playing: true
             }
           })
-        }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              playing: true
-            }
+        } else {
+          this.setState({
+            playing: true
           })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                playing: true
+              }
+            })
+          }
         }
       })
     },
     setNotPlaying: {
       go: handler(function (action, socket) {
-        this.setState({
-          playing: false
-        })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
-            name: this.state.transmitting.name,
+            name: this.state.attending.name,
             guestKey,
             state: {
               playing: false
             }
           })
-        }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              playing: false
-            }
+        } else {
+          this.setState({
+            playing: false
           })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                playing: false
+              }
+            })
+          }
         }
       })
     },
@@ -168,7 +198,6 @@ const actions = {
       go: handler(function (action, socket) {
         if (this.state.playingNow) {
           const newPlaying = !this.state.playing
-          this.setState({ playing: newPlaying })
           if (this.state.attending.name !== '') {
             socket.emit('queryHost', {
               name: this.state.attending.name,
@@ -177,15 +206,17 @@ const actions = {
                 playing: newPlaying,
               }
             })
-          }
-          if (this.state.transmitting.name !== '') {
-            socket.emit('state', {
-              name: this.state.transmitting.name,
-              hostKey,
-              state: {
-                playing: newPlaying,
-              }
-            })
+          } else {
+            this.setState({ playing: newPlaying })
+            if (this.state.transmitting.name !== '') {
+              socket.emit('state', {
+                name: this.state.transmitting.name,
+                hostKey,
+                state: {
+                  playing: newPlaying,
+                }
+              })
+            }
           }
         } else {
           this.dispatch({
@@ -202,10 +233,6 @@ const actions = {
     play: {
       go: handler(function (action, socket) {
         const data = cloneDeep(action.data)
-        this.setState({
-          playingNow: data,
-          playing: true
-        })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
@@ -215,18 +242,23 @@ const actions = {
               playing: true,
             }
           })
-        }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              playingNow: data,
-              playing: true,
-            }
+        } else {
+          this.setState({
+            playingNow: data,
+            playing: true
           })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                playingNow: data,
+                playing: true,
+              }
+            })
+          }
+          localStorage.setItem('playingNow', JSON.stringify(data))
         }
-        localStorage.setItem('playingNow', JSON.stringify(data))
       })
     },
     random: {
@@ -235,6 +267,7 @@ const actions = {
         const keys = Object.keys(this.state.collection)
         const len = keys.length
         if (len > 0) {
+          // Play random song from collection
           const rdm = Math.random()
           const idx = Math.round(rdm * (len - 1))
           const item = this.state.collection[keys[idx]]
@@ -243,7 +276,7 @@ const actions = {
             data: randomComponent(item)
           })
         } else {
-          // Play "random" song
+          // Play "random" song from randomData
           const rdm = Math.random()
           const idx = Math.round(rdm * (randomData.length - 1))
           const item = randomData[idx]
@@ -257,27 +290,30 @@ const actions = {
     progress: {
       go: handler(function (action, socket) {
         const data = action.data
-        this.setState({
-          f: data.played,
-          t: data.playedSeconds
-        })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
             guestKey,
             state: {
-              f: data.played
+              f: data.played,
+              t: data.playedSeconds
             }
           })
-        }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              f: data.played
-            }
+        } else {
+          this.setState({
+            f: data.played,
+            t: data.playedSeconds
           })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                f: data.played,
+                t: data.playedSeconds
+              }
+            })
+          }
         }
       })
     }
@@ -296,7 +332,6 @@ const actions = {
           return item
         }))
 
-        this.setState({ history: newHistory })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
@@ -305,23 +340,24 @@ const actions = {
               history: newHistory
             }
           })
+        } else {
+          this.setState({ history: newHistory })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                history: newHistory
+              }
+            })
+          }
+          localStorage.setItem('history', JSON.stringify(newHistory))
         }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              history: newHistory
-            }
-          })
-        }
-        localStorage.setItem('history', JSON.stringify(newHistory))
       })
     },
     clearHistory: {
       go: handler(function (action, socket) {
         const newHistory = []
-        this.setState({ history: newHistory })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
@@ -330,23 +366,24 @@ const actions = {
               history: newHistory
             }
           })
+        } else {
+          this.setState({ history: newHistory })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                history: newHistory
+              }
+            })
+          }
+          localStorage.setItem('history', JSON.stringify(newHistory))
         }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              history: newHistory
-            }
-          })
-        }
-        localStorage.setItem('history', JSON.stringify(newHistory))
       })
     },
     clearUpNext: {
       go: handler(function (action, socket) {
         const newUpNext = []
-        this.setState({ upNext: newUpNext })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
@@ -355,17 +392,19 @@ const actions = {
               upNext: newUpNext
             }
           })
+        } else {
+          this.setState({ upNext: newUpNext })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                upNext: newUpNext
+              }
+            })
+          }
+          localStorage.setItem('upNext', JSON.stringify(newUpNext))
         }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              upNext: newUpNext
-            }
-          })
-        }
-        localStorage.setItem('upNext', JSON.stringify(newUpNext))
       })
     },
     // upNext
@@ -374,9 +413,6 @@ const actions = {
         const data = cloneDeep(action.data)
         data.key += `:${Date.now()}`
         const newUpNext = [data].concat(this.state.upNext)
-        this.setState({
-          upNext: newUpNext
-        })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
@@ -385,17 +421,21 @@ const actions = {
               upNext: newUpNext
             }
           })
-        }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              upNext: newUpNext
-            }
+        } else {
+          this.setState({
+            upNext: newUpNext
           })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                upNext: newUpNext
+              }
+            })
+          }
+          localStorage.setItem('upNext', JSON.stringify(newUpNext))
         }
-        localStorage.setItem('upNext', JSON.stringify(newUpNext))
       })
     },
     enqueue: {
@@ -403,9 +443,6 @@ const actions = {
         const data = action.data
         data.key += `:${Date.now()}`
         const newUpNext = this.state.upNext.concat([data])
-        this.setState({
-          upNext: newUpNext
-        })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
@@ -414,26 +451,27 @@ const actions = {
               upNext: newUpNext
             }
           })
-        }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              upNext: newUpNext
-            }
+        } else {
+          this.setState({
+            upNext: newUpNext
           })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                upNext: newUpNext
+              }
+            })
+          }
+          localStorage.setItem('upNext', JSON.stringify(newUpNext))
         }
-        localStorage.setItem('upNext', JSON.stringify(newUpNext))
       })
     },
     dequeue: {
       go: handler(function (action, socket) {
         const newUpNext = cloneDeep(this.state.upNext)
         pullAt(newUpNext, action.idx)
-        this.setState({
-          upNext: newUpNext
-        })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
@@ -442,17 +480,21 @@ const actions = {
               upNext: newUpNext
             }
           })
-        }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              upNext: newUpNext
-            }
+        } else {
+          this.setState({
+            upNext: newUpNext
           })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                upNext: newUpNext
+              }
+            })
+          }
+          localStorage.setItem('upNext', JSON.stringify(newUpNext))
         }
-        localStorage.setItem('upNext', JSON.stringify(newUpNext))
       })
     },
     // playback
@@ -481,7 +523,6 @@ const actions = {
         if (this.state.upNext.length > 0) {
           skipped = skipped.concat(this.state.upNext.slice(0, action.idx))
           const newUpNext = this.state.upNext.slice(action.idx + 1)
-          this.setState({ upNext: newUpNext })
           if (this.state.attending.name !== '') {
             socket.emit('queryHost', {
               name: this.state.attending.name,
@@ -490,15 +531,18 @@ const actions = {
                 upNext: newUpNext
               }
             })
-          }
-          if (this.state.transmitting.name !== '') {
-            socket.emit('state', {
-              name: this.state.transmitting.name,
-              hostKey,
-              state: {
-                upNext: newUpNext
-              }
-            })
+          } else {
+            this.setState({ upNext: newUpNext })
+            if (this.state.transmitting.name !== '') {
+              socket.emit('state', {
+                name: this.state.transmitting.name,
+                hostKey,
+                state: {
+                  upNext: newUpNext
+                }
+              })
+            }
+            localStorage.setItem('upNext', JSON.stringify(newUpNext))
           }
         }
         if (skipped.length > 0) {
@@ -531,12 +575,6 @@ const actions = {
         } else {
           playRandom = true
         }
-        this.setState({
-          history,
-          playingNow,
-          upNext,
-          playing
-        })
         if (this.state.attending.name !== '') {
           socket.emit('queryHost', {
             name: this.state.attending.name,
@@ -548,22 +586,29 @@ const actions = {
               upNext
             }
           })
-        }
-        if (this.state.transmitting.name !== '') {
-          socket.emit('state', {
-            name: this.state.transmitting.name,
-            hostKey,
-            state: {
-              history,
-              playingNow,
-              playing,
-              upNext
-            }
+        } else {
+          this.setState({
+            history,
+            playingNow,
+            upNext,
+            playing
           })
+          if (this.state.transmitting.name !== '') {
+            socket.emit('state', {
+              name: this.state.transmitting.name,
+              hostKey,
+              state: {
+                history,
+                playingNow,
+                playing,
+                upNext
+              }
+            })
+          }
+          localStorage.setItem('history', JSON.stringify(history))
+          localStorage.setItem('playingNow', JSON.stringify(playingNow))
+          localStorage.setItem('upNext', JSON.stringify(upNext))
         }
-        localStorage.setItem('history', JSON.stringify(history))
-        localStorage.setItem('playingNow', JSON.stringify(playingNow))
-        localStorage.setItem('upNext', JSON.stringify(upNext))
         if (playRandom) {
           this.dispatch({
             type: 'Player:random'
@@ -573,37 +618,36 @@ const actions = {
     },
     prev: {
       go: handler(function (action, socket) {
-        if (this.state.t > 3 && !this.state.attending.name) {
+        const len = this.state.history.length
+        if (len === 0 || (this.state.t > 3 && !this.state.attending.name)) {
           this.playerEl.seekTo(0)
         } else {
-          const len = this.state.history.length
-          if (len > 0) {
-            const history = this.state.history
-            const playingNow = this.state.playingNow
-            const upNext = this.state.upNext
-            const previous = cloneDeep(history.pop())
-            previous.key = `${previous.key.substr(0, previous.key.lastIndexOf(':'))}:${Date.now()}`
-            if (playingNow && playingNow.key) {
-              upNext.unshift(playingNow)
-            }
-            this.dispatch({
-              type: 'Player:play',
-              data: previous
+          const history = this.state.history
+          const playingNow = this.state.playingNow
+          const upNext = this.state.upNext
+          const previous = cloneDeep(history.pop())
+          previous.key = `${previous.key.substr(0, previous.key.lastIndexOf(':'))}:${Date.now()}`
+          if (playingNow && playingNow.key) {
+            upNext.unshift(playingNow)
+          }
+          this.dispatch({
+            type: 'Player:play',
+            data: previous
+          })
+          if (this.state.attending.name !== '') {
+            socket.emit('queryHost', {
+              name: this.state.attending.name,
+              guestKey,
+              state: {
+                history,
+                upNext
+              }
             })
+          } else {
             this.setState({
               history,
               upNext
             })
-            if (this.state.attending.name !== '') {
-              socket.emit('queryHost', {
-                name: this.state.attending.name,
-                guestKey,
-                state: {
-                  history,
-                  upNext
-                }
-              })
-            }
             if (this.state.transmitting.name !== '') {
               socket.emit('state', {
                 name: this.state.transmitting.name,
@@ -616,8 +660,6 @@ const actions = {
             }
             localStorage.setItem('history', JSON.stringify(history))
             localStorage.setItem('upNext', JSON.stringify(upNext))
-          } else {
-            this.playerEl.seekTo(0)
           }
         }
       })
@@ -666,12 +708,6 @@ const actions = {
   Party: {
     start: {
       go: handler(function (action, socket) {
-        this.setState({
-          transmitting: {
-            name: action.data.name,
-            hostKey
-          }
-        })
         socket.emit('startParty', {
           name: action.data.name,
           hostKey,
@@ -692,7 +728,6 @@ const actions = {
           name: this.state.transmitting.name,
           hostKey
         })
-        this.state.transmitting.name = ''
       })
     },
     join: {

@@ -57,11 +57,13 @@ svg {
 }
 
 .omnibox-dismiss {
+  background: transparent;
+  border: 0;
   position: fixed;
   top: 1px;
   right: 1px;
   font-size: large;
-  padding: 5px 8px 5px 8px;
+  padding: 5px 23px 5px 8px;
   z-index: 4;
 }
 

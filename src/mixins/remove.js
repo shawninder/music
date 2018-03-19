@@ -1,6 +1,6 @@
 const remove = function remove (idx) {
   return {
-    txt: 'x',
+    txt: 'X',
     className: 'removeButton',
     go: (data, dispatch) => {
       return (event) => {
