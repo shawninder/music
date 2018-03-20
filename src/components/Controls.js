@@ -10,7 +10,8 @@ import YouTubeVideo from './YouTubeVideo'
 class Controls extends Component {
   render () {
     const playingNow = this.props.playingNow
-    const PlayingNowItem = actionable(YouTubeVideo, {
+    let PlayingNowItem = YouTubeVideo
+    PlayingNowItem = actionable(PlayingNowItem, {
       txt: 'toggle playback',
       className: 'togglePlaybackButton',
       go: (data, dispatch) => {
@@ -24,6 +25,7 @@ class Controls extends Component {
       show(this.props.showPlayer),
       remember(this.props.collection)
     ])
+
     return (
       <div
         className="controls"

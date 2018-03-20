@@ -343,7 +343,8 @@ class App extends Component {
   }
 
   componentDidMount () {
-    document.addEventListener('keydown', this.keyDown, false)
+    global.addEventListener('keydown', this.keyDown, false)
+
     if (!!this.state.transmitting.name) {
       this.dispatch({
         type: 'Party:start',
@@ -364,7 +365,7 @@ class App extends Component {
   }
 
   componentWillUnmount () {
-    document.removeEventListener('keydown', this.keyDown, false)
+    global.removeEventListener('keydown', this.keyDown, false)
   }
 
   dispatch (action) {

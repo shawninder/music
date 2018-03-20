@@ -27,6 +27,7 @@ svg {
 
 .App {
   min-width: 250px;
+  background: whitesmoke;
 }
 
 .omnibox {
@@ -165,10 +166,10 @@ svg {
   box-shadow: 0 -2px 5px rgba(200, 200, 200, 0.25);
   grid-area: playingNow;
   vertical-align: middle;
-}
-.playingNow {
   font-size: small;
+  position: relative;
 }
+
 .seek-bar {
   grid-area: seekBar;
   border: 1px solid #f8f8f8;
@@ -293,4 +294,8 @@ svg {
 }
 .showPlayerToggle--showing {
   color: green;
+}
+
+.removeButton {
+  padding-right: 20px;
 }

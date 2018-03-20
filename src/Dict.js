@@ -5,9 +5,6 @@ function langonly (str) {
 const languages = window.navigator.languages.map(langonly)
 const preferred = langonly(window.navigator.language)
 
-console.log('languages', languages);
-console.log('preferred', preferred);
-
 class Dict {
   constructor (contents, avail) {
     this.contents = contents
@@ -28,7 +25,7 @@ class Dict {
       }
     }
     // this.using = 'es'
-    console.log('this.using', this.using)
+    // console.log('this.using', this.using)
   }
   get (key) {
     return this.contents[key][this.using]
