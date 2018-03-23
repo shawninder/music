@@ -1,4 +1,4 @@
-const axios = require('axios')
+const fetch = require('isomorphic-unfetch')
 const qs = require('qs')
 const secrets = require('../../.secret')
 
@@ -18,7 +18,7 @@ class Media {
     // Look online
     console.log('Querying YouTube')
     const start = Date.now()
-    return axios.get(`https://www.googleapis.com/youtube/v3/search?${qs.stringify({
+    return fetch(`https://www.googleapis.com/youtube/v3/search?${qs.stringify({
       maxResults: '25',
       part: 'snippet',
       q: query,
@@ -26,8 +26,11 @@ class Media {
       key: secrets.youtubeKey
     })}`)
       .then((results) => {
+        return results.json()
+      })
+      .then((data) => {
         console.log(`Got results from YouTube in ${Date.now() - start}ms`)
-        return results.data.items.filter(this.isPlayable)
+        return data.items.filter(this.isPlayable)
       })
   }
 }
