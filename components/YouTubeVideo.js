@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 
 class Item extends Component {
   render () {
@@ -15,13 +16,13 @@ class Item extends Component {
           src={this.props.data.snippet.thumbnails.default.url}
           alt={`Thumnail for ${this.props.data.title}`}
         />
-        <div className="youtube-result-info">
-          <p className="youtube-result-title">{this.props.data.snippet.title}</p>
-          <p className="youtube-result-channel">{this.props.data.snippet.channelTitle}</p>
+        <div className='youtube-result-info'>
+          <p className='youtube-result-title'>{this.props.data.snippet.title}</p>
+          <p className='youtube-result-channel'>{this.props.data.snippet.channelTitle}</p>
         </div>
         {this.props.children}
       </div>
-    );
+    )
   }
 }
 
@@ -30,7 +31,7 @@ const props = [
   { name: 'query', type: PropTypes.string, val: '' },
   { name: 'data', type: PropTypes.object.isRequired },
   { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'onClick', type: PropTypes.func, val: ()=>{} }
+  { name: 'onClick', type: PropTypes.func, val: () => {} }
 ]
 
 Item.defaultProps = defaultProps(props)

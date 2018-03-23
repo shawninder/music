@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 
 import ReactPlayer from 'react-player'
 
@@ -13,9 +14,9 @@ class Player extends Component {
     return (
       <ReactPlayer
         ref={this.props.onRef}
-        className="Player"
+        className='Player'
         url={this.props.playingNow && this.props.playingNow.id && youtubeUrl(this.props.playingNow)}
-        controls={true}
+        controls
         playing={this.props.playing}
         onPlay={() => {
           this.props.dispatch({

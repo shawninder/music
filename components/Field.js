@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 
 class Field extends Component {
   constructor (props) {
@@ -19,7 +20,7 @@ class Field extends Component {
   render () {
     return (
       <input
-        type="text"
+        type='text'
         placeholder={this.props.placeholder}
         className={this.props.className}
         autoFocus={this.props.autoFocus}

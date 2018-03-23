@@ -1,12 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 import get from 'lodash.get'
 import cloneDeep from 'lodash.clonedeep'
 
 // import './App.css'
-import actions from '../srcz/actions'
-import Media from '../srcz/data/Media'
+import actions from '../actions/actions'
+import Media from '../data/Media'
 import Bar from '../components/Bar'
 import Player from '../components/Player'
 import Controls from '../components/Controls'
@@ -20,13 +21,13 @@ import JoinParty from '../components/JoinParty'
 import LeaveParty from '../components/LeaveParty'
 
 import actionable from '../components/actionable'
-import play from '../srcz/mixins/play'
-import jumpTo from '../srcz/mixins/jumpTo'
-import playNext from '../srcz/mixins/playNext'
-import enqueue from '../srcz/mixins/enqueue'
-import remember from '../srcz/mixins/remember'
-import remove from '../srcz/mixins/remove'
-import dismiss from '../srcz/mixins/dismiss'
+import play from '../mixins/play'
+import jumpTo from '../mixins/jumpTo'
+import playNext from '../mixins/playNext'
+import enqueue from '../mixins/enqueue'
+import remember from '../mixins/remember'
+import remove from '../mixins/remove'
+import dismiss from '../mixins/dismiss'
 
 import io from 'socket.io-client'
 
@@ -36,7 +37,6 @@ import contents from '../data/txt'
 const socketUrl = process.env.NODE_ENV === 'production'
   ? 'https://party-server-tvngiafxzh.now.sh'
   : 'http://localhost:8000'
-const socket = io(socketUrl)
 
 class ClearHistory extends Component {
   constructor (props) {
@@ -51,8 +51,8 @@ class ClearHistory extends Component {
   render () {
     return (
       <div
-        key="clearHistory"
-        className="clearHistory"
+        key='clearHistory'
+        className='clearHistory'
         onClick={this.onClick}
       >
         /clearHistory
@@ -81,8 +81,8 @@ class ClearUpNext extends Component {
   render () {
     return (
       <div
-        key="clearUpNext"
-        className="clearUpNext"
+        key='clearUpNext'
+        className='clearUpNext'
         onClick={this.onClick}
       >
         /clearUpNext
@@ -108,10 +108,10 @@ const commandComponents = {
 }
 
 class App extends Component {
-  static getInitialProps ({ req, store, isServer, query, pathname }) {
+  static getInitialProps ({ req, res }) {
     const headers = req ? req.headers : undefined
-    const acceptLanguage = props.headers ? props.headers['accept-language'] : ''
-    return { isServer, nb: query.nb || 0, pathname, headers, acceptLanguage }
+    const acceptLanguage = headers ? headers['accept-language'] : ''
+    return { headers, acceptLanguage }
   }
 
   constructor (props) {
@@ -131,7 +131,7 @@ class App extends Component {
 
     let history = []
     try {
-      const str = localStorage.getItem('history')
+      const str = global.localStorage.getItem('history')
       if (str) {
         history = JSON.parse(str)
       }
@@ -141,7 +141,7 @@ class App extends Component {
 
     let playingNow = {}
     try {
-      const str = localStorage.getItem('playingNow')
+      const str = global.localStorage.getItem('playingNow')
       if (str) {
         playingNow = JSON.parse(str)
       }
@@ -151,7 +151,7 @@ class App extends Component {
 
     let upNext = []
     try {
-      const str = localStorage.getItem('upNext')
+      const str = global.localStorage.getItem('upNext')
       if (str) {
         upNext = JSON.parse(str)
       }
@@ -161,7 +161,7 @@ class App extends Component {
 
     let showHistory = false
     try {
-      const str = localStorage.getItem('showHistory')
+      const str = global.localStorage.getItem('showHistory')
       if (str) {
         showHistory = JSON.parse(str)
       }
@@ -171,7 +171,7 @@ class App extends Component {
 
     let showUpNext = false
     try {
-      const str = localStorage.getItem('showUpNext')
+      const str = global.localStorage.getItem('showUpNext')
       if (str) {
         showUpNext = JSON.parse(str)
       }
@@ -181,7 +181,7 @@ class App extends Component {
 
     let collection = {}
     try {
-      const str = localStorage.getItem('collection')
+      const str = global.localStorage.getItem('collection')
       if (str) {
         collection = JSON.parse(str)
       }
@@ -191,7 +191,7 @@ class App extends Component {
 
     let showPlayer = true
     try {
-      const str = localStorage.getItem('showPlayer')
+      const str = global.localStorage.getItem('showPlayer')
       if (str) {
         showPlayer = JSON.parse(str)
       }
@@ -205,7 +205,7 @@ class App extends Component {
       name: ''
     }
     try {
-      const str = localStorage.getItem('transmitting')
+      const str = global.localStorage.getItem('transmitting')
       if (str) {
         transmitting = JSON.parse(str)
       }
@@ -217,7 +217,7 @@ class App extends Component {
       name: ''
     }
     try {
-      const str = localStorage.getItem('attending')
+      const str = global.localStorage.getItem('attending')
       if (str) {
         attending = JSON.parse(str)
       }
@@ -238,113 +238,117 @@ class App extends Component {
       showPlayer,
       includePlayer,
       transmitting,
-      attending
+      attending,
+      isServer: typeof window === 'undefined'
     }
 
-    // party shared state
-    socket.on('connect', () => {
-      console.log('connected to socket')
-    })
-
-    socket.on('connect_error', () => {
-      this.dispatch({
-        type: 'Party:broken'
+    if (!this.state.isServer) {
+      this.socket = io(socketUrl)
+      // party shared state
+      this.socket.on('connect', () => {
+        console.log('connected to socket')
       })
-    })
 
-    socket.on('reconnect_failed', () => {
-      console.log('reconnect_failed')
-    })
-
-    socket.on('disconnect', () => {
-      console.log('Lost socket connection')
-    })
-
-    socket.on('oops', (data) => {
-      console.log('oops', data)
-    })
-
-    socket.on('success', (data) => {
-      console.log('SUCCESS', data)
-    })
-
-    socket.on('party', (party) => {
-      if (party.exists) {
+      this.socket.on('connect_error', () => {
         this.dispatch({
-          type: 'Party:join',
-          data: {
-            name: party.name
-          }
+          type: 'Party:broken'
         })
-      } else {
+      })
+
+      this.socket.on('reconnect_failed', () => {
+        console.log('reconnect_failed')
+      })
+
+      this.socket.on('disconnect', () => {
+        console.log('Lost socket connection')
+      })
+
+      this.socket.on('oops', (data) => {
+        console.log('oops', data)
+      })
+
+      this.socket.on('success', (data) => {
+        console.log('SUCCESS', data)
+      })
+
+      this.socket.on('party', (party) => {
+        if (party.exists) {
+          this.dispatch({
+            type: 'Party:join',
+            data: {
+              name: party.name
+            }
+          })
+        } else {
+          this.dispatch({
+            type: 'Party:start',
+            data: {
+              name: party.name
+            }
+          })
+        }
+      })
+
+      this.socket.on('partyCreated', (data) => {
+        const transmitting = {
+          name: data.name
+        }
+        this.setState({ transmitting })
+        global.localStorage.setItem('transmitting', JSON.stringify(transmitting))
+      })
+
+      this.socket.on('endedParty', () => {
+        const transmitting = {
+          name: ''
+        }
+        this.setState({ transmitting })
+        global.localStorage.setItem('transmitting', JSON.stringify(transmitting))
+      })
+
+      this.socket.on('partyEnded', () => {
         this.dispatch({
-          type: 'Party:start',
-          data: {
-            name: party.name
-          }
+          type: 'App:pop'
         })
-      }
-    })
-
-    socket.on('partyCreated', (data) => {
-      const transmitting = {
-        name: data.name
-      }
-      this.setState({ transmitting })
-      localStorage.setItem('transmitting', JSON.stringify(transmitting))
-    })
-
-    socket.on('endedParty', () => {
-      const transmitting = {
-        name: ''
-      }
-      this.setState({ transmitting })
-      localStorage.setItem('transmitting', JSON.stringify(transmitting))
-    })
-
-    socket.on('partyEnded', () => {
-      this.dispatch({
-        type: 'App:pop'
       })
-    })
 
-    socket.on('leftParty', () => {
-      this.setState(this.state.saved)
-      this.dispatch({
-        type: 'App:saveState'
+      this.socket.on('leftParty', () => {
+        this.setState(this.state.saved)
+        this.dispatch({
+          type: 'App:saveState'
+        })
       })
-    })
 
-    socket.on('state', (state) => {
-      this.setState(state)
-    })
-
-    socket.on('joinedParty', (party) => {
-      const attending = {
-        name: party.name,
-      }
-      this.setState({
-        includePlayer: false,
-        attending
+      this.socket.on('state', (state) => {
+        this.setState(state)
       })
-      localStorage.setItem('attending', JSON.stringify(attending))
-    })
 
-    socket.on('guestRequest', (state) => {
-      this.dispatch({
-        type: 'App:mergeState',
-        state
+      this.socket.on('joinedParty', (party) => {
+        const attending = {
+          name: party.name
+        }
+        this.setState({
+          includePlayer: false,
+          attending
+        })
+        global.localStorage.setItem('attending', JSON.stringify(attending))
       })
-    })
 
-    socket.on('malformed', (data) => {
+      this.socket.on('guestRequest', (state) => {
+        this.dispatch({
+          type: 'App:mergeState',
+          state
+        })
+      })
 
-    })
+      this.socket.on('malformed', (data) => {
 
-    socket.on('*', function () {
-      console.log('Unknown REMOTE EVENT', arguments)
-    })
-    // end
+      })
+
+      this.socket.on('*', function () {
+        console.log('Unknown REMOTE EVENT', arguments)
+      })
+      // end
+    }
 
     global.state = () => {
       return this.state
@@ -354,7 +358,7 @@ class App extends Component {
   componentDidMount () {
     global.addEventListener('keydown', this.keyDown, false)
 
-    if (!!this.state.transmitting.name) {
+    if (this.state.transmitting.name) {
       this.dispatch({
         type: 'Party:start',
         data: {
@@ -363,7 +367,7 @@ class App extends Component {
       })
     }
 
-    if (!!this.state.attending.name) {
+    if (this.state.attending.name) {
       this.dispatch({
         type: 'Party:join',
         data: {
@@ -378,11 +382,15 @@ class App extends Component {
   }
 
   dispatch (action) {
-    const go = get(this.actions, `${action.type.replace(':','.')}.go`)
-    if (go) {
-      go.call(this, action, socket)
+    if (this.state.isServer) {
+      console.warn('An action was dispatched on the server...', action)
     } else {
-      console.error('Unknown action', action)
+      const go = get(this.actions, `${action.type.replace(':', '.')}.go`)
+      if (go) {
+        go.call(this, action, this.socket)
+      } else {
+        console.error('Unknown action', action)
+      }
     }
   }
 
@@ -416,7 +424,7 @@ class App extends Component {
 
   render () {
     return (
-      <div className="App">
+      <div className='App'>
         <Bar
           onRef={(name, ref) => {
             this.bar[name] = ref
@@ -442,9 +450,9 @@ class App extends Component {
           }}
           placeholder={this.dict.get('bar.placeholder')}
         />
-        <div className="main">
+        <div className='main'>
           <Party
-            className="autoparty"
+            className='autoparty'
             placeholder={this.dict.get('party.placeholder')}
             attending={this.state.attending}
             transmitting={this.state.transmitting}
@@ -468,7 +476,7 @@ class App extends Component {
               (this.state.showPlayer && this.state.playingNow.snippet)
                 ? (
                   <img
-                    className="player-alt"
+                    className='player-alt'
                     src={this.state.playingNow.snippet.thumbnails.high.url}
                     width={this.state.playingNow.snippet.thumbnails.high.width}
                     height={this.state.playingNow.snippet.thumbnails.high.height}
@@ -478,40 +486,40 @@ class App extends Component {
                 : null
             )
           }
-          <div className="queue">
-          {
-            this.state.showHistory
+          <div className='queue'>
+            {
+              this.state.showHistory
+                ? (
+                  <List
+                    title={this.dict.get('history.title')}
+                    className='history'
+                    items={cloneDeep(this.state.history).reverse()}
+                    dispatch={this.dispatch}
+                    getComponent={(item, idx) => {
+                      return actionable(YouTubeVideo, play(), [
+                        playNext(), enqueue(), remember(this.state.collection)
+                      ])
+                    }}
+                  />
+                )
+                : null
+            }
+            { this.state.showUpNext
               ? (
                 <List
-                  title={this.dict.get('history.title')}
-                  className="history"
-                  items={cloneDeep(this.state.history).reverse()}
+                  title={this.dict.get('upnext.title')}
+                  className='upNext'
+                  items={this.state.upNext}
                   dispatch={this.dispatch}
                   getComponent={(item, idx) => {
-                    return actionable(YouTubeVideo, play(), [
-                      playNext(), enqueue(), remember(this.state.collection)
+                    return actionable(YouTubeVideo, jumpTo(idx), [
+                      remember(this.state.collection), remove(idx)
                     ])
                   }}
                 />
               )
               : null
-          }
-          { this.state.showUpNext
-            ? (
-              <List
-                title={this.dict.get('upnext.title')}
-                className="upNext"
-                items={this.state.upNext}
-                dispatch={this.dispatch}
-                getComponent={(item, idx) => {
-                  return actionable(YouTubeVideo, jumpTo(idx), [
-                    remember(this.state.collection), remove(idx)
-                  ])
-                }}
-              />
-            )
-            : null
-          }
+            }
           </div>
         </div>
         <Controls

@@ -25,7 +25,7 @@ export default class JoinParty extends Component {
     return (
       <div>
         {this.props.data.key}
-        <input type="text" placeholder="name" onChange={this.nameChange} />
+        <input type='text' placeholder='name' onChange={this.nameChange} />
         <button onClick={this.onClick}>Join</button>
       </div>
     )

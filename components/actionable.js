@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 
 const actionable = function (Wrapped, defActs, actions) {
   const defaultActions = Array.isArray(defActs)
@@ -20,7 +21,7 @@ const actionable = function (Wrapped, defActs, actions) {
             key={action.txt || action.img}
             className={actionClassName}
             onClick={action.go(this.props.data, this.props.dispatch)}
-            tabIndex="-1"
+            tabIndex='-1'
           >
             {action.txt}
             {action.img}
@@ -38,7 +39,7 @@ const actionable = function (Wrapped, defActs, actions) {
           {...this.props}
         >
           {this.props.children}
-          <div className="actionable-actions">
+          <div className='actionable-actions'>
             {actionItems}
           </div>
         </Wrapped>

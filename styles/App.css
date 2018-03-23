@@ -88,6 +88,9 @@ svg {
 .youtube-result {
   border: 1px solid lightgrey;
   border-width: 0 0 1px 0;
+}
+
+.youtube-result.actionable {
   cursor: pointer;
 }
 
@@ -130,6 +133,11 @@ svg {
 
 .actionable-actions button {
   border: 0;
+  background: transparent;
+}
+
+.actionable-actions button:hover, .controls button:hover {
+  color: steelblue;
 }
 
 .controls {
@@ -139,7 +147,7 @@ svg {
   width: 100%;
   font-size: medium;
 
-  background: #ffffff;
+  background: white;
   box-shadow: 0px -2px 5px 0px rgba(0,0,0,0.25);
 
   display: grid;
@@ -154,14 +162,8 @@ svg {
 .controls button {
   font-size: inherit;
   border: 0;
-  background-color: #ffffff;
-  cursor: pointer;
+  background: transparent;
   padding-bottom: 10px;
-}
-
-.controls button:hover {
-  background: #f8f8f8;
-  font-weight: bold;
 }
 
 .playingNow {

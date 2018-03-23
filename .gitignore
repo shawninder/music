@@ -5,6 +5,7 @@
 
 # development
 /.next
+/bundles
 
 # testing
 /coverage

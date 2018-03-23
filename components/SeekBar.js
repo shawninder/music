@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 
 class SeekBar extends Component {
   render () {
@@ -13,12 +14,12 @@ class SeekBar extends Component {
     }
     return (
       <div className={classes.join(' ')}>
-        <div className="seek-bar--played"
+        <div className='seek-bar--played'
           style={playedStyle}
-        ></div>
-        <div className="seek-bar--handle"
+        />
+        <div className='seek-bar--handle'
           style={handleStyle}
-        ></div>
+        />
       </div>
     )
   }

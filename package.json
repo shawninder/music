@@ -27,18 +27,20 @@
     "socket.io-client": "2.0.4"
   },
   "scripts": {
+    "lint": "standard",
     "dev": "next",
-    "start": "node scripts/start.js",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js --env=jsdom",
+    "build": "next build",
+    "start": "next start",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "startWs": "nodemon ./ws-server.js"
   },
   "devDependencies": {
-    "eslint-config-react-app": "2.1.0",
+    "@zeit/next-bundle-analyzer": "0.1.1",
     "gh-pages": "1.1.0",
-    "nodemon": "1.17.2"
+    "nodemon": "1.17.2",
+    "standard": "11.0.1",
+    "webpack-bundle-analyzer": "2.11.1"
   },
   "homepage": "https://shawninder.github.io/music"
 }

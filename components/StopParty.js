@@ -11,7 +11,7 @@ export default class StopParty extends Component {
     })
   }
   render () {
-    return  (
+    return (
       <div>
         {this.props.data.key}
         <button onClick={this.onClick}>Stop</button>

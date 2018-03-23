@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 
 class Party extends Component {
   constructor (props) {
@@ -53,7 +54,7 @@ class Party extends Component {
     const input = !partying
       ? (
         <input
-          type="text"
+          type='text'
           placeholder={this.props.placeholder}
           autoFocus={this.props.autoFocus}
           onChange={this.onChange}
@@ -63,8 +64,8 @@ class Party extends Component {
       )
       : (
         <input
-          className="disabled"
-          type="text"
+          className='disabled'
+          type='text'
           defaultValue={this.props.attending.name || this.props.transmitting.name}
           disabled
         />
@@ -89,14 +90,14 @@ class Party extends Component {
         {
           attending
             ? (
-              <p>{this.props.dict.get('party.attending')}<span className="attendedPartyName">{this.props.attending.name}</span></p>
+              <p>{this.props.dict.get('party.attending')}<span className='attendedPartyName'>{this.props.attending.name}</span></p>
             )
             : null
         }
         {
           transmitting
             ? (
-              <p>{this.props.dict.get('party.hosting')}<span className="hostedPartyName">{this.props.transmitting.name}</span></p>
+              <p>{this.props.dict.get('party.hosting')}<span className='hostedPartyName'>{this.props.transmitting.name}</span></p>
             )
             : null
         }

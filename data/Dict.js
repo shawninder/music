@@ -15,7 +15,6 @@ export function guessLang (avail, acceptLanguage, navigator) {
       const languages = navigator.languages.map(langonly)
       const preferred = langonly(navigator.language)
 
-
       if (avail.includes(preferred)) {
         guess = preferred
       } else {
@@ -32,7 +31,7 @@ export function guessLang (avail, acceptLanguage, navigator) {
         }
       }
       // guess = 'es'
-      // console.log('guess', guess)
+      console.log('guess', guess)
     }
   }
   return guess

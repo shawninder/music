@@ -19,7 +19,7 @@ function unlessMalformed (client, fn) {
 // ?
 
 function isParty (client, data) {
-  console.log('isParty', data);
+  console.log('isParty', data)
   if (parties[data.name]) {
     if (parties[data.name].hostKey === data.hostKey) {
       client.emit('oops', {
@@ -92,8 +92,8 @@ function startParty (client, data) {
 }
 
 function setState (client, data) {
-  if (!parties[data.name]
-    || data.hostKey !== parties[data.name].hostKey) {
+  if (!parties[data.name] ||
+    data.hostKey !== parties[data.name].hostKey) {
     client.emit('unauthorized')
   } else if (!data.state) {
     console.log('malformed for setState')
@@ -177,7 +177,7 @@ function leaveParty (client, data) {
     console.log('malformed for leaveParty')
     client.emit('malformed')
   } else if (parties[data.name] && parties[data.name].guests[data.guestKey]) {
-    console.log(`Guest ${data.guestKey} left ${data.name}`);
+    console.log(`Guest ${data.guestKey} left ${data.name}`)
     client.emit('leftParty')
     parties[data.name].guests[data.guestKey] = null
     delete parties[data.name].guests[data.guestKey]

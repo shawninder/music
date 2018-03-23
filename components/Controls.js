@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 import SeekBar from './SeekBar'
 import actionable from './actionable'
-import show from '../srcz/mixins/show'
-import remember from '../srcz/mixins/remember'
+import show from '../mixins/show'
+import remember from '../mixins/remember'
 import YouTubeVideo from './YouTubeVideo'
 
 class Controls extends Component {
@@ -28,13 +29,13 @@ class Controls extends Component {
 
     return (
       <div
-        className="controls"
+        className='controls'
       >
         {
           playingNow && playingNow.id
             ? (
               <PlayingNowItem
-                className="playingNow"
+                className='playingNow'
                 data={playingNow}
                 dispatch={this.props.dispatch}
               />
@@ -47,7 +48,7 @@ class Controls extends Component {
         />
 
         <button
-          className="toggleHistory"
+          className='toggleHistory'
           onClick={(event) => {
             event.stopPropagation()
             this.props.dispatch({
@@ -59,7 +60,7 @@ class Controls extends Component {
         </button>
 
         <button
-          className="prev"
+          className='prev'
           onClick={(event) => {
             event.stopPropagation()
             this.props.dispatch({
@@ -71,7 +72,7 @@ class Controls extends Component {
         </button>
 
         <button
-          className="togglePlay"
+          className='togglePlay'
           onClick={(event) => {
             event.stopPropagation()
             this.props.dispatch({
@@ -83,7 +84,7 @@ class Controls extends Component {
         </button>
 
         <button
-          className="next"
+          className='next'
           onClick={(event) => {
             event.stopPropagation()
             this.props.dispatch({
@@ -95,7 +96,7 @@ class Controls extends Component {
         </button>
 
         <button
-          className="toggleUpNext"
+          className='toggleUpNext'
           onClick={(event) => {
             event.stopPropagation()
             this.props.dispatch({
@@ -106,7 +107,7 @@ class Controls extends Component {
           ({this.props.upNext.length})
         </button>
       </div>
-    );
+    )
   }
 }
 

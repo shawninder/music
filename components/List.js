@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 
 class List extends Component {
   constructor (props) {
@@ -45,7 +46,7 @@ class List extends Component {
       return (
         <li
           key={item.key}
-          tabIndex="0"
+          tabIndex='0'
         >
           {el}
         </li>

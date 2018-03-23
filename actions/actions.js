@@ -4,7 +4,7 @@ import { filter } from 'fuzzaldrin'
 import trim from 'lodash.trim'
 import pullAt from 'lodash.pullat'
 
-import randomData from './random.json'
+import randomData from '../data/random.json'
 
 const useComponent = (type, dispatch) => {
   return (item) => {
@@ -57,19 +57,19 @@ const actions = {
     },
     saveState: {
       go: handler(function (action, socket) {
-        localStorage.setItem('history', JSON.stringify(this.state.history))
-        localStorage.setItem('playingNow', JSON.stringify(this.state.playingNow))
-        localStorage.setItem('upNext', JSON.stringify(this.state.upNext))
-        localStorage.setItem('t', JSON.stringify(this.state.t))
-        localStorage.setItem('f', JSON.stringify(this.state.f))
-        localStorage.setItem('playing', JSON.stringify(this.state.playing))
+        global.localStorage.setItem('history', JSON.stringify(this.state.history))
+        global.localStorage.setItem('playingNow', JSON.stringify(this.state.playingNow))
+        global.localStorage.setItem('upNext', JSON.stringify(this.state.upNext))
+        global.localStorage.setItem('t', JSON.stringify(this.state.t))
+        global.localStorage.setItem('f', JSON.stringify(this.state.f))
+        global.localStorage.setItem('playing', JSON.stringify(this.state.playing))
       })
     }
   },
   Music: {
     search: {
       go: search
-    },
+    }
   },
   Bar: {
     suggest: {
@@ -208,7 +208,7 @@ const actions = {
               name: this.state.attending.name,
               guestKey,
               state: {
-                playing: newPlaying,
+                playing: newPlaying
               }
             })
           } else {
@@ -218,7 +218,7 @@ const actions = {
                 name: this.state.transmitting.name,
                 hostKey,
                 state: {
-                  playing: newPlaying,
+                  playing: newPlaying
                 }
               })
             }
@@ -244,7 +244,7 @@ const actions = {
             hostKey,
             state: {
               playingNow: data,
-              playing: true,
+              playing: true
             }
           })
         } else {
@@ -258,11 +258,11 @@ const actions = {
               hostKey,
               state: {
                 playingNow: data,
-                playing: true,
+                playing: true
               }
             })
           }
-          localStorage.setItem('playingNow', JSON.stringify(data))
+          global.localStorage.setItem('playingNow', JSON.stringify(data))
         }
       })
     },
@@ -356,7 +356,7 @@ const actions = {
               }
             })
           }
-          localStorage.setItem('history', JSON.stringify(newHistory))
+          global.localStorage.setItem('history', JSON.stringify(newHistory))
         }
       })
     },
@@ -382,7 +382,7 @@ const actions = {
               }
             })
           }
-          localStorage.setItem('history', JSON.stringify(newHistory))
+          global.localStorage.setItem('history', JSON.stringify(newHistory))
         }
       })
     },
@@ -408,7 +408,7 @@ const actions = {
               }
             })
           }
-          localStorage.setItem('upNext', JSON.stringify(newUpNext))
+          global.localStorage.setItem('upNext', JSON.stringify(newUpNext))
         }
       })
     },
@@ -439,7 +439,7 @@ const actions = {
               }
             })
           }
-          localStorage.setItem('upNext', JSON.stringify(newUpNext))
+          global.localStorage.setItem('upNext', JSON.stringify(newUpNext))
         }
       })
     },
@@ -469,7 +469,7 @@ const actions = {
               }
             })
           }
-          localStorage.setItem('upNext', JSON.stringify(newUpNext))
+          global.localStorage.setItem('upNext', JSON.stringify(newUpNext))
         }
       })
     },
@@ -498,7 +498,7 @@ const actions = {
               }
             })
           }
-          localStorage.setItem('upNext', JSON.stringify(newUpNext))
+          global.localStorage.setItem('upNext', JSON.stringify(newUpNext))
         }
       })
     },
@@ -547,7 +547,7 @@ const actions = {
                 }
               })
             }
-            localStorage.setItem('upNext', JSON.stringify(newUpNext))
+            global.localStorage.setItem('upNext', JSON.stringify(newUpNext))
           }
         }
         if (skipped.length > 0) {
@@ -610,9 +610,9 @@ const actions = {
               }
             })
           }
-          localStorage.setItem('history', JSON.stringify(history))
-          localStorage.setItem('playingNow', JSON.stringify(playingNow))
-          localStorage.setItem('upNext', JSON.stringify(upNext))
+          global.localStorage.setItem('history', JSON.stringify(history))
+          global.localStorage.setItem('playingNow', JSON.stringify(playingNow))
+          global.localStorage.setItem('upNext', JSON.stringify(upNext))
         }
         if (playRandom) {
           this.dispatch({
@@ -663,12 +663,12 @@ const actions = {
                 }
               })
             }
-            localStorage.setItem('history', JSON.stringify(history))
-            localStorage.setItem('upNext', JSON.stringify(upNext))
+            global.localStorage.setItem('history', JSON.stringify(history))
+            global.localStorage.setItem('upNext', JSON.stringify(upNext))
           }
         }
       })
-    },
+    }
   },
   History: {
     toggle: {
@@ -677,7 +677,7 @@ const actions = {
         this.setState({
           showHistory
         })
-        localStorage.setItem('showHistory', JSON.stringify(showHistory))
+        global.localStorage.setItem('showHistory', JSON.stringify(showHistory))
       })
     }
   },
@@ -688,7 +688,7 @@ const actions = {
         this.setState({
           showUpNext
         })
-        localStorage.setItem('showUpNext', JSON.stringify(showUpNext))
+        global.localStorage.setItem('showUpNext', JSON.stringify(showUpNext))
       })
     }
   },
@@ -706,7 +706,7 @@ const actions = {
           const obj = { collection }
           this.setState(obj)
         }
-        localStorage.setItem('collection', JSON.stringify(collection))
+        global.localStorage.setItem('collection', JSON.stringify(collection))
       })
     }
   },
@@ -756,7 +756,7 @@ const actions = {
         })
         socket.emit('joinParty', {
           name: action.data.name,
-          guestKey,
+          guestKey
         })
       })
     },

@@ -6,7 +6,7 @@ class PlayingNow extends Component {
   render () {
     return (
       <div
-        className="playingNow"
+        className='playingNow'
       >
         {this.props.data.snippet.title}
         {this.props.children}
@@ -17,7 +17,7 @@ class PlayingNow extends Component {
 
 const props = [
   { name: 'data', type: PropTypes.object.isRequired },
-  { name: 'dispatch', type: PropTypes.func.isRequired },
+  { name: 'dispatch', type: PropTypes.func.isRequired }
 ]
 
 PlayingNow.defaultProps = defaultProps(props)

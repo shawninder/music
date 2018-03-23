@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import trim from 'lodash.trim'
-import { defaultProps, propTypes } from '../srcz/helpers'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 
 import Field from './Field'
 import List from './List'
@@ -65,7 +66,7 @@ class Bar extends Component {
   render () {
     return (
       <div
-        className="bar"
+        className='bar'
         onKeyDown={this.keyDown}
         ref={(el) => {
           this.el = el
@@ -73,18 +74,21 @@ class Bar extends Component {
         }}
       >
         <Field
-          className="bar-field"
+          className='bar-field'
           autoFocus={this.props.autoFocus}
           placeholder={this.props.placeholder}
-          onChange={(event) => { this.props.dispatch({
+          onChange={(event) => {
+            this.props.dispatch({
               type: 'Bar:suggest',
               data: event.target.value
             })
           }}
-          onEnter={(event) => { this.props.dispatch({
-            type: 'Bar:suggest',
-            data: event.target.value
-          }) }}
+          onEnter={(event) => {
+            this.props.dispatch({
+              type: 'Bar:suggest',
+              data: event.target.value
+            })
+          }}
           onDown={this.focusList}
           onRef={(el) => {
             this.field = el
@@ -94,7 +98,7 @@ class Bar extends Component {
         {this.props.items.length > 0
           ? (
             <List
-              className="bar-list"
+              className='bar-list'
               items={this.props.items}
               getComponent={this.props.getComponent}
               query={this.state.query}
@@ -108,12 +112,11 @@ class Bar extends Component {
                 this.list = el
                 this.props.onRef('list', el)
               }}
-            >
-            </List>
+            />
           )
           : null
         }
-        <button className="bar-dismiss" onClick={this.dismiss}>x</button>
+        <button className='bar-dismiss' onClick={this.dismiss}>x</button>
       </div>
     )
   }
@@ -125,7 +128,7 @@ const props = [
   { name: 'dispatch', type: PropTypes.func.isRequired },
   { name: 'items', type: PropTypes.array.isRequired },
   { name: 'getComponent', type: PropTypes.func.isRequired },
-{ name: 'placeholder', type: PropTypes.string, val: '' }
+  { name: 'placeholder', type: PropTypes.string, val: '' }
 ]
 
 Bar.defaultProps = defaultProps(props)

@@ -22,10 +22,10 @@ export default class StartParty extends Component {
     this.setState({ name: event.target.value })
   }
   render () {
-    return  (
+    return (
       <div>
         {this.props.data.key}
-        <input type="text" placeholder="name" onChange={this.nameChange} />
+        <input type='text' placeholder='name' onChange={this.nameChange} />
         <button onClick={this.onClick}>Start</button>
       </div>
     )
