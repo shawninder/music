@@ -250,16 +250,18 @@ svg {
   padding: 0;
   width: 100%;
   max-width: 640px;
+  background: white;
   margin: 0 auto 30px;
 }
 
 .autoparty h1 {
-  margin: 0 5px;
   font-size: large;
+  padding: 5px;
 }
 
 .autoparty p {
-  margin: 20px 5px;
+  margin: 20px 0;
+  padding: 5px;
 }
 
 .autoparty form {

@@ -35,7 +35,10 @@ import contents from './contents'
 
 const dict = new Dict(contents, ['en', 'fr', 'es'])
 
-const socket = io('https://party-server-tvngiafxzh.now.sh')
+const socketUrl = process.env.NODE_ENV === 'production'
+  ? 'https://party-server-tvngiafxzh.now.sh'
+  : 'http://localhost:8000'
+const socket = io(socketUrl)
 
 class ClearHistory extends Component {
   constructor (props) {

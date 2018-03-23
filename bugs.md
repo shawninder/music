@@ -12,3 +12,5 @@ Make sure scrolling omnibox results doesn't scroll the page
 
 
 Prev button misbehaving (impossible to go to track start with it)
+
+Turning the phone back on doesn't update the state when attending a party

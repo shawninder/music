@@ -39,3 +39,5 @@ Stickiness of "Start a Party" and "Join a Party". In both cases, you can un-stic
 Flashing seek bar aura indicates that music is playing and delimits the region in which seek-by-drag can be initiated
 
 Search bar placeholder can be branding with pumped up font-size
+
+Idea: Host party where guests can only submit contributions to UpNext, and only those in the form either of music or short time blocks for short speeches or rallying call, optionally amplified by speaking into a phone and having the sound projected by the host speaker. Perfect for rallies, sit-ins, assemblies, exhibitions, all kinds of events!
