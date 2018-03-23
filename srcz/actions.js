@@ -71,7 +71,7 @@ const actions = {
       go: search
     },
   },
-  Omnibox: {
+  Bar: {
     suggest: {
       go: handler(function (action) {
         // TODO move these outta here
@@ -132,7 +132,7 @@ const actions = {
     },
     focus: {
       go: handler(function () {
-        this.omnibox.field.focus()
+        this.bar.field.focus()
       })
     },
     dismiss: {
@@ -142,7 +142,7 @@ const actions = {
     },
     clear: {
       go: handler(function () {
-        this.omnibox.field.value = ''
+        this.bar.field.value = ''
       })
     }
   },

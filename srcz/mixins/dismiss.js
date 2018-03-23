@@ -6,7 +6,7 @@ const dismiss = function dismiss () {
       return (event) => {
         event.stopPropagation()
         dispatch({
-          type: 'Omnibox:dismiss',
+          type: 'Bar:dismiss',
           data
         })
       }

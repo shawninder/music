@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../helpers'
+import { defaultProps, propTypes } from '../srcz/helpers'
 
 const actionable = function (Wrapped, defActs, actions) {
   const defaultActions = Array.isArray(defActs)

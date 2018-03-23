@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import trim from 'lodash.trim'
-import { defaultProps, propTypes } from '../helpers'
+import { defaultProps, propTypes } from '../srcz/helpers'
 
 import Field from './Field'
 import List from './List'
 
-class Omnibox extends Component {
+class Bar extends Component {
   constructor (props) {
     super(props)
     this.keyDown = this.keyDown.bind(this)
@@ -20,21 +20,21 @@ class Omnibox extends Component {
 
   dismiss (event) {
     this.props.dispatch({
-      type: 'Omnibox:clear'
+      type: 'Bar:clear'
     })
     this.props.dispatch({
-      type: 'Omnibox:dismiss'
+      type: 'Bar:dismiss'
     })
   }
 
   focus (event) {
     this.props.dispatch({
-      type: 'Omnibox:focus'
+      type: 'Bar:focus'
     })
   }
 
   keyDown (event) {
-    // TODO The following belongs in the App not the Omnibox
+    // TODO The following belongs in the App not the Bar
     if (event.keyCode === 32) { // space
       event.stopPropagation()
     }
@@ -50,7 +50,7 @@ class Omnibox extends Component {
         }
       } else {
         this.props.dispatch({
-          type: 'Omnibox:focus'
+          type: 'Bar:focus'
         })
       }
     }
@@ -65,7 +65,7 @@ class Omnibox extends Component {
   render () {
     return (
       <div
-        className="omnibox"
+        className="bar"
         onKeyDown={this.keyDown}
         ref={(el) => {
           this.el = el
@@ -73,16 +73,16 @@ class Omnibox extends Component {
         }}
       >
         <Field
-          className="omnibox-field"
+          className="bar-field"
           autoFocus={this.props.autoFocus}
           placeholder={this.props.placeholder}
           onChange={(event) => { this.props.dispatch({
-              type: 'Omnibox:suggest',
+              type: 'Bar:suggest',
               data: event.target.value
             })
           }}
           onEnter={(event) => { this.props.dispatch({
-            type: 'Omnibox:suggest',
+            type: 'Bar:suggest',
             data: event.target.value
           }) }}
           onDown={this.focusList}
@@ -94,13 +94,13 @@ class Omnibox extends Component {
         {this.props.items.length > 0
           ? (
             <List
-              className="omnibox-list"
+              className="bar-list"
               items={this.props.items}
               getComponent={this.props.getComponent}
               query={this.state.query}
               onUp={() => {
                 this.props.dispatch({
-                  type: 'Omnibox:focus'
+                  type: 'Bar:focus'
                 })
               }}
               dispatch={this.props.dispatch}
@@ -113,7 +113,7 @@ class Omnibox extends Component {
           )
           : null
         }
-        <button className="omnibox-dismiss" onClick={this.dismiss}>x</button>
+        <button className="bar-dismiss" onClick={this.dismiss}>x</button>
       </div>
     )
   }
@@ -128,8 +128,8 @@ const props = [
 { name: 'placeholder', type: PropTypes.string, val: '' }
 ]
 
-Omnibox.defaultProps = defaultProps(props)
+Bar.defaultProps = defaultProps(props)
 
-Omnibox.propTypes = propTypes(props)
+Bar.propTypes = propTypes(props)
 
-export default Omnibox
+export default Bar

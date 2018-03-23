@@ -1,5 +1,5 @@
 {
-  "short_name": "Sublime Music",
+  "short_name": "SM",
   "name": "Sublime Music",
   "icons": [
     {
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "black",
+  "background_color": "whitesmoke"
 }

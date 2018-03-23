@@ -1,39 +1,37 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from './helpers'
+import { defaultProps, propTypes } from '../srcz/helpers'
 import get from 'lodash.get'
 import cloneDeep from 'lodash.clonedeep'
 
-import './App.css'
-import actions from './actions'
-import Media from './data/Media'
-import Omnibox from './components/Omnibox'
-import Player from './components/Player'
-import Controls from './components/Controls'
-import List from './components/List'
-import Party from './components/Party'
+// import './App.css'
+import actions from '../srcz/actions'
+import Media from '../srcz/data/Media'
+import Bar from '../components/Bar'
+import Player from '../components/Player'
+import Controls from '../components/Controls'
+import List from '../components/List'
+import Party from '../components/Party'
 
-import YouTubeVideo from './components/YouTubeVideo'
-import StartParty from './components/StartParty'
-import StopParty from './components/StopParty'
-import JoinParty from './components/JoinParty'
-import LeaveParty from './components/LeaveParty'
+import YouTubeVideo from '../components/YouTubeVideo'
+import StartParty from '../components/StartParty'
+import StopParty from '../components/StopParty'
+import JoinParty from '../components/JoinParty'
+import LeaveParty from '../components/LeaveParty'
 
-import actionable from './components/actionable'
-import play from './mixins/play'
-import jumpTo from './mixins/jumpTo'
-import playNext from './mixins/playNext'
-import enqueue from './mixins/enqueue'
-import remember from './mixins/remember'
-import remove from './mixins/remove'
-import dismiss from './mixins/dismiss'
+import actionable from '../components/actionable'
+import play from '../srcz/mixins/play'
+import jumpTo from '../srcz/mixins/jumpTo'
+import playNext from '../srcz/mixins/playNext'
+import enqueue from '../srcz/mixins/enqueue'
+import remember from '../srcz/mixins/remember'
+import remove from '../srcz/mixins/remove'
+import dismiss from '../srcz/mixins/dismiss'
 
 import io from 'socket.io-client'
 
-import Dict from './Dict.js'
-import contents from './contents'
-
-const dict = new Dict(contents, ['en', 'fr', 'es'])
+import Dict from '../data/Dict.js'
+import contents from '../data/txt'
 
 const socketUrl = process.env.NODE_ENV === 'production'
   ? 'https://party-server-tvngiafxzh.now.sh'
@@ -110,6 +108,12 @@ const commandComponents = {
 }
 
 class App extends Component {
+  static getInitialProps ({ req, store, isServer, query, pathname }) {
+    const headers = req ? req.headers : undefined
+    const acceptLanguage = props.headers ? props.headers['accept-language'] : ''
+    return { isServer, nb: query.nb || 0, pathname, headers, acceptLanguage }
+  }
+
   constructor (props) {
     super(props)
     this.dispatch = this.dispatch.bind(this)
@@ -121,7 +125,9 @@ class App extends Component {
       media: new Media()
     }
 
-    this.omnibox = {}
+    this.bar = {}
+
+    this.dict = new Dict(contents, ['en', 'fr', 'es'], props.acceptLanguage, global.navigator)
 
     let history = []
     try {
@@ -381,11 +387,11 @@ class App extends Component {
   }
 
   keyDown (event) {
-    // TODO This should be taken care of by the omnibox
-    if (!this.omnibox.el.contains(event.target)) {
+    // TODO This should be taken care of by the bar
+    if (!this.bar.el.contains(event.target)) {
       if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
         this.dispatch({
-          type: 'Omnibox:focus'
+          type: 'Bar:focus'
         })
       }
       if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
@@ -411,9 +417,9 @@ class App extends Component {
   render () {
     return (
       <div className="App">
-        <Omnibox
+        <Bar
           onRef={(name, ref) => {
-            this.omnibox[name] = ref
+            this.bar[name] = ref
           }}
           dispatch={this.dispatch}
           autoFocus
@@ -434,16 +440,16 @@ class App extends Component {
                 throw new Error(`Unrecognized item type ${item.type}`)
             }
           }}
-          placeholder={dict.get('omnibox.placeholder')}
+          placeholder={this.dict.get('bar.placeholder')}
         />
         <div className="main">
           <Party
             className="autoparty"
-            placeholder={dict.get('party.placeholder')}
+            placeholder={this.dict.get('party.placeholder')}
             attending={this.state.attending}
             transmitting={this.state.transmitting}
             dispatch={this.dispatch}
-            dict={dict}
+            dict={this.dict}
             defaultValue={this.state.attending.name || this.state.transmitting.name || ''}
           />
           { this.state.includePlayer
@@ -477,7 +483,7 @@ class App extends Component {
             this.state.showHistory
               ? (
                 <List
-                  title={dict.get('history.title')}
+                  title={this.dict.get('history.title')}
                   className="history"
                   items={cloneDeep(this.state.history).reverse()}
                   dispatch={this.dispatch}
@@ -493,7 +499,7 @@ class App extends Component {
           { this.state.showUpNext
             ? (
               <List
-                title={dict.get('upnext.title')}
+                title={this.dict.get('upnext.title')}
                 className="upNext"
                 items={this.state.upNext}
                 dispatch={this.dispatch}

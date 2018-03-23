@@ -1,6 +1,6 @@
 const axios = require('axios')
 const qs = require('qs')
-const secrets = require('../.secret')
+const secrets = require('../../.secret')
 
 class Media {
   live (query) {

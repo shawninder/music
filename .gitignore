@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 
+# development
+/.next
+
 # testing
 /coverage
 
@@ -21,4 +24,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # confidential
-/src/.secret.js
+/.secret.js

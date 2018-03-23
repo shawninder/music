@@ -30,12 +30,12 @@ svg {
   background: whitesmoke;
 }
 
-.omnibox {
+.bar {
   position: relative;
   z-index: 3;
 }
 
-.omnibox-field {
+.bar-field {
   position: fixed;
   top: 0;
   width: 100%;
@@ -46,18 +46,18 @@ svg {
   z-index: 4;
 }
 
-.omnibox-list {
+.bar-list {
   position: absolute;
   top: 35px;
   z-index: 2;
 }
 
-.omnibox-list ol {
+.bar-list ol {
   border: 1px solid grey;
   background: white;
 }
 
-.omnibox-dismiss {
+.bar-dismiss {
   background: transparent;
   border: 0;
   position: fixed;

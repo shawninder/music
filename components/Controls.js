@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { defaultProps, propTypes } from '../helpers'
+import { defaultProps, propTypes } from '../srcz/helpers'
 import SeekBar from './SeekBar'
 import actionable from './actionable'
-import show from '../mixins/show'
-import remember from '../mixins/remember'
+import show from '../srcz/mixins/show'
+import remember from '../srcz/mixins/remember'
 import YouTubeVideo from './YouTubeVideo'
 
 class Controls extends Component {
