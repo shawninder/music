@@ -177,7 +177,7 @@ svg {
 .seek-bar {
   grid-area: seekBar;
   border: 1px solid #f8f8f8;
-  background: #ffffff;
+  background: white;
 }
 
 .seek-bar--played {
@@ -280,7 +280,7 @@ svg {
   line-height: 1.5em;
 }
 
-.autoparty input:hover, .autoparty button:hover {
+.autoparty input:enabled:hover, .autoparty button:enabled:hover {
   background: rgba(0, 0, 0, 0.1);
 }
 
