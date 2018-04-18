@@ -123,7 +123,7 @@ class Party extends Component {
   }
 
   onGlobalFocus () {
-    this.reconnect()
+    this.hydrate()
   }
 
   // Object.keys(data.state).forEach((key) => {

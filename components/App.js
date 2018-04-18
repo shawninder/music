@@ -215,7 +215,9 @@ class App extends Component {
   }
 
   restartTrack () {
-    if (this.playerEl) {
+    if (this.props.party.attending) {
+      this.props.dispatch({ type: 'Queue:restartTrack' })
+    } else if (this.playerEl) {
       this.playerEl.seekTo(0)
     }
   }

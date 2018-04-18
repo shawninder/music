@@ -23,3 +23,12 @@ Solve 'Prop `disabled` did not match. Server: "null" Client: "true"'
 Offer compatibility with YouTube Red for background play
 
 Fix jumpTo, not only is it glitchy, it shouldn't even be complicated at all
+
+Handle disconnects
+
+Make sure Start Party can also join...
+
+How to let a remote action (such as `prev`) have side effects other than modifying state (such as `App.playerEl.seekTo(0)`)?
+- Overload the dispatch function again in App?
+
+Alternative method of deployment than zeit (npm start on Amazon I suppose)
