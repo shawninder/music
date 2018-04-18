@@ -41,3 +41,7 @@ Flashing seek bar aura indicates that music is playing and delimits the region i
 Search bar placeholder can be branding with pumped up font-size
 
 Idea: Host party where guests can only submit contributions to UpNext, and only those in the form either of music or short time blocks for short speeches or rallying call, optionally amplified by speaking into a phone and having the sound projected by the host speaker. Perfect for rallies, sit-ins, assemblies, exhibitions, all kinds of events!
+
+The name Speaker would nicely transition a music player to a social app...
+
+Remove need for dispatch from Party, should be re-usable "live queue session" module

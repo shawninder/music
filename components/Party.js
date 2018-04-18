@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
+
+const isServer = typeof window === 'undefined'
 
 class Party extends Component {
   constructor (props) {
@@ -9,101 +12,372 @@ class Party extends Component {
     this.onKeyDown = this.onKeyDown.bind(this)
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
-    this.party = this.party.bind(this)
+    this.startListening = this.startListening.bind(this)
+    this.stopListening = this.stopListening.bind(this)
+    this.middleware = this.middleware.bind(this)
+    this.join = this.join.bind(this)
+    this.start = this.start.bind(this)
     this.leave = this.leave.bind(this)
     this.stop = this.stop.bind(this)
+    this.busy = this.busy.bind(this)
+    this.hydrate = this.hydrate.bind(this)
+    this.checkPartyName = this.checkPartyName.bind(this)
+    this.onGlobalFocus = this.onGlobalFocus.bind(this)
+  }
 
-    this.state = {
-      name: props.defaultValue
+  componentDidMount () {
+    this.startListening()
+    this.hydrate()
+  }
+
+  componentWillUnmount () {
+    this.stopListening()
+  }
+
+  checkPartyName (name) {
+    if (this.props.socket.connected && !this.props.checking) {
+      const emitting = {
+        reqName: 'isParty',
+        socketKey: this.props.socketKey,
+        name
+      }
+      const onResponse = (res) => {
+        this.props.dispatch({
+          type: 'Party:checking',
+          value: false
+        })
+        this.props.dispatch({
+          type: 'Party:exists',
+          value: res.exists
+        })
+      }
+      this.props.dispatch({
+        type: 'Party:checking',
+        value: true
+      })
+      this.socketRequest(emitting, onResponse)
     }
   }
-  party (event) {
-    this.props.dispatch({
-      type: 'Party.auto',
-      data: {
-        name: this.state.name
-      }
-    })
-  }
-  stop (event) {
-    this.props.dispatch({
-      type: 'Party.stop'
-    })
-  }
-  leave (event) {
-    this.props.dispatch({
-      type: 'Party.leave'
-    })
-  }
+
   onChange (event) {
-    this.setState({ name: event.target.value })
+    this.props.dispatch({
+      type: 'Party:setName',
+      value: event.target.value
+    })
+    this.checkPartyName(event.target.value)
   }
+
   onKeyDown (event) {
-    if (event.keyCode === 13) { // enter
-      event.preventDefault()
-      this.party(event)
+    // if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
+    //   event.preventDefault()
+    //   this.party(event)
+    // }
+    // TODO Remove need for this in the app, perhaps by listening on an element rather than the window...
+    if (event.keyCode === 39 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // right
+      event.stopPropagation()
+    }
+    // TODO Remove need for this in the app, perhaps by listening on an element rather than the window...
+    if (event.keyCode === 37 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // left
+      event.stopPropagation()
     }
   }
   onSubmit (event) {
     event.preventDefault()
+    if (this.props.checking) {
+      this.busy(event)
+    } else {
+      if (this.props.hosting) {
+        this.stop(event)
+      } else if (this.props.attending) {
+        this.leave(event)
+      } else if (this.props.exists) {
+        this.join(event)
+      } else {
+        this.start(event)
+      }
+    }
   }
+
+  hydrate () {
+    // TODO replay events missed during loading, if any?
+    if (this.props.hosting || this.props.attending) {
+      this.reconnect()
+    } else {
+      this.checkPartyName()
+    }
+  }
+
+  middleware (action) {
+    if (this.props.attending && (action.type.startsWith('Player:') || action.type.startsWith('Queue:'))) {
+      const emitting = {
+        ...action,
+        socketKey: this.props.socketKey,
+        name: this.props.name,
+        as: 'guest'
+      }
+      this.props.socket.emit('dispatch', emitting)
+      console.log('emitted', emitting)
+      return true
+    }
+    return false
+  }
+
+  onGlobalFocus () {
+    this.reconnect()
+  }
+
+  // Object.keys(data.state).forEach((key) => {
+  //   parties[data.name].state[key] = data.state[key]
+  // })
+  // client.emit('success')
+  // Object.keys(parties[data.name].guests).forEach((guestKey) => {
+  //   parties[data.name].guests[guestKey].emit('state', data.state)
+  // })
+
+  startListening () {
+    this.props.registerMiddleware(this.middleware)
+
+    if (window) {
+      window.addEventListener('focus', this.onGlobalFocus, false)
+    }
+
+    this.props.socket.on('connect', () => {
+      console.log('SOCKET connect')
+      this.props.dispatch({
+        type: 'Party:connected',
+        value: true
+      })
+    })
+
+    this.props.socket.on('connect_error', () => {
+      console.log('SOCKET connect_error')
+      this.props.dispatch({
+        type: 'Party:connected',
+        value: false
+      })
+    })
+
+    this.props.socket.on('reconnect_failed', () => {
+      console.log('SOCKET reconnect_failed')
+      this.props.dispatch({
+        type: 'Party:connected',
+        value: false
+      })
+    })
+
+    this.props.socket.on('disconnect', () => {
+      console.log('SOCKET disconnect')
+      this.props.dispatch({
+        type: 'Party:connected',
+        value: false
+      })
+    })
+
+    this.props.socket.on('err', (data) => {
+      console.log('data', data)
+    })
+
+    this.props.socket.on('state', (state) => {
+      console.log('SOCKET state')
+      if (this.props.attending) {
+        this.props.dispatch({
+          type: 'Party:gotState',
+          state
+        })
+      }
+    })
+
+    this.props.socket.on('slice', (slice) => {
+      console.log('SOCKET slice')
+      if (this.props.attending) {
+        this.props.dispatch({
+          type: 'Party:gotSlice',
+          slice
+        })
+      }
+    })
+
+    this.props.socket.on('dispatch', (action) => {
+      console.log('Received from host', action)
+      this.props.dispatch(action)
+    })
+
+    this.props.socket.on('*', function () {
+      console.log('SOCKET Unknown REMOTE EVENT', arguments)
+    })
+  }
+
+  stopListening () {
+    this.props.unregisterMiddleware(this.middleware)
+
+    if (window) {
+      window.removeEventListener('focus', this.onGlobalFocus, false)
+    }
+
+    // TODO test that this really removes all listeners of all events
+    this.props.socket.off()
+    this.props.socket.close()
+  }
+
+  socketRequest (request, onRes) {
+    const reqId = Math.random()
+    request.reqId = reqId
+    const fn = ({ req, res, err }) => {
+      if (req.reqId === reqId) {
+        this.props.socket.off('response', fn)
+        if (err) {
+          this.props.dispatch({
+            type: 'Party:failed',
+            err
+          })
+        } else {
+          onRes(res)
+        }
+      }
+    }
+    this.props.socket.on('response', fn)
+    this.props.socket.emit('request', request)
+    console.log('emitted request', request)
+  }
+
+  reconnect () {
+    const emitting = {
+      reqName: 'reconnect',
+      socketKey: this.props.socketKey,
+      name: this.props.name,
+      hosting: this.props.hosting,
+      attending: this.props.attending,
+      state: this.props.state
+    }
+    const onResponse = (res) => {
+      this.props.dispatch({
+        type: 'Party:reconnected',
+        res
+      })
+    }
+    this.socketRequest(emitting, onResponse)
+  }
+
+  start (event) {
+    console.log('START')
+
+    const emitting = {
+      reqName: 'startParty',
+      socketKey: this.props.socketKey,
+      name: this.props.name,
+      state: this.props.state
+    }
+    const onResponse = (res) => {
+      this.props.dispatch({
+        type: 'Party:started',
+        res
+      })
+    }
+    this.socketRequest(emitting, onResponse)
+  }
+
+  stop (event) {
+    const emitting = {
+      reqName: 'stopParty',
+      socketKey: this.props.socketKey,
+      name: this.props.name
+    }
+    const onResponse = (res) => {
+      this.props.dispatch({
+        type: 'Party:stopped',
+        res
+      })
+      this.props.dispatch({
+        type: 'Party:scrambleSocketKey'
+      })
+    }
+    this.socketRequest(emitting, onResponse)
+  }
+
+  join (event) {
+    const emitting = {
+      reqName: 'joinParty',
+      socketKey: this.props.socketKey,
+      name: this.props.name
+    }
+    const onResponse = (res) => {
+      this.props.dispatch({
+        type: 'Party:joined',
+        res
+      })
+    }
+    this.socketRequest(emitting, onResponse)
+  }
+
+  leave (event) {
+    const emitting = {
+      reqName: 'leaveParty',
+      socketKey: this.props.socketKey,
+      name: this.props.name
+    }
+    const onResponse = (res) => {
+      this.props.dispatch({
+        type: 'Party:left',
+        res
+      })
+    }
+    this.socketRequest(emitting, onResponse)
+  }
+
+  busy (event) {
+    // TODO
+  }
+
   render () {
-    const attending = !!this.props.attending.name
-    const transmitting = !!this.props.transmitting.name
-    const partying = attending || transmitting
-    const input = !partying
-      ? (
-        <input
-          type='text'
-          placeholder={this.props.placeholder}
-          autoFocus={this.props.autoFocus}
-          onChange={this.onChange}
-          onKeyDown={this.onKeyDown}
-          defaultValue={this.state.name}
-        />
-      )
-      : (
-        <input
-          className='disabled'
-          type='text'
-          defaultValue={this.props.attending.name || this.props.transmitting.name}
-          disabled
-        />
-      )
-    const button = !partying
-      ? (
-        <button onClick={this.party}>{this.props.dict.get('party.go')}</button>
-      )
-      : (
-        <button onClick={attending ? this.leave : this.stop}>{attending ? this.props.dict.get('party.leave') : this.props.dict.get('party.end')}</button>
-      )
+    const partying = (this.props.hosting || this.props.attending) && this.props.socket.connected
+    let label = 'default'
+    if (this.props.name !== '') {
+      if (partying) {
+        if (this.props.hosting) {
+          label = 'stop'
+        } else {
+          label = 'leave'
+        }
+      } else {
+        if (this.props.checking) {
+          label = 'checking'
+        } else {
+          if (this.props.exists) {
+            label = 'join'
+          } else {
+            label = 'start'
+          }
+        }
+      }
+    }
+    const classes = this.props.className.split(' ')
+    classes.push(this.props.socket.connected ? 'connected' : 'disconnected')
+    if (this.props.hosting) {
+      classes.push('hosting')
+    }
+    if (this.props.attending) {
+      classes.push('attending')
+    }
     return (
-      <div className={this.props.className}>
-        <h1>{this.props.dict.get('party.h1')}</h1>
-        {
-          (!attending && !transmitting)
-            ? (
-              <p>{this.props.dict.get('party.p')}</p>
-            )
-            : null
-        }
-        {
-          attending
-            ? (
-              <p>{this.props.dict.get('party.attending')}<span className='attendedPartyName'>{this.props.attending.name}</span></p>
-            )
-            : null
-        }
-        {
-          transmitting
-            ? (
-              <p>{this.props.dict.get('party.hosting')}<span className='hostedPartyName'>{this.props.transmitting.name}</span></p>
-            )
-            : null
-        }
+      <div className={classes.join(' ')}>
         <form onSubmit={this.onSubmit}>
-          {input}
-          {button}
+          <input
+            type='text'
+            placeholder={this.props.placeholder}
+            autoFocus={this.props.autoFocus}
+            onChange={this.onChange}
+            onKeyDown={this.onKeyDown}
+            disabled={partying}
+            ref={(ref) => {
+              // Using this instead of defaultValue since the initial render is done on the server where we don't have this value yet
+              if (ref) {
+                ref.value = this.props.name
+              }
+            }}
+          />
+          <button disabled={!isServer && (this.props.checking || this.props.name === '')} onClick={this.onSubmit}>{
+            this.props.dict.get(`party.${label}`)
+          }</button>
         </form>
       </div>
     )
@@ -114,9 +388,14 @@ const props = [
   { name: 'autoFocus', type: PropTypes.bool, val: false },
   { name: 'className', type: PropTypes.string, val: '' },
   { name: 'placeholder', type: PropTypes.string, val: '' },
-  { name: 'defaultValue', type: PropTypes.string, val: '' },
-  { name: 'attending', type: PropTypes.object.isRequired },
-  { name: 'transmitting', type: PropTypes.object.isRequired },
+  { name: 'dict', type: PropTypes.object.isRequired },
+  { name: 'name', type: PropTypes.string.isRequired },
+  { name: 'checking', type: PropTypes.bool.isRequired },
+  { name: 'exists', type: PropTypes.bool.isRequired },
+  { name: 'attending', type: PropTypes.bool.isRequired },
+  { name: 'hosting', type: PropTypes.bool.isRequired },
+  { name: 'registerMiddleware', type: PropTypes.func.isRequired },
+  { name: 'unregisterMiddleware', type: PropTypes.func.isRequired },
   { name: 'dispatch', type: PropTypes.func.isRequired }
 ]
 

@@ -2,110 +2,20 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
-import get from 'lodash.get'
 import cloneDeep from 'lodash.clonedeep'
+import pullAt from 'lodash.pullat'
 
-// import './App.css'
-import actions from '../actions/actions'
-import Media from '../data/Media'
 import Bar from '../components/Bar'
 import Player from '../components/Player'
 import Controls from '../components/Controls'
 import List from '../components/List'
 import Party from '../components/Party'
 
-import YouTubeVideo from '../components/YouTubeVideo'
-import StartParty from '../components/StartParty'
-import StopParty from '../components/StopParty'
-import JoinParty from '../components/JoinParty'
-import LeaveParty from '../components/LeaveParty'
-
-import actionable from '../components/actionable'
-import play from '../mixins/play'
-import jumpTo from '../mixins/jumpTo'
-import playNext from '../mixins/playNext'
-import enqueue from '../mixins/enqueue'
-import remember from '../mixins/remember'
-import remove from '../mixins/remove'
-import dismiss from '../mixins/dismiss'
-
-import io from 'socket.io-client'
+import makeResultComponent from '../components/makeResultComponent'
 
 import Dict from '../data/Dict.js'
-import contents from '../data/txt'
 
-const socketUrl = process.env.NODE_ENV === 'production'
-  ? 'https://party-server-tvngiafxzh.now.sh'
-  : 'http://localhost:8000'
-
-class ClearHistory extends Component {
-  constructor (props) {
-    super(props)
-    this.onClick = this.onClick.bind(this)
-  }
-  onClick () {
-    this.props.dispatch({
-      type: 'Queue:clearHistory'
-    })
-  }
-  render () {
-    return (
-      <div
-        key='clearHistory'
-        className='clearHistory'
-        onClick={this.onClick}
-      >
-        /clearHistory
-      </div>
-    )
-  }
-}
-
-const props = [
-  { name: 'dispatch', type: PropTypes.func.isRequired }
-]
-
-ClearHistory.defaultProps = defaultProps(props)
-ClearHistory.propTypes = propTypes(props)
-
-class ClearUpNext extends Component {
-  constructor (props) {
-    super(props)
-    this.onClick = this.onClick.bind(this)
-  }
-  onClick () {
-    this.props.dispatch({
-      type: 'Queue:clearUpNext'
-    })
-  }
-  render () {
-    return (
-      <div
-        key='clearUpNext'
-        className='clearUpNext'
-        onClick={this.onClick}
-      >
-        /clearUpNext
-      </div>
-    )
-  }
-}
-
-const cleanUpNextProps = [
-  { name: 'dispatch', type: PropTypes.func.isRequired }
-]
-
-ClearUpNext.defaultProps = defaultProps(cleanUpNextProps)
-ClearUpNext.propTypes = propTypes(cleanUpNextProps)
-
-const commandComponents = {
-  '/startParty': StartParty,
-  '/stopParty': StopParty,
-  '/joinParty': JoinParty,
-  '/leaveParty': LeaveParty,
-  '/clearHistory': ClearHistory,
-  '/clearUpNext': ClearUpNext
-}
+const isServer = typeof window === 'undefined'
 
 class App extends Component {
   static getInitialProps ({ req, res }) {
@@ -116,406 +26,348 @@ class App extends Component {
 
   constructor (props) {
     super(props)
-    this.dispatch = this.dispatch.bind(this)
     this.keyDown = this.keyDown.bind(this)
-
-    this.actions = actions
-
-    this.data = {
-      media: new Media()
-    }
+    this.play = this.play.bind(this)
+    this.togglePlaying = this.togglePlaying.bind(this)
+    this.playNext = this.playNext.bind(this)
+    this.enqueue = this.enqueue.bind(this)
+    this.dequeue = this.dequeue.bind(this)
+    this.remember = this.remember.bind(this)
+    this.isInCollection = this.isInCollection.bind(this)
+    this.toggleShowPlayer = this.toggleShowPlayer.bind(this)
+    this.clearHistory = this.clearHistory.bind(this)
+    this.clearUpNext = this.clearUpNext.bind(this)
+    this.toggleShowHistory = this.toggleShowHistory.bind(this)
+    this.toggleShowUpNext = this.toggleShowUpNext.bind(this)
+    this.jumpTo = this.jumpTo.bind(this)
+    this.jumpBackTo = this.jumpBackTo.bind(this)
+    this.restartTrack = this.restartTrack.bind(this)
 
     this.bar = {}
 
-    this.dict = new Dict(contents, ['en', 'fr', 'es'], props.acceptLanguage, global.navigator)
+    this.dict = new Dict(props.dict.txt, props.dict.availLangs, props.acceptLanguage, global.navigator)
 
-    let history = []
-    try {
-      const str = global.localStorage.getItem('history')
-      if (str) {
-        history = JSON.parse(str)
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    let playingNow = {}
-    try {
-      const str = global.localStorage.getItem('playingNow')
-      if (str) {
-        playingNow = JSON.parse(str)
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    let upNext = []
-    try {
-      const str = global.localStorage.getItem('upNext')
-      if (str) {
-        upNext = JSON.parse(str)
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    let showHistory = false
-    try {
-      const str = global.localStorage.getItem('showHistory')
-      if (str) {
-        showHistory = JSON.parse(str)
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    let showUpNext = false
-    try {
-      const str = global.localStorage.getItem('showUpNext')
-      if (str) {
-        showUpNext = JSON.parse(str)
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    let collection = {}
-    try {
-      const str = global.localStorage.getItem('collection')
-      if (str) {
-        collection = JSON.parse(str)
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    let showPlayer = true
-    try {
-      const str = global.localStorage.getItem('showPlayer')
-      if (str) {
-        showPlayer = JSON.parse(str)
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    let includePlayer = true
-
-    let transmitting = {
-      name: ''
-    }
-    try {
-      const str = global.localStorage.getItem('transmitting')
-      if (str) {
-        transmitting = JSON.parse(str)
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    let attending = {
-      name: ''
-    }
-    try {
-      const str = global.localStorage.getItem('attending')
-      if (str) {
-        attending = JSON.parse(str)
-      }
-    } catch (ex) {
-      // ignore
-    }
-
-    this.state = {
-      items: [],
-      history,
-      showHistory,
-      playingNow,
-      t: 0,
-      upNext,
-      showUpNext,
-      playing: false,
-      collection,
-      showPlayer,
-      includePlayer,
-      transmitting,
-      attending,
-      isServer: typeof window === 'undefined'
-    }
-
-    if (!this.state.isServer) {
-      this.socket = io(socketUrl)
-      // party shared state
-      this.socket.on('connect', () => {
-        console.log('connected to socket')
-      })
-
-      this.socket.on('connect_error', () => {
-        this.dispatch({
-          type: 'Party:broken'
-        })
-      })
-
-      this.socket.on('reconnect_failed', () => {
-        console.log('reconnect_failed')
-      })
-
-      this.socket.on('disconnect', () => {
-        console.log('Lost socket connection')
-      })
-
-      this.socket.on('oops', (data) => {
-        console.log('oops', data)
-      })
-
-      this.socket.on('success', (data) => {
-        console.log('SUCCESS', data)
-      })
-
-      this.socket.on('party', (party) => {
-        if (party.exists) {
-          this.dispatch({
-            type: 'Party:join',
-            data: {
-              name: party.name
-            }
-          })
-        } else {
-          this.dispatch({
-            type: 'Party:start',
-            data: {
-              name: party.name
-            }
-          })
-        }
-      })
-
-      this.socket.on('partyCreated', (data) => {
-        const transmitting = {
-          name: data.name
-        }
-        this.setState({ transmitting })
-        global.localStorage.setItem('transmitting', JSON.stringify(transmitting))
-      })
-
-      this.socket.on('endedParty', () => {
-        const transmitting = {
-          name: ''
-        }
-        this.setState({ transmitting })
-        global.localStorage.setItem('transmitting', JSON.stringify(transmitting))
-      })
-
-      this.socket.on('partyEnded', () => {
-        this.dispatch({
-          type: 'App:pop'
-        })
-      })
-
-      this.socket.on('leftParty', () => {
-        this.setState(this.state.saved)
-        this.dispatch({
-          type: 'App:saveState'
-        })
-      })
-
-      this.socket.on('state', (state) => {
-        this.setState(state)
-      })
-
-      this.socket.on('joinedParty', (party) => {
-        const attending = {
-          name: party.name
-        }
-        this.setState({
-          includePlayer: false,
-          attending
-        })
-        global.localStorage.setItem('attending', JSON.stringify(attending))
-      })
-
-      this.socket.on('guestRequest', (state) => {
-        this.dispatch({
-          type: 'App:mergeState',
-          state
-        })
-      })
-
-      this.socket.on('malformed', (data) => {
-
-      })
-
-      this.socket.on('*', function () {
-        console.log('Unknown REMOTE EVENT', arguments)
-      })
-      // end
-    }
-
-    global.state = () => {
-      return this.state
-    }
+    global.dev = props.dev
   }
 
   componentDidMount () {
-    global.addEventListener('keydown', this.keyDown, false)
-
-    if (this.state.transmitting.name) {
-      this.dispatch({
-        type: 'Party:start',
-        data: {
-          name: this.state.transmitting.name
-        }
-      })
-    }
-
-    if (this.state.attending.name) {
-      this.dispatch({
-        type: 'Party:join',
-        data: {
-          name: this.state.attending.name
-        }
-      })
+    if (!isServer) {
+      global.addEventListener('keydown', this.keyDown, false)
     }
   }
 
   componentWillUnmount () {
-    global.removeEventListener('keydown', this.keyDown, false)
-  }
-
-  dispatch (action) {
-    if (this.state.isServer) {
-      console.warn('An action was dispatched on the server...', action)
-    } else {
-      const go = get(this.actions, `${action.type.replace(':', '.')}.go`)
-      if (go) {
-        go.call(this, action, this.socket)
-      } else {
-        console.error('Unknown action', action)
-      }
+    if (!isServer) {
+      global.removeEventListener('keydown', this.keyDown, false)
     }
   }
 
   keyDown (event) {
-    // TODO This should be taken care of by the bar
-    if (!this.bar.el.contains(event.target)) {
-      if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
-        this.dispatch({
-          type: 'Bar:focus'
-        })
-      }
+    if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
+      this.bar.focus()
+    }
+    // TODO if (focus not in input[type=text]|textarea)
+    // console.log('document.activeElement', document.activeElement)
+    if (true) {
       if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
         event.preventDefault()
-        this.dispatch({
-          type: 'Player:togglePlay'
-        })
+        this.togglePlaying()
       }
       if (event.keyCode === 39 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // right
-        this.dispatch({
+        this.props.dispatch({
           type: 'Queue:next'
         })
       }
       if (event.keyCode === 37 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // left
         event.stopPropagation()
-        this.dispatch({
+        this.props.dispatch({
           type: 'Queue:prev'
         })
       }
     }
   }
 
+  play (data) {
+    if (this.props.queue.now && this.props.queue.now.key) {
+      this.props.dispatch({
+        type: 'Queue:toHistory',
+        data: this.props.queue.now
+      })
+    }
+    // play track
+    this.props.dispatch({
+      type: 'Queue:play',
+      data
+    })
+    this.props.dispatch({
+      type: 'Player:setPlaying',
+      playing: true
+    })
+  }
+
+  togglePlaying (data) {
+    if (this.props.queue.now) {
+      const newPlaying = !this.props.player.playing
+      this.props.dispatch({
+        type: 'Player:setPlaying',
+        playing: newPlaying
+      })
+    } else {
+      this.props.dispatch({
+        type: 'Queue:next'
+      })
+    }
+  }
+
+  playNext (data) {
+    const newData = cloneDeep(data)
+    // delete newData.Component
+    newData.key = `${data.data.id.videoId}:${Date.now()}`
+    this.props.dispatch({
+      type: 'Queue:playNext',
+      data: newData
+    })
+  }
+
+  enqueue (data) {
+    const newData = cloneDeep(data)
+    newData.key = `${data.key || data.data.id.videoId}:${Date.now()}`
+    this.props.dispatch({
+      type: 'Queue:enqueue',
+      data: newData
+    })
+  }
+
+  dequeue (idx) {
+    const newUpNext = cloneDeep(this.props.queue.upNext)
+    pullAt(newUpNext, idx)
+    this.props.dispatch({
+      type: 'Queue:dequeue',
+      newUpNext
+    })
+  }
+
+  remember (data) {
+    this.props.dispatch({
+      type: 'Collection:toggle',
+      data
+    })
+  }
+
+  isInCollection (data) {
+    return !!this.props.collection[data.data.id.videoId]
+  }
+
+  toggleShowPlayer (data) {
+    this.props.dispatch({
+      type: 'App:toggleShowPlayer'
+    })
+  }
+
+  clearHistory (data) {
+    this.props.dispatch({
+      type: 'Queue:clearHistory'
+    })
+  }
+
+  clearUpNext (data) {
+    this.props.dispatch({
+      type: 'Queue:clearUpNext'
+    })
+  }
+
+  toggleShowHistory (data) {
+    this.props.dispatch({
+      type: 'App:toggleShowHistory'
+    })
+  }
+
+  toggleShowUpNext (data) {
+    this.props.dispatch({
+      type: 'App:toggleShowUpNext'
+    })
+  }
+
+  jumpTo (data, idx) {
+    this.props.dispatch({
+      type: 'Queue:jumpTo',
+      data,
+      idx
+    })
+    this.setPlaying(true)
+  }
+
+  setPlaying (playing) {
+    this.props.dispatch({
+      type: 'Player:setPlaying',
+      playing
+    })
+  }
+
+  jumpBackTo (data, idx) {
+    const len = this.props.queue.history.length
+    this.props.dispatch({
+      type: 'Queue:jumpTo',
+      data,
+      idx: -(len - 1 - idx + 1)
+    })
+    this.setPlaying(true)
+  }
+
+  restartTrack () {
+    if (this.playerEl) {
+      this.playerEl.seekTo(0)
+    }
+  }
+
   render () {
+    const history = this.props.party.attending
+      ? this.props.party.state.queue.history
+      : this.props.queue.history
+    const now = this.props.party.attending
+      ? this.props.party.state.queue.now
+      : this.props.queue.now
+    const upNext = this.props.party.attending
+      ? this.props.party.state.queue.upNext
+      : this.props.queue.upNext
     return (
       <div className='App'>
         <Bar
-          onRef={(name, ref) => {
-            this.bar[name] = ref
-          }}
-          dispatch={this.dispatch}
-          autoFocus
-          items={this.state.items}
-          getComponent={(item, idx) => {
-            switch (item.type) {
-              case 'YouTubeVideo':
-                return actionable(YouTubeVideo, [play(), dismiss()], [
-                  playNext(), enqueue(), remember(this.state.collection)
-                ])
-              case 'command':
-                const Component = commandComponents[item.label]
-                if (!Component) {
-                  throw new Error(`Unrecognized command ${item.label}`)
-                }
-                return Component
-              default:
-                throw new Error(`Unrecognized item type ${item.type}`)
-            }
-          }}
+          dispatch={this.props.dispatch}
           placeholder={this.dict.get('bar.placeholder')}
+          query={this.props.bar.query}
+          items={this.props.bar.items}
+          suggest={this.props.findMusic}
+          ResultComponent={makeResultComponent({
+            play: this.play,
+            playNext: this.playNext,
+            enqueue: this.enqueue,
+            remember: this.remember,
+            isInCollection: this.isInCollection
+          })}
+          onResult={{
+            enter: this.play,
+            'shift+enter': this.playNext,
+            'ctrl+enter': this.enqueue
+          }}
+          commands={{
+            clearHistory: this.clearHistory,
+            clearUpNext: this.clearUpNext,
+            toggleShowHistory: this.toggleShowHistory,
+            toggleShowUpNext: this.toggleShowUpNext
+          }}
+          filters={{
+            // TODO
+            // Component:
+            // history: this.props.queue.history,
+            // upNext: this.props.queue.upNext,
+            // artist: this.props.findArtist
+            // track: this.props.findTracks
+            // collection: this.props.collection
+            // playlist: this.props.collection.playlists
+            //
+          }}
+          // getComponent={(item, idx) => {
+          //   switch (item.type) {
+          //     case 'YouTubeVideo':
+          //       return actionable(ResultComponent, [play(), dismiss()], [
+          //         playNext(), enqueue(), remember(this.props.collection)
+          //       ])
+          //     case 'command':
+          //       const Component = commandComponents[item.label]
+          //       if (!Component) {
+          //         throw new Error(`Unrecognized command ${item.label}`)
+          //       }
+          //       return Component
+          //     default:
+          //       throw new Error(`Unrecognized item type ${item.type}`)
+          //   }
+          // }}
+          onRef={(ref) => {
+            this.bar = ref
+          }}
+          autoFocus
         />
         <div className='main'>
           <Party
             className='autoparty'
             placeholder={this.dict.get('party.placeholder')}
-            attending={this.state.attending}
-            transmitting={this.state.transmitting}
-            dispatch={this.dispatch}
             dict={this.dict}
-            defaultValue={this.state.attending.name || this.state.transmitting.name || ''}
+            {...this.props.party}
+            registerMiddleware={this.props.registerMiddleware}
+            unregisterMiddleware={this.props.unregisterMiddleware}
+            dispatch={this.props.dispatch}
+            state={{
+              player: this.props.player,
+              queue: this.props.queue
+            }}
+            socket={this.props.socket}
           />
-          { this.state.includePlayer
-            ? (
-              <Player
-                onRef={(playerEl) => {
-                  this.playerEl = playerEl
-                }}
-                playingNow={this.state.playingNow}
-                playing={this.state.playing}
-                dispatch={this.dispatch}
-                show={this.state.showPlayer}
-              />
-            )
-            : (
-              (this.state.showPlayer && this.state.playingNow.snippet)
-                ? (
-                  <img
-                    className='player-alt'
-                    src={this.state.playingNow.snippet.thumbnails.high.url}
-                    width={this.state.playingNow.snippet.thumbnails.high.width}
-                    height={this.state.playingNow.snippet.thumbnails.high.height}
-                    alt={`Thumnail for ${this.state.playingNow.title}`}
-                  />
-                )
-                : null
-            )
-          }
           <div className='queue'>
-            {
-              this.state.showHistory
+            { this.props.app.showHistory
+              ? (
+                <List
+                  title={this.dict.get('history.title')}
+                  className='history'
+                  items={history}
+                  defaultComponent={makeResultComponent({
+                    play: this.jumpBackTo,
+                    remember: this.remember,
+                    isInCollection: this.isInCollection
+                  })}
+                  onItem={{
+                    enter: this.jumpTo
+                  }}
+                  startsCollapsed
+                  collapsible
+                />
+              )
+              : null
+            }
+            <section>
+              { this.props.party.attending
                 ? (
-                  <List
-                    title={this.dict.get('history.title')}
-                    className='history'
-                    items={cloneDeep(this.state.history).reverse()}
-                    dispatch={this.dispatch}
-                    getComponent={(item, idx) => {
-                      return actionable(YouTubeVideo, play(), [
-                        playNext(), enqueue(), remember(this.state.collection)
-                      ])
+                  (this.props.app.showPlayer && this.props.party.state.queue.now.data)
+                    ? (
+                      <img
+                        className='player-alt'
+                        src={this.props.party.state.queue.now.data.snippet.thumbnails.high.url}
+                        width={this.props.party.state.queue.now.data.snippet.thumbnails.high.width}
+                        height={this.props.party.state.queue.now.data.snippet.thumbnails.high.height}
+                        alt={`Thumnail for ${this.props.party.state.queue.now.data.title}`}
+                      />
+                    )
+                    : null
+                )
+                : (
+                  <Player
+                    onRef={(playerEl) => {
+                      this.playerEl = playerEl
                     }}
+                    playingNow={this.props.queue.now}
+                    playing={this.props.player.playing}
+                    show={this.props.app.showPlayer}
+                    dispatch={this.props.dispatch}
                   />
                 )
-                : null
-            }
-            { this.state.showUpNext
+              }
+            </section>
+            { this.props.app.showUpNext
               ? (
                 <List
                   title={this.dict.get('upnext.title')}
                   className='upNext'
-                  items={this.state.upNext}
-                  dispatch={this.dispatch}
-                  getComponent={(item, idx) => {
-                    return actionable(YouTubeVideo, jumpTo(idx), [
-                      remember(this.state.collection), remove(idx)
-                    ])
+                  items={upNext}
+                  defaultComponent={makeResultComponent({
+                    play: this.jumpTo,
+                    remember: this.remember,
+                    dismiss: this.dequeue,
+                    isInCollection: this.isInCollection
+                  })}
+                  onItem={{
+                    enter: this.jumpTo
                   }}
+                  collapsible
                 />
               )
               : null
@@ -523,18 +375,38 @@ class App extends Component {
           </div>
         </div>
         <Controls
-          playingNow={this.state.playingNow}
-          f={this.state.f}
-          playing={this.state.playing}
-          dispatch={this.dispatch}
-          collection={this.state.collection}
-          showPlayer={this.state.showPlayer}
-          history={this.state.history}
-          upNext={this.state.upNext}
+          playingNow={now}
+          PlayingNowComponent={makeResultComponent({
+            play: this.togglePlaying,
+            toggleShowPlayer: this.props.toggleShowPlayer,
+            showPlayer: this.props.app.showPlayer,
+            remember: this.remember,
+            isInCollection: this.isInCollection
+          })}
+          f={this.props.party.attending ? this.props.party.state.player.f : this.props.player.f}
+          t={this.props.party.attending ? this.props.party.state.t : this.props.player.t}
+          restartTrack={this.restartTrack}
+          playing={this.props.party.attending ? this.props.party.state.player.playing : this.props.player.playing}
+          dispatch={this.props.dispatch}
+          collection={this.props.collection}
+          showPlayer={this.props.app.showPlayer}
         />
       </div>
     )
   }
 }
+
+const props = [
+  { name: 'dispatch', type: PropTypes.func.isRequired },
+  { name: 'findMusic', type: PropTypes.func.isRequired },
+  { name: 'app', type: PropTypes.object.isRequired },
+  { name: 'bar', type: PropTypes.object.isRequired },
+  { name: 'player', type: PropTypes.object.isRequired },
+  { name: 'queue', type: PropTypes.object.isRequired },
+  { name: 'party', type: PropTypes.object.isRequired }
+]
+
+App.defaultProps = defaultProps(props)
+App.propTypes = propTypes(props)
 
 export default App

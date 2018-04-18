@@ -9,12 +9,18 @@ class Field extends Component {
     this.keyDown = this.keyDown.bind(this)
   }
   keyDown (event) {
-    if (event.keyCode === 13) { // enter
+    if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
       this.props.onEnter(event)
     }
-    if (event.keyCode === 40) { // down
+    if (event.keyCode === 40 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // down
       this.props.onDown()
       event.preventDefault() // Prevent cursor from jumping to the end of the field
+    }
+    if (event.keyCode === 39 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // right
+      event.stopPropagation()
+    }
+    if (event.keyCode === 37 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // left
+      event.stopPropagation()
     }
   }
   render () {
@@ -30,6 +36,7 @@ class Field extends Component {
           this.field = el
           this.props.onRef(el)
         }}
+        tabIndex='0'
       />
     )
   }

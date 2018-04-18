@@ -8,7 +8,7 @@ class PlayingNow extends Component {
       <div
         className='playingNow'
       >
-        {this.props.data.snippet.title}
+        {this.props.snippet.title}
         {this.props.children}
       </div>
     )

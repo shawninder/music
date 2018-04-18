@@ -5,9 +5,7 @@ import propTypes from '../helpers/propTypes'
 
 import ReactPlayer from 'react-player'
 
-const youtubeUrl = (item) => {
-  return `https://www.youtube.com/watch?v=${item.id.videoId}`
-}
+import youtubeUrl from '../helpers/youtubeUrl.js'
 
 class Player extends Component {
   render () {
@@ -15,12 +13,13 @@ class Player extends Component {
       <ReactPlayer
         ref={this.props.onRef}
         className='Player'
-        url={this.props.playingNow && this.props.playingNow.id && youtubeUrl(this.props.playingNow)}
+        url={this.props.playingNow && this.props.playingNow.data && this.props.playingNow.data.id && youtubeUrl(this.props.playingNow.data)}
         controls
         playing={this.props.playing}
         onPlay={() => {
           this.props.dispatch({
-            type: 'Player:setPlaying'
+            type: 'Player:setPlaying',
+            playing: true
           })
         }}
         onProgress={(progress) => {
@@ -31,7 +30,8 @@ class Player extends Component {
         }}
         onPause={() => {
           this.props.dispatch({
-            type: 'Player:setNotPlaying'
+            type: 'Player:setPlaying',
+            playing: false
           })
         }}
         onEnded={() => {
@@ -54,10 +54,10 @@ class Player extends Component {
 }
 
 const props = [
-  { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'playingNow', type: PropTypes.object.isRequired },
+  { name: 'playingNow', type: PropTypes.object, val: {} },
   { name: 'playing', type: PropTypes.bool.isRequired },
   { name: 'onRef', type: PropTypes.func.isRequired },
+  { name: 'dispatch', type: PropTypes.func.isRequired },
   { name: 'show', type: PropTypes.bool, val: false }
 ]
 

@@ -31,7 +31,6 @@ export function guessLang (avail, acceptLanguage, navigator) {
         }
       }
       // guess = 'es'
-      console.log('guess', guess)
     }
   }
   return guess

@@ -1,212 +1,303 @@
-const cloneDeep = require('lodash.clonedeep')
+const pull = require('lodash.pull')
 const io = require('socket.io')()
 
 const parties = {}
 
-function unlessMalformed (client, fn) {
-  return function (data) {
-    if (!data.name) {
-      console.log('generally malformed', data)
-      client.emit('malformed', {
-        msg: 'Party request missing name'
-      })
-    } else {
-      fn(client, data)
-    }
-  }
-}
-
-// ?
-
-function isParty (client, data) {
-  console.log('isParty', data)
-  if (parties[data.name]) {
-    if (parties[data.name].hostKey === data.hostKey) {
-      client.emit('oops', {
-        msg: `You are already hosting "${data.name}"`
-      })
-    } else if (parties[data.name].guests[data.guestKey]) {
-      client.emit('oops', {
-        msg: `You are already attending "${data.name}"`
-      })
-    } else {
-      client.emit('party', {
-        exists: true,
-        name: data.name
-      })
-    }
+function startParty ({ req, resolve, reject, client }) {
+  if (parties[req.name]) {
+    reject("Can't start party, it already exists!")
   } else {
-    client.emit('party', {
-      exists: false,
-      name: data.name
-    })
-  }
-}
-
-// HOST
-
-function startParty (client, data) {
-  if (!data.hostKey) {
-    console.log('malformed for startParty')
-    client.emit('malformed', {
-      msg: 'Party request missing `hostKey`'
-    })
-  } else {
-    if (parties[data.name]) {
-      console.log('exists')
-      client.emit('oops', {
-        msg: `Party ${data.name} already exists`
-      })
-    } else {
-      if (!data.state) {
-        console.log('missing state')
-        client.emit('oops', {
-          msg: 'Cannot start party, missing `state`'
-        })
-      } else {
-        console.log('starting party')
-        parties[data.name] = {
-          hostKey: data.hostKey,
-          guests: {},
-          state: data.state,
-          owner: client
-        }
-        client.emit('partyCreated', {
-          msg: `Party ${data.name} created`,
-          name: data.name
-        })
-        client.once('disconnect', () => {
-          if (parties[data.name]) {
-            const party = cloneDeep(parties[data.name])
-            delete parties[data.name]
-            console.log(`Party ${data.name} ended`)
-            Object.keys(party.guests).forEach((guestKey) => {
-              party.guests[guestKey].emit('partyEnded')
-            })
-          }
-        })
-        console.log(`Party ${data.name} created`)
+    if (req.socketKey) {
+      client.on('slice', handleSlice(client, req))
+      client.on('disconnect', handleHostDisconnect(client, req))
+      parties[req.name] = {
+        host: client,
+        hostKey: req.socketKey,
+        guests: [],
+        state: req.state
       }
-    }
-  }
-}
-
-function setState (client, data) {
-  if (!parties[data.name] ||
-    data.hostKey !== parties[data.name].hostKey) {
-    client.emit('unauthorized')
-  } else if (!data.state) {
-    console.log('malformed for setState')
-    client.emit('malformed', {
-      msg: 'Missing `state`'
-    })
-  } else {
-    Object.keys(data.state).forEach((key) => {
-      parties[data.name].state[key] = data.state[key]
-    })
-    client.emit('success')
-    Object.keys(parties[data.name].guests).forEach((guestKey) => {
-      parties[data.name].guests[guestKey].emit('state', data.state)
-    })
-  }
-}
-
-function answerGuest (client, data) {
-  if (data.hostKey !== parties[data.name].hostKey) {
-    client.emit('unauthorized')
-  } else {
-    if (!data.guestKey || !data.requestKey || !data.payload) {
-      console.log('malformed for answerGuest')
-      client.emit('malformed')
+      resolve()
+      console.log(`Started party ${req.name}`)
     } else {
-      parties[data.name].guests[data.guestKey].emit('hostAnswer', {
-        requestKey: data.requestKey,
-        payload: data.payload
-      })
-      client.emit('success')
+      reject("Can't start party, no socketKey")
     }
   }
 }
 
-function endParty (client, data) {
-  if (!parties[data.name] || data.hostKey !== parties[data.name].hostKey) {
-    client.emit('unauthorized')
-  } else {
-    const party = cloneDeep(parties[data.name])
-    delete parties[data.name]
-    console.log(`Party ${data.name} ended`)
-    Object.keys(party.guests).forEach((guestKey) => {
-      party.guests[guestKey].emit('partyEnded')
+function stopParty ({ req, resolve, reject }) {
+  const party = parties[req.name]
+  if (party) {
+    party.guests.forEach((guest) => {
+      guest.emit('dispatch', {
+        type: 'Party:ended'
+      })
     })
-    client.emit('endedParty')
-  }
-}
-
-// GUEST
-
-function joinParty (client, data) {
-  if (!parties[data.name]) {
-    client.emit('unauthorized')
+    delete parties[req.name]
+    resolve()
+    console.log(`Stopped party ${req.name}`)
   } else {
-    parties[data.name].guests[data.guestKey] = client
-    client.emit('joinedParty', { name: data.name })
-    console.log('joinedParty. state:', JSON.stringify(parties[data.name].state, null, 2))
-    client.emit('state', parties[data.name].state)
+    reject("Can't stop party, it doesn't exist!")
   }
 }
 
-function getState (client, data) {
-  client.emit('state', parties[data.name].state)
-}
-
-function queryHost (client, data) {
-  if (!parties[data.name]) {
-    client.emit('unauthorized')
-  // } else if (!data.requestKey) {
-  //   console.log('malformed for queryHost')
-  //   client.emit('malformed')
+function joinParty ({ req, resolve, reject, client }) {
+  const party = parties[req.name]
+  if (party) {
+    if (party.guests.includes(client)) {
+      reject("Can't join party, you're already attending")
+    } else {
+      // TODO better management of requiring clients to have `socketKey`s, etc.
+      client.on('dispatch', handleGuestDispatch(client, req))
+      client.on('disconnect', handleGuestDisconnect(client, req))
+      party.guests.push(client)
+      resolve({
+        state: party.state
+      })
+      console.log(`${req.socketKey} joined ${req.name}`)
+    }
   } else {
-    console.log('sending request to host')
-    parties[data.name].owner.emit('guestRequest', data.state)
-    client.emit('success')
+    reject("Can't join party, it doesn't exist!")
   }
 }
 
-function leaveParty (client, data) {
-  if (!data.guestKey) {
-    console.log('malformed for leaveParty')
-    client.emit('malformed')
-  } else if (parties[data.name] && parties[data.name].guests[data.guestKey]) {
-    console.log(`Guest ${data.guestKey} left ${data.name}`)
-    client.emit('leftParty')
-    parties[data.name].guests[data.guestKey] = null
-    delete parties[data.name].guests[data.guestKey]
+function leaveParty ({ req, resolve, reject, client }) {
+  if (parties[req.name].guests.includes(client)) {
+    pull(parties[req.name].guests, client)
+    resolve()
+    console.log(`${req.socketKey} left ${req.name}`)
   } else {
-    client.emit('leftParty')
+    reject("Can't leave party, you're not attending!")
   }
 }
 
-// BOTH
-function handleClientDisconnect (msg) {
-  console.log(msg)
+function handleState (client) {
+  return (data) => {
+    const reject = (msg) => {
+      const err = {
+        msg,
+        data
+      }
+      client.emit('err', err)
+      console.log('rejecting', err)
+    }
+    const party = parties[data.name]
+    if (party) {
+      if (data.socketKey === party.hostKey) {
+        party.state = data.state
+        party.guests.forEach((guest) => {
+          guest.emit('state', party.state)
+        })
+        console.log('transmitted state')
+      } else {
+        reject("Can't accept state, you are not host of this party.")
+      }
+    } else {
+      reject("Can't accept state, party doesn't exist")
+    }
+  }
+}
+
+function isParty ({ req, resolve }) {
+  if (parties[req.name]) {
+    resolve({
+      exists: true,
+      name: req.name
+    })
+    console.log(`${req.name} is a party`)
+  } else {
+    resolve({
+      exists: false,
+      name: req.name
+    })
+    console.log(`${req.name} isn't a party`)
+  }
+}
+
+function handleGuestDispatch (client, req) {
+  return (action) => {
+    console.log('GUEST DISPATCH', action)
+    const reject = (msg) => {
+      const err = {
+        msg,
+        data: action
+      }
+      client.emit('err', err)
+      console.log('rejecting', err)
+    }
+    const party = parties[action.name]
+    if (party) {
+      if (party.guests.includes(client)) {
+        // TODO search for "emit" and guard thusly?
+        if (party.host && party.host.connected) {
+          console.log('dispatching to host', action)
+          party.host.emit('dispatch', action)
+          console.log('dispatched', action)
+        } else {
+          reject("Can't react host")
+        }
+      } else {
+        reject("Can't dispatch guest action, you're not attending!")
+      }
+    } else {
+      reject("Can't dispatch guest action, party doesn't exist!")
+    }
+  }
+}
+function handleSlice (client, req) {
+  return (action) => {
+    console.log('HOST DISPATCH', action)
+    const reject = (msg) => {
+      const err = {
+        msg,
+        data: action
+      }
+      console.log('rejecting', err)
+      client.emit('err', err)
+    }
+    if (action.type === 'Party:slice') {
+      const party = parties[action.name]
+      if (party) {
+        if (party.host === client) {
+          party.state = action.slice
+          console.log('party.state', party.state)
+          console.log('action', action)
+          party.guests.forEach((guest) => {
+            guest.emit('slice', action.slice)
+            console.log('emitted slice', action)
+          })
+          console.log(`dispatch forwarded to ${party.guests.length} guests`, action)
+        } else {
+          reject("Can't dispatch host action, you're not the host!")
+        }
+      } else {
+        reject("Can't dispatch host action, party doesn't exist!")
+      }
+    } else {
+      reject(`Unknown action dispatched by host ${action.socketKey}`)
+    }
+  }
+}
+
+function reconnect ({ req, resolve, reject, client }) {
+  const party = parties[req.name]
+  if (party) {
+    if (req.hosting) {
+      if (party.hostKey === req.socketKey) {
+        party.host = client
+        client.on('disconnect', handleHostDisconnect(client, req))
+        if (req.state) {
+          party.state = req.state
+          resolve()
+        } else {
+          resolve({ state: party.state })
+        }
+        if (party.timer) {
+          clearTimeout(party.timer)
+        }
+      } else {
+        reject("You're not the host of this party")
+      }
+    } else if (req.attending) {
+      if (party.guests.includes(client)) {
+        resolve({ state: party.state })
+      } else {
+        client.on('dispatch', handleGuestDispatch(client, req))
+        client.on('disconnect', handleGuestDisconnect(client, req))
+        party.guests.push(client)
+        resolve({
+          state: party.state
+        })
+        console.log(`${req.socketKey} rejoined ${req.name}`)
+        resolve({ state: party.state })
+      }
+    } else {
+      resolve({
+        exists: true
+      })
+    }
+  } else {
+    reject("Party doesn't exist")
+  }
+}
+
+function handleRequest (client) {
+  return (req) => {
+    console.log('REQUEST', req.reqName)
+    const resolve = (res) => {
+      const obj = {
+        req,
+        res
+      }
+      client.emit('response', obj)
+      console.log('RESPONSE', obj)
+    }
+    const reject = (msg) => {
+      console.log('rejecting', msg)
+      client.emit('response', {
+        req,
+        err: msg
+      })
+    }
+    switch (req.reqName) {
+      case 'isParty':
+        isParty({ req, resolve, reject, client })
+        break
+      case 'startParty':
+        startParty({ req, resolve, reject, client })
+        break
+      case 'joinParty':
+        joinParty({ req, resolve, reject, client })
+        break
+      case 'stopParty':
+        stopParty({ req, resolve, reject, client })
+        break
+      case 'leaveParty':
+        leaveParty({ req, resolve, reject, client })
+        break
+      case 'reconnect':
+        reconnect({ req, resolve, reject, client })
+        break
+      default:
+        console.log('Unrecognized request', req.reqName)
+        reject('Unrecognized request')
+        break
+    }
+  }
 }
 
 function onConnection (client) {
+  // auth until it's delegated to another micro-service?
   console.log('connection')
-  // - ?
-  client.on('isParty', unlessMalformed(client, isParty))
-  // - Hosts
-  client.on('startParty', unlessMalformed(client, startParty))
-  client.on('state', unlessMalformed(client, setState))
-  client.on('answerGuest', unlessMalformed(client, answerGuest))
-  client.on('stopParty', unlessMalformed(client, endParty))
-  // - Guests
-  client.on('joinParty', unlessMalformed(client, joinParty))
-  client.on('getState', unlessMalformed(client, getState))
-  client.on('queryHost', unlessMalformed(client, queryHost))
-  client.on('leaveParty', unlessMalformed(client, leaveParty))
-  // Do it / Throw up at it
-  client.on('disconnect', handleClientDisconnect)
+  client.on('request', handleRequest(client))
+  client.on('state', handleState(client))
+  client.on('disconnect', () => {
+    console.log('disconnection')
+  })
+  client.on('*', () => {
+    console.log('Unkwnown event', arguments)
+  })
 }
+
+function handleHostDisconnect (client, data) {
+  return () => {
+    const party = parties[data.name]
+    if (party) {
+      party.timer = setTimeout(() => {
+        // TODO separate the various concerns out of functions like stopParty
+        stopParty({ req: data, resolve: () => {}, reject: console.log })
+      }, 20 * 60 * 1000)
+    }
+  }
+}
+
+function handleGuestDisconnect (client, req) {
+  return () => {
+    const party = parties[req.name]
+    if (party) {
+      pull(party.guests, client)
+    }
+  }
+}
+
 io.on('connection', onConnection)
 io.listen(8000)

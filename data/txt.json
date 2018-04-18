@@ -19,20 +19,35 @@
     "fr": "Nom de la Fête",
     "es": "Nombre de la Fiesta"
   },
-  "party.go": {
+  "party.default": {
     "en": "Party!",
     "fr": "Fêter!",
-    "es": "Celebrar!"
+    "es": "Fiesta!"
+  },
+  "party.join": {
+    "en": "Join Party",
+    "fr": "Joindre la fête",
+    "es": "Celebrar con ellos"
+  },
+  "party.start": {
+    "en": "Start Party",
+    "fr": "Commencer la fête",
+    "es": "Commencar la Celebration"
   },
   "party.leave": {
     "en": "Leave :(",
     "fr": "Quitter :(",
     "es": "Salir :("
   },
-  "party.end": {
+  "party.stop": {
     "en": "End :(",
     "fr": "Fini :(",
     "es": "Terminado :("
+  },
+  "party.checking": {
+    "en": "...",
+    "fr": "...",
+    "es": "..."
   },
   "party.attending": {
     "en": "Attending party named ",
@@ -41,7 +56,7 @@
   },
   "party.hosting": {
     "en": "Hosting party named ",
-    "fr": "Vous êtes l'hôte d'une fête nomée ",
+    "fr": "Vous êtes l'hôte d'une fête nommée ",
     "es": "Fiesta anfitriona llamada "
   },
   "history.title": {

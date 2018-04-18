@@ -3,41 +3,25 @@ import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 import SeekBar from './SeekBar'
-import actionable from './actionable'
-import show from '../mixins/show'
-import remember from '../mixins/remember'
-import YouTubeVideo from './YouTubeVideo'
+// import actionable from './actionable'
+// import show from '../mixins/show'
+// import remember from '../mixins/remember'
+// import YouTubeVideo from './YouTubeVideo'
 
 class Controls extends Component {
   render () {
     const playingNow = this.props.playingNow
-    let PlayingNowItem = YouTubeVideo
-    PlayingNowItem = actionable(PlayingNowItem, {
-      txt: 'toggle playback',
-      className: 'togglePlaybackButton',
-      go: (data, dispatch) => {
-        return () => {
-          dispatch({
-            type: 'Player:togglePlay'
-          })
-        }
-      }
-    }, [
-      show(this.props.showPlayer),
-      remember(this.props.collection)
-    ])
 
     return (
       <div
         className='controls'
       >
         {
-          playingNow && playingNow.id
+          playingNow && playingNow.data && playingNow.data.id
             ? (
-              <PlayingNowItem
+              <this.props.PlayingNowComponent
                 className='playingNow'
                 data={playingNow}
-                dispatch={this.props.dispatch}
               />
             )
             : null
@@ -48,35 +32,27 @@ class Controls extends Component {
         />
 
         <button
-          className='toggleHistory'
-          onClick={(event) => {
-            event.stopPropagation()
-            this.props.dispatch({
-              type: 'History:toggle'
-            })
-          }}
-        >
-          ({this.props.history.length})
-        </button>
-
-        <button
           className='prev'
           onClick={(event) => {
             event.stopPropagation()
-            this.props.dispatch({
-              type: 'Queue:prev'
-            })
+            if (this.props.t < 3) {
+              this.props.dispatch({
+                type: 'Queue:prev'
+              })
+            } else {
+              this.props.restartTrack()
+            }
           }}
         >
           &lt;
         </button>
 
         <button
-          className='togglePlay'
+          className='togglePlaying'
           onClick={(event) => {
             event.stopPropagation()
             this.props.dispatch({
-              type: 'Player:togglePlay'
+              type: 'Player:togglePlaying'
             })
           }}
         >
@@ -94,18 +70,6 @@ class Controls extends Component {
         >
           &gt;
         </button>
-
-        <button
-          className='toggleUpNext'
-          onClick={(event) => {
-            event.stopPropagation()
-            this.props.dispatch({
-              type: 'UpNext:toggle'
-            })
-          }}
-        >
-          ({this.props.upNext.length})
-        </button>
       </div>
     )
   }
@@ -114,10 +78,9 @@ class Controls extends Component {
 const props = [
   { name: 'playing', type: PropTypes.bool.isRequired },
   { name: 'playingNow', type: PropTypes.object.isRequired },
+  { name: 'PlayingNowComponent', type: PropTypes.func.isRequired },
   { name: 'f', type: PropTypes.number, val: 0 },
   { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'history', type: PropTypes.array.isRequired },
-  { name: 'upNext', type: PropTypes.array.isRequired },
   { name: 'showPlayer', type: PropTypes.bool.isRequired }
 ]
 

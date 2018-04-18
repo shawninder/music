@@ -3,6 +3,7 @@ import Document, { Head, Main, NextScript } from 'next/document'
 import { guessLang } from '../data/Dict'
 export default class MyDocument extends Document {
   static getInitialProps ({ renderPage, req }) {
+    // TODO remove everything except the headers stuff, which is the only non-default thing I'm trying to do
     const { html, head, errorHtml, chunks } = renderPage()
     const headers = req ? req.headers : undefined
     const acceptLanguage = headers ? headers['accept-language'] : ''
@@ -15,6 +16,7 @@ export default class MyDocument extends Document {
         <Head>
           <title>Mass Play</title>
           <link rel='shotcut icon' href='/static/favicon.ico' />
+          <meta httpEquiv='Content-Language' content={lang} />
           <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
           <meta name='theme-color' content='black' />
           <link rel='manifest' href='/static/manifest.json' />

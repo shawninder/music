@@ -4,7 +4,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   box-sizing: border-box;
 }
 
-button {
+button:enabled {
   cursor: pointer;
 }
 
@@ -16,7 +16,7 @@ body {
     "Droid Sans", "Helvetica Neue", sans-serif; // Old Android
   */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-
+  background: whitesmoke;
 }
 
 input[type=text].disabled {
@@ -29,7 +29,6 @@ svg {
 
 .App {
   min-width: 250px;
-  background: whitesmoke;
 }
 
 .bar {
@@ -85,10 +84,6 @@ svg {
   margin: auto auto;
   max-width: 100%;
 }
-.youtube-result {
-  border: 1px solid lightgrey;
-  border-width: 0 0 1px 0;
-}
 
 .youtube-result.actionable {
   cursor: pointer;
@@ -140,6 +135,13 @@ svg {
   color: steelblue;
 }
 
+.upNext, .history {
+  text-align: left;
+  margin: 10px auto;
+  width: 100%;
+  max-width: 640px;
+}
+
 .controls {
   position: fixed;
   z-index: 3;
@@ -152,11 +154,11 @@ svg {
 
   display: grid;
   grid-template-rows: minmax(30px, 1fr) 10px min(30px, 1fr);
-  grid-template-columns: 50px 50px minmax(50px, 1fr) 50px 50px;
+  grid-template-columns: 50px minmax(50px, 1fr) 50px;
   grid-template-areas:
-    "playingNow       playingNow playingNow    playingNow playingNow"
-    "seekBar       seekBar seekBar    seekBar seekBar"
-    "toggleHistory prev    togglePlay next    toggleUpNext"
+    "playingNow playingNow    playingNow"
+    "seekBar seekBar    seekBar"
+    "prev    togglePlaying next"
 }
 
 .controls button {
@@ -172,6 +174,9 @@ svg {
   vertical-align: middle;
   font-size: small;
   position: relative;
+}
+.playingNow .actionable-actions {
+  right: 20px;
 }
 
 .seek-bar {
@@ -194,50 +199,24 @@ svg {
   margin-top: -13px;
 }
 
-.toggleHistory {
-  grid-area: toggleHistory;
-}
 .prev {
   grid-area: prev;
 }
-.togglePlay {
-  grid-area: togglePlay;
+.togglePlaying {
+  grid-area: togglePlaying;
 }
 .next {
   grid-area: next;
 }
-.toggleUpNext {
-  grid-area: toggleUpNext;
-}
 
 .queue {
-  padding-bottom: 100vh;
-  display: grid;
-  grid-template-areas:
-    "history"
-    "upNext"
-}
-
-@media only screen and (min-width: 500px)  {
-  .queue {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      "history upNext"
-  }
+  margin-bottom: 100px;
 }
 
 .queue h3 {
   text-align: center;
   font-size: large;
   margin-top: 1em;
-}
-
-.history {
-  grid-area: history;
-}
-
-.upNext {
-  grid-area: upNext;
 }
 
 .inCollection {
@@ -256,16 +235,6 @@ svg {
   margin: 0 auto 30px;
 }
 
-.autoparty h1 {
-  font-size: large;
-  padding: 5px;
-}
-
-.autoparty p {
-  margin: 20px 0;
-  padding: 5px;
-}
-
 .autoparty form {
   display: grid;
   grid-template-columns: 3fr 1fr;
@@ -276,8 +245,32 @@ svg {
   font-size: medium;
   /* border-radius: 0; */
   background: transparent;
-  color: steelblue;
   line-height: 1.5em;
+}
+
+.autoparty.connected button:enabled {
+  color: steelblue;
+  cursor: pointer;
+}
+
+.autoparty.connected::after {
+  content: 'connected'
+}
+.autoparty.disconnected::after {
+  content: 'disconnected'
+}
+.autoparty.checking::after {
+  content: 'checking'
+}
+.autoparty.hosting::after {
+  content: 'hosting'
+}
+.autoparty.attending::after {
+  content: 'attending'
+}
+
+.autoparty.disconnected button, .autoparty:disabled {
+  color: grey;
 }
 
 .autoparty input:enabled:hover, .autoparty button:enabled:hover {
@@ -308,4 +301,30 @@ svg {
 
 .removeButton {
   padding-right: 20px;
+}
+
+.command {
+  padding: 5px;
+  line-height: 150%;
+  cursor: pointer;
+}
+
+.fuzz--match {
+  font-weight: bold;
+}
+
+.collapsed>h3::after {
+  content: 'v';
+  margin-left: 20px;
+  font-size: 70%;
+}
+
+.not-collapsed>h3::after {
+  content: '^';
+  margin-left: 20px;
+  font-size: 70%;
+}
+
+.collapsed>ol {
+  display: none;
 }
