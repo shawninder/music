@@ -253,10 +253,10 @@ svg {
   cursor: pointer;
 }
 
-.autoparty.connected::after {
+.autoparty.connected::before {
   content: 'connected'
 }
-.autoparty.disconnected::after {
+.autoparty.disconnected::before {
   content: 'disconnected'
 }
 .autoparty.checking::after {

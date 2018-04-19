@@ -18,17 +18,13 @@ export default function syncState (paths, config) {
       // console.log('initialState', initialState)
       const store = next(reducer, initialState, enhancer)
       store.subscribe(function () {
+        console.log('subscribe')
         const state = store.getState()
         const slice = filter(state)
-        // console.log('slice', slice)
-        // console.log('snapshot', snapshot)
-        // console.log('deepEqual(slice, snapshot)', deepEqual(slice, snapshot))
-        // console.log('state.party.hosting', state.party.hosting)
-        // console.log('state.party.attending', state.party.attending)
         if (
-          (state.party.hosting) &&
-          !deepEqual(slice, snapshot) &&
-          config.socket.connected
+          state.party.hosting &&
+          config.socket.connected &&
+          !deepEqual(slice, snapshot)
         ) {
           snapshot = slice
           console.log('Dispatching!')

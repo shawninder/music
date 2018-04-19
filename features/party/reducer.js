@@ -1,6 +1,4 @@
 import cloneDeep from 'lodash.clonedeep'
-import playerReducer from '../player/reducer'
-import queueReducer from '../queue/reducer'
 
 export default function partyReducer (state = {}, action) {
   let newState = cloneDeep(state)
@@ -10,6 +8,9 @@ export default function partyReducer (state = {}, action) {
       break
     case 'Party:setName':
       newState.name = action.value
+      break
+    case 'Party:checking':
+      newState.checking = action.value
       break
     case 'Party:exists':
       newState.exists = action.value

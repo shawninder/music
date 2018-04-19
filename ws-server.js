@@ -61,12 +61,16 @@ function joinParty ({ req, resolve, reject, client }) {
 }
 
 function leaveParty ({ req, resolve, reject, client }) {
-  if (parties[req.name].guests.includes(client)) {
-    pull(parties[req.name].guests, client)
-    resolve()
-    console.log(`${req.socketKey} left ${req.name}`)
+  if (parties[req.name]) {
+    if (parties[req.name].guests.includes(client)) {
+      pull(parties[req.name].guests, client)
+      resolve()
+      console.log(`${req.socketKey} left ${req.name}`)
+    } else {
+      reject("Can't leave party, you're not attending!")
+    }
   } else {
-    reject("Can't leave party, you're not attending!")
+    reject(`Can't leave party "${req.name}", it doesn't exist!`)
   }
 }
 
@@ -83,7 +87,7 @@ function handleState (client) {
     const party = parties[data.name]
     if (party) {
       if (data.socketKey === party.hostKey) {
-        party.state = data.state
+        party.state = data.slice
         party.guests.forEach((guest) => {
           guest.emit('state', party.state)
         })
@@ -133,7 +137,7 @@ function handleGuestDispatch (client, req) {
           party.host.emit('dispatch', action)
           console.log('dispatched', action)
         } else {
-          reject("Can't react host")
+          reject("Can't reach host")
         }
       } else {
         reject("Can't dispatch guest action, you're not attending!")
@@ -184,6 +188,7 @@ function reconnect ({ req, resolve, reject, client }) {
     if (req.hosting) {
       if (party.hostKey === req.socketKey) {
         party.host = client
+        client.on('slice', handleSlice(client, req))
         client.on('disconnect', handleHostDisconnect(client, req))
         if (req.state) {
           party.state = req.state
@@ -269,7 +274,7 @@ function onConnection (client) {
   // auth until it's delegated to another micro-service?
   console.log('connection')
   client.on('request', handleRequest(client))
-  client.on('state', handleState(client))
+  client.on('slice', handleState(client))
   client.on('disconnect', () => {
     console.log('disconnection')
   })

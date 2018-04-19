@@ -47,5 +47,8 @@
     "standard": "11.0.1",
     "webpack-bundle-analyzer": "2.11.1"
   },
-  "homepage": "https://shawninder.github.io/music"
+  "homepage": "https://shawninder.github.io/music",
+  "engines": {
+    "node": "8.9.1"
+  }
 }

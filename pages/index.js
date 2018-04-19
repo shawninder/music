@@ -107,6 +107,8 @@ const mapDispatchToProps = (dispatch) => {
         })
         if (!stopPropagation) {
           dispatch(action)
+        } else {
+          console.log('Intercepted a stopped propagation of', action)
         }
       }
     },
@@ -117,6 +119,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     unregisterMiddleware: (middleware) => {
       return (dispatch, getState) => {
+        console.warn('UNREGISTERING MIDDLEWARE!!')
         pull(middlewares, middleware)
       }
     },

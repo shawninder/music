@@ -36,10 +36,12 @@ class Controls extends Component {
           onClick={(event) => {
             event.stopPropagation()
             if (this.props.t < 3) {
+              console.log('PREV')
               this.props.dispatch({
                 type: 'Queue:prev'
               })
             } else {
+              console.log('RESTART')
               this.props.restartTrack()
             }
           }}

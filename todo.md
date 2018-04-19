@@ -1,5 +1,11 @@
 # TODO
 
+No. 1 : Resolve deployment problems!
+
+Songs added my one remote aren't propagated to other remotes!
+
+onNext doesn't propagate either
+
 Move most functions from index to App methods, excluding, dispatch, getState, and probably more-related and a new getMedia
 
 Proper Party server
@@ -32,3 +38,7 @@ How to let a remote action (such as `prev`) have side effects other than modifyi
 - Overload the dispatch function again in App?
 
 Alternative method of deployment than zeit (npm start on Amazon I suppose)
+
+Make sure we get back to the start when we change tracks (next, jumpTo, prev, play)
+
+`cat "NODE_ENV=production" > .env` ?

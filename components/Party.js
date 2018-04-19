@@ -34,7 +34,8 @@ class Party extends Component {
     this.stopListening()
   }
 
-  checkPartyName (name) {
+  checkPartyName (providedName) {
+    const name = providedName || this.props.name
     if (this.props.socket.connected && !this.props.checking) {
       const emitting = {
         reqName: 'isParty',
@@ -42,13 +43,16 @@ class Party extends Component {
         name
       }
       const onResponse = (res) => {
+        console.log('check party name response', res)
+        if (res.name === name && name === this.props.name) {
+          this.props.dispatch({
+            type: 'Party:exists',
+            value: res.exists
+          })
+        }
         this.props.dispatch({
           type: 'Party:checking',
           value: false
-        })
-        this.props.dispatch({
-          type: 'Party:exists',
-          value: res.exists
         })
       }
       this.props.dispatch({
@@ -56,6 +60,8 @@ class Party extends Component {
         value: true
       })
       this.socketRequest(emitting, onResponse)
+    } else {
+      console.log("Can't check party name: this.props.socket.connected", this.props.socket.connected, 'this.props.checking', this.props.checking)
     }
   }
 
@@ -99,6 +105,7 @@ class Party extends Component {
   }
 
   hydrate () {
+    console.log('hydrate')
     // TODO replay events missed during loading, if any?
     if (this.props.hosting || this.props.attending) {
       this.reconnect()
@@ -109,6 +116,7 @@ class Party extends Component {
 
   middleware (action) {
     if (this.props.attending && (action.type.startsWith('Player:') || action.type.startsWith('Queue:'))) {
+      console.log('Intercepting', action)
       const emitting = {
         ...action,
         socketKey: this.props.socketKey,
@@ -118,11 +126,14 @@ class Party extends Component {
       this.props.socket.emit('dispatch', emitting)
       console.log('emitted', emitting)
       return true
+    } else {
+      console.log('Letting this one go through', action)
+      return false
     }
-    return false
   }
 
   onGlobalFocus () {
+    console.log('global focus')
     this.hydrate()
   }
 
@@ -147,6 +158,7 @@ class Party extends Component {
         type: 'Party:connected',
         value: true
       })
+      this.checkPartyName()
     })
 
     this.props.socket.on('connect_error', () => {
@@ -198,7 +210,7 @@ class Party extends Component {
     })
 
     this.props.socket.on('dispatch', (action) => {
-      console.log('Received from host', action)
+      console.log('Received dispatch from server', action)
       this.props.dispatch(action)
     })
 
@@ -325,6 +337,7 @@ class Party extends Component {
   }
 
   busy (event) {
+    console.log('busy (TODO)')
     // TODO
   }
 
