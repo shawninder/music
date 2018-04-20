@@ -1,6 +1,8 @@
 # TODO
 
-No. 1 : Resolve deployment problems!
+1. YouTube Search microservice using micro, .env, @secrets and deployed with now
+2. WS Party microservice using micro?, and deployed with now
+3. Deploy a simpler App to now, or heroku as fallback
 
 Songs added my one remote aren't propagated to other remotes!
 

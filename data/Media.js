@@ -1,6 +1,5 @@
 const fetch = require('isomorphic-unfetch')
 const qs = require('qs')
-const secrets = require('../.secret')
 
 class Media {
   live (query) {
@@ -18,19 +17,20 @@ class Media {
     // Look online
     console.log('Querying YouTube')
     const start = Date.now()
-    return fetch(`https://www.googleapis.com/youtube/v3/search?${qs.stringify({
-      maxResults: '25',
-      part: 'snippet',
-      q: query,
-      type: '',
-      key: secrets.youtubeKey
+    return fetch(`https://youtube-search-njnnryxzgn.now.sh?${qs.stringify({
+      q: query
     })}`)
       .then((results) => {
         return results.json()
       })
       .then((data) => {
-        console.log(`Got results from YouTube in ${Date.now() - start}ms`)
-        return data.items.filter(this.isPlayable)
+        if (data.error) {
+          console.error("Can't get YouTube search results", data.error)
+          return []
+        } else {
+          console.log(`Got results from YouTube in ${Date.now() - start}ms`)
+          return data.items.filter(this.isPlayable)
+        }
       })
   }
 }

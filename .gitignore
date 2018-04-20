@@ -26,3 +26,4 @@ yarn-error.log*
 
 # confidential
 /.secret.js
+/.env

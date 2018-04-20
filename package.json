@@ -33,7 +33,7 @@
   },
   "scripts": {
     "lint": "standard",
-    "dev": "next",
+    "dev": "YOUTUBE_KEY=$YOUTUBE_KEY next",
     "build": "next build",
     "start": "next start",
     "predeploy": "npm run build",
