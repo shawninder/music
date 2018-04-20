@@ -52,9 +52,7 @@ const defaultInitialState = {
     exists: false,
     hosting: false,
     attending: false,
-    socketUrl: process.env.NODE_ENV === 'production'
-      ? 'https://party-server-tvngiafxzh.now.sh'
-      : 'http://172.16.12.2:8000',
+    socketUrl: process.env.WS_SERVER_URL,
     socketKey: Math.random(),
     state: {
       player: defaultPlayer,

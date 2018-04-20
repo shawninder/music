@@ -17,7 +17,7 @@ class Media {
     // Look online
     console.log('Querying YouTube')
     const start = Date.now()
-    return fetch(`https://youtube-search-njnnryxzgn.now.sh?${qs.stringify({
+    return fetch(`${process.env.YOUTUBE_SEARCH_URL}?${qs.stringify({
       q: query
     })}`)
       .then((results) => {

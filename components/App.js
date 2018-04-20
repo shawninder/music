@@ -291,6 +291,12 @@ class App extends Component {
           autoFocus
         />
         <div className='main'>
+          <h4>From env:</h4>
+          <ul>
+            <li>YouTube Search URL: {process.env.YOUTUBE_SEARCH_URL}</li>
+            <li>WS Server URL: {process.env.WS_SERVER_URL}</li>
+            <li>Internal IP: {process.env.INTERNAL_IP}</li>
+          </ul>
           <Party
             className='autoparty'
             placeholder={this.dict.get('party.placeholder')}
@@ -306,26 +312,21 @@ class App extends Component {
             socket={this.props.socket}
           />
           <div className='queue'>
-            { this.props.app.showHistory
-              ? (
-                <List
-                  title={this.dict.get('history.title')}
-                  className='history'
-                  items={history}
-                  defaultComponent={makeResultComponent({
-                    play: this.jumpBackTo,
-                    remember: this.remember,
-                    isInCollection: this.isInCollection
-                  })}
-                  onItem={{
-                    enter: this.jumpTo
-                  }}
-                  startsCollapsed
-                  collapsible
-                />
-              )
-              : null
-            }
+            <List
+              title={this.dict.get('history.title')}
+              className='history'
+              items={history}
+              defaultComponent={makeResultComponent({
+                play: this.jumpBackTo,
+                remember: this.remember,
+                isInCollection: this.isInCollection
+              })}
+              onItem={{
+                enter: this.jumpTo
+              }}
+              startsCollapsed
+              collapsible
+            />
             <section>
               { this.props.party.attending
                 ? (
@@ -354,26 +355,21 @@ class App extends Component {
                 )
               }
             </section>
-            { this.props.app.showUpNext
-              ? (
-                <List
-                  title={this.dict.get('upnext.title')}
-                  className='upNext'
-                  items={upNext}
-                  defaultComponent={makeResultComponent({
-                    play: this.jumpTo,
-                    remember: this.remember,
-                    dismiss: this.dequeue,
-                    isInCollection: this.isInCollection
-                  })}
-                  onItem={{
-                    enter: this.jumpTo
-                  }}
-                  collapsible
-                />
-              )
-              : null
-            }
+            <List
+              title={this.dict.get('upnext.title')}
+              className='upNext'
+              items={upNext}
+              defaultComponent={makeResultComponent({
+                play: this.jumpTo,
+                remember: this.remember,
+                dismiss: this.dequeue,
+                isInCollection: this.isInCollection
+              })}
+              onItem={{
+                enter: this.jumpTo
+              }}
+              collapsible
+            />
           </div>
         </div>
         <Controls
