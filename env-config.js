@@ -1,8 +1,6 @@
 const ip = require('ip')
 const prod = process.env.NODE_ENV === 'production'
 
-console.log('env-config')
-
 const internalIP = ip.address()
 
 module.exports = {
