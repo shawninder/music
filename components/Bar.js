@@ -136,7 +136,6 @@ class Bar extends Component {
   }
 
   onChange (event) {
-    console.log('event.target.value', event.target.value)
     this.props.dispatch({
       type: 'Bar:setQuery',
       data: event.target.value

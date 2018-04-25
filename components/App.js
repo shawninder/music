@@ -26,6 +26,7 @@ class App extends Component {
 
   constructor (props) {
     super(props)
+    this.dispatch = this.dispatch.bind(this)
     this.keyDown = this.keyDown.bind(this)
     this.play = this.play.bind(this)
     this.togglePlaying = this.togglePlaying.bind(this)
@@ -63,25 +64,32 @@ class App extends Component {
     }
   }
 
+  dispatch (action) {
+    if (action.type === 'Queue:restartTrack' && !this.props.party.attending) {
+      this.restartTrack()
+    } else {
+      this.props.dispatch(action)
+    }
+  }
+
   keyDown (event) {
     if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
       this.bar.focus()
     }
     // TODO if (focus not in input[type=text]|textarea)
-    // console.log('document.activeElement', document.activeElement)
     if (true) {
       if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
         event.preventDefault()
         this.togglePlaying()
       }
       if (event.keyCode === 39 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // right
-        this.props.dispatch({
+        this.dispatch({
           type: 'Queue:next'
         })
       }
       if (event.keyCode === 37 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // left
         event.stopPropagation()
-        this.props.dispatch({
+        this.dispatch({
           type: 'Queue:prev'
         })
       }
@@ -90,17 +98,17 @@ class App extends Component {
 
   play (data) {
     if (this.props.queue.now && this.props.queue.now.key) {
-      this.props.dispatch({
+      this.dispatch({
         type: 'Queue:toHistory',
         data: this.props.queue.now
       })
     }
     // play track
-    this.props.dispatch({
+    this.dispatch({
       type: 'Queue:play',
       data
     })
-    this.props.dispatch({
+    this.dispatch({
       type: 'Player:setPlaying',
       playing: true
     })
@@ -109,12 +117,12 @@ class App extends Component {
   togglePlaying (data) {
     if (this.props.queue.now) {
       const newPlaying = !this.props.player.playing
-      this.props.dispatch({
+      this.dispatch({
         type: 'Player:setPlaying',
         playing: newPlaying
       })
     } else {
-      this.props.dispatch({
+      this.dispatch({
         type: 'Queue:next'
       })
     }
@@ -124,7 +132,7 @@ class App extends Component {
     const newData = cloneDeep(data)
     // delete newData.Component
     newData.key = `${data.data.id.videoId}:${Date.now()}`
-    this.props.dispatch({
+    this.dispatch({
       type: 'Queue:playNext',
       data: newData
     })
@@ -133,7 +141,7 @@ class App extends Component {
   enqueue (data) {
     const newData = cloneDeep(data)
     newData.key = `${data.key || data.data.id.videoId}:${Date.now()}`
-    this.props.dispatch({
+    this.dispatch({
       type: 'Queue:enqueue',
       data: newData
     })
@@ -142,14 +150,14 @@ class App extends Component {
   dequeue (idx) {
     const newUpNext = cloneDeep(this.props.queue.upNext)
     pullAt(newUpNext, idx)
-    this.props.dispatch({
+    this.dispatch({
       type: 'Queue:dequeue',
       newUpNext
     })
   }
 
   remember (data) {
-    this.props.dispatch({
+    this.dispatch({
       type: 'Collection:toggle',
       data
     })
@@ -160,37 +168,37 @@ class App extends Component {
   }
 
   toggleShowPlayer (data) {
-    this.props.dispatch({
+    this.dispatch({
       type: 'App:toggleShowPlayer'
     })
   }
 
   clearHistory (data) {
-    this.props.dispatch({
+    this.dispatch({
       type: 'Queue:clearHistory'
     })
   }
 
   clearUpNext (data) {
-    this.props.dispatch({
+    this.dispatch({
       type: 'Queue:clearUpNext'
     })
   }
 
   toggleShowHistory (data) {
-    this.props.dispatch({
+    this.dispatch({
       type: 'App:toggleShowHistory'
     })
   }
 
   toggleShowUpNext (data) {
-    this.props.dispatch({
+    this.dispatch({
       type: 'App:toggleShowUpNext'
     })
   }
 
   jumpTo (data, idx) {
-    this.props.dispatch({
+    this.dispatch({
       type: 'Queue:jumpTo',
       data,
       idx
@@ -199,15 +207,17 @@ class App extends Component {
   }
 
   setPlaying (playing) {
-    this.props.dispatch({
+    this.dispatch({
       type: 'Player:setPlaying',
       playing
     })
   }
 
   jumpBackTo (data, idx) {
-    const len = this.props.queue.history.length
-    this.props.dispatch({
+    const len = this.props.party.attending
+      ? this.props.party.state.queue.history.length
+      : this.props.queue.history.length
+    this.dispatch({
       type: 'Queue:jumpTo',
       data,
       idx: -(len - 1 - idx + 1)
@@ -217,19 +227,22 @@ class App extends Component {
 
   restartTrack () {
     if (this.props.party.attending) {
-      this.props.dispatch({ type: 'Queue:restartTrack' })
+      this.dispatch({ type: 'Queue:restartTrack' })
     } else if (this.playerEl) {
       this.playerEl.seekTo(0)
     }
   }
 
   onTrackEnd () {
-    if (this.props.queue.upNext.length > 0) {
-      this.props.dispatch({
+    const len = this.props.party.attending
+      ? this.props.party.state.queue.upNext.length
+      : this.props.queue.upNext.length
+    if (len > 0) {
+      this.dispatch({
         type: 'Queue:next'
       })
     } else {
-      this.props.dispatch({
+      this.dispatch({
         type: 'Player:setPlaying',
         value: false
       })
@@ -249,7 +262,7 @@ class App extends Component {
     return (
       <div className='App'>
         <Bar
-          dispatch={this.props.dispatch}
+          dispatch={this.dispatch}
           placeholder={this.dict.get('bar.placeholder')}
           query={this.props.bar.query}
           items={this.props.bar.items}
@@ -318,7 +331,7 @@ class App extends Component {
             {...this.props.party}
             registerMiddleware={this.props.registerMiddleware}
             unregisterMiddleware={this.props.unregisterMiddleware}
-            dispatch={this.props.dispatch}
+            dispatch={this.dispatch}
             state={{
               player: this.props.player,
               queue: this.props.queue
@@ -364,7 +377,7 @@ class App extends Component {
                     playingNow={this.props.queue.now}
                     playing={this.props.player.playing}
                     show={this.props.app.showPlayer}
-                    dispatch={this.props.dispatch}
+                    dispatch={this.dispatch}
                     onEnded={this.onTrackEnd}
                   />
                 )
@@ -397,10 +410,10 @@ class App extends Component {
             isInCollection: this.isInCollection
           })}
           f={this.props.party.attending ? this.props.party.state.player.f : this.props.player.f}
-          t={this.props.party.attending ? this.props.party.state.t : this.props.player.t}
+          t={this.props.party.attending ? this.props.party.state.player.t : this.props.player.t}
           restartTrack={this.restartTrack}
           playing={this.props.party.attending ? this.props.party.state.player.playing : this.props.player.playing}
-          dispatch={this.props.dispatch}
+          dispatch={this.dispatch}
           collection={this.props.collection}
           showPlayer={this.props.app.showPlayer}
         />

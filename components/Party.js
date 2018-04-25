@@ -105,7 +105,6 @@ class Party extends Component {
   }
 
   hydrate () {
-    console.log('hydrate')
     // TODO replay events missed during loading, if any?
     if (this.props.hosting || this.props.attending) {
       this.reconnect()
@@ -133,7 +132,6 @@ class Party extends Component {
   }
 
   onGlobalFocus () {
-    console.log('global focus')
     this.hydrate()
   }
 
@@ -210,7 +208,6 @@ class Party extends Component {
     })
 
     this.props.socket.on('dispatch', (action) => {
-      console.log('Received dispatch from server', action)
       this.props.dispatch(action)
     })
 

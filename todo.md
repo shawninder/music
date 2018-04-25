@@ -1,5 +1,9 @@
 # TODO
 
+Jumping back to first track in history doesn't move history to upNext as expected, instead now is pushed to history and replaced with clicked (which stays in history)
+
+Let's start syncing shit on ping and pong :(
+
 Make mock YouTube-search for offline development and manual testing (and eventually automated tested)
 
 Fix jumpTo, not only is it glitchy, it shouldn't even be complicated at all
@@ -41,3 +45,5 @@ Can't rely on "rotate to fullscreen player", it breaks on track change, forcing 
 Next button stays "active" for A WHILE!
 
 Guests should be notified when host is unreachable, perhaps a timeout clock could also be shown to estimate how long the party will live? Eventually, there should also be a feature to claim hosthood somehow, or at least transfer it...
+
+Only put results in list if query hasn't changed since results came in... In fact, it should be more than that, making sure there was no other requests in between.

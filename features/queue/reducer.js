@@ -115,7 +115,7 @@ export default function queueReducer (state = {}, action) {
         }
       } else {
         if (newState.history.length > 0) {
-          skipped = newState.history.slice(idx + 1)
+          skipped = (idx === -1) ? skipped : newState.history.slice(idx + 1)
             .concat(skipped)
           newState.history = newState.history.slice(0, idx)
         }

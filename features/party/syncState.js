@@ -15,10 +15,8 @@ export default function syncState (paths, config) {
   return (next) => {
     return (reducer, initialState, enhancer) => {
       let snapshot = filter(initialState)
-      // console.log('initialState', initialState)
       const store = next(reducer, initialState, enhancer)
       store.subscribe(function () {
-        console.log('subscribe')
         const state = store.getState()
         const slice = filter(state)
         if (
@@ -27,7 +25,6 @@ export default function syncState (paths, config) {
           !deepEqual(slice, snapshot)
         ) {
           snapshot = slice
-          console.log('Dispatching!')
           const emitting = {
             type: 'Party:slice',
             slice,
