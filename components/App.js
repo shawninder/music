@@ -42,6 +42,7 @@ class App extends Component {
     this.jumpTo = this.jumpTo.bind(this)
     this.jumpBackTo = this.jumpBackTo.bind(this)
     this.restartTrack = this.restartTrack.bind(this)
+    this.onTrackEnd = this.onTrackEnd.bind(this)
 
     this.bar = {}
 
@@ -222,6 +223,19 @@ class App extends Component {
     }
   }
 
+  onTrackEnd () {
+    if (this.props.queue.upNext.length > 0) {
+      this.props.dispatch({
+        type: 'Queue:next'
+      })
+    } else {
+      this.props.dispatch({
+        type: 'Player:setPlaying',
+        value: false
+      })
+    }
+  }
+
   render () {
     const history = this.props.party.attending
       ? this.props.party.state.queue.history
@@ -322,7 +336,7 @@ class App extends Component {
                 isInCollection: this.isInCollection
               })}
               onItem={{
-                enter: this.jumpTo
+                enter: this.jumpBackTo
               }}
               startsCollapsed
               collapsible
@@ -351,6 +365,7 @@ class App extends Component {
                     playing={this.props.player.playing}
                     show={this.props.app.showPlayer}
                     dispatch={this.props.dispatch}
+                    onEnded={this.onTrackEnd}
                   />
                 )
               }

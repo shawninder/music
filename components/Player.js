@@ -34,12 +34,19 @@ class Player extends Component {
             playing: false
           })
         }}
-        onEnded={() => {
+        onDuration={(seconds) => {
           this.props.dispatch({
-            type: 'Queue:next'
+            type: 'Player:duration',
+            seconds
           })
         }}
-
+        onSeek={(seconds) => {
+          this.props.dispatch({
+            type: 'Player:seek',
+            seconds
+          })
+        }}
+        onEnded={this.props.onEnded}
         style={{
           display: this.props.show ? 'block' : 'none'
         }}
@@ -58,7 +65,8 @@ const props = [
   { name: 'playing', type: PropTypes.bool.isRequired },
   { name: 'onRef', type: PropTypes.func.isRequired },
   { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'show', type: PropTypes.bool, val: false }
+  { name: 'show', type: PropTypes.bool, val: false },
+  { name: 'onEnded', type: PropTypes.func.isRequired }
 ]
 
 Player.defaultProps = defaultProps(props)

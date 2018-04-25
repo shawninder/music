@@ -1,17 +1,49 @@
 # README
 
+Music app built with Next.js
+
+This project is in a very early stage and isn't looking for contributions yet. If you're still curious and need a specific part of the documentation to be written out, you can request this via an issue.
+
+In general the code is split out in the following way:
+
 ## *pages/_document.js*
 - styles
 - `meta` tags
 - default `<title>`
 - `<html lang`
-- etc.
 
-## pages/index.js
-- store
+## pages/....js
+- state store
 - default state
-- side-effect stuff with bindActionCreators
+- side-effect stuff
 
 ## components/....js
-- event driven UI
-- <Head>
+- React-style UI components
+- Higher-order components specific to the application
+
+## data/...
+App-specific data, like texts, translations
+
+## features/....
+Eventually, app-agnostic features that will be moved to separate repositories, but currently just app-specific features
+
+## helpers/...
+Generic helpers destined to be moved out to their own repos
+
+## styles/...
+App styles
+
+## env-configs.js
+Place to inject env vars (via babel)
+
+## next.config.js
+webpack configuration
+
+## reducer.js
+App root reducer
+
+## registerServiceWorker.js
+What the name implies
+
+## withBabelCacheBusting
+A Next.js-targetted webpack configuration "middleware" destined to be moved to its own repo

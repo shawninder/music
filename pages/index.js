@@ -19,6 +19,7 @@ const media = new Media()
 
 const defaultPlayer = {
   playing: false,
+  duration: -1,
   t: 0,
   f: 0
 }

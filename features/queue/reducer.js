@@ -69,28 +69,24 @@ export default function queueReducer (state = {}, action) {
       const history = newState.history
       let now = newState.now
       const upNext = newState.upNext
-      let playRandom = false
-      if (now && now.key) {
-        const item = cloneDeep(now)
-        item.key += `:${Date.now()}`
-        delete item.Component
-        history.push(cloneDeep(item))
-      }
       if (upNext.length > 0) {
+        // Put playing now in history
+        if (now && now.key) {
+          const item = cloneDeep(now)
+          item.key += `:${Date.now()}`
+          delete item.Component
+          history.push(cloneDeep(item))
+        }
+
+        // Play next track
         const next = upNext.shift()
         next.key = next.key.slice(0, next.key.lastIndexOf(';'))
         newState.now = next
       } else {
-        playRandom = true
+        // TODO
       }
       newState.history = history
       newState.upNext = upNext
-      if (playRandom) {
-        console.log('Play random track: coming soon')
-        // this.dispatch({
-        //   type: 'Player:random'
-        // })
-      }
       break
     }
     case 'Queue:clearHistory':

@@ -221,7 +221,7 @@ class Bar extends Component {
         }
       } else {
         this.dismiss()
-        this.field.focus()
+        this.focus()
       }
     }
   }
@@ -260,7 +260,7 @@ class Bar extends Component {
               items={this.props.items}
               query={this.props.query}
               onUp={() => {
-                this.field.focus()
+                this.focus()
               }}
               onItem={this.props.onResult}
               onRef={(el) => {
@@ -278,7 +278,6 @@ class Bar extends Component {
           } else {
             this.dismiss()
           }
-          this.focus()
         }}>x</button>
       </div>
     )
