@@ -90,18 +90,20 @@ class Bar extends Component {
     this.debounced = debounce((query) => {
       props.suggest(query)
         .then((results) => {
-          const items = results.map((item) => {
-            const obj = {
-              type: 'YouTubeVideo',
-              key: item.id.videoId,
-              data: item
-            }
-            return obj
-          })
-          this.props.dispatch({
-            type: 'Bar:setItems',
-            data: items
-          })
+          if (this.props.query === query) {
+            const items = results.map((item) => {
+              const obj = {
+                type: 'YouTubeVideo',
+                key: item.id.videoId,
+                data: item
+              }
+              return obj
+            })
+            this.props.dispatch({
+              type: 'Bar:setItems',
+              data: items
+            })
+          }
         })
     }, 500, { maxWait: 1000 })
   }
