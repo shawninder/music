@@ -328,7 +328,6 @@ class App extends Component {
             className='autoparty'
             placeholder={this.dict.get('party.placeholder')}
             dict={this.dict}
-            {...this.props.party}
             registerMiddleware={this.props.registerMiddleware}
             unregisterMiddleware={this.props.unregisterMiddleware}
             dispatch={this.dispatch}
@@ -337,6 +336,7 @@ class App extends Component {
               queue: this.props.queue
             }}
             socket={this.props.socket}
+            {...this.props.party} // state
           />
           <div className='queue'>
             <List

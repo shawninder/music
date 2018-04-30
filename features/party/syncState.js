@@ -17,23 +17,23 @@ export default function syncState (paths, config) {
       let snapshot = filter(initialState)
       const store = next(reducer, initialState, enhancer)
       store.subscribe(function () {
-        const state = store.getState()
-        const slice = filter(state)
-        if (
-          state.party.hosting &&
-          config.socket.connected &&
-          !deepEqual(slice, snapshot)
-        ) {
-          snapshot = slice
-          const emitting = {
-            type: 'Party:slice',
-            slice,
-            socketKey: state.party.socketKey,
-            name: state.party.name,
-            as: 'host'
+        if (config.socket.connected) {
+          const state = store.getState()
+          if (state.party.hosting) {
+            const slice = filter(state)
+            if (!deepEqual(slice, snapshot)) {
+              snapshot = slice
+              const emitting = {
+                type: 'Party:slice',
+                slice,
+                socketKey: state.party.socketKey,
+                name: state.party.name,
+                as: 'host'
+              }
+              config.socket.emit('slice', emitting)
+              console.log('emitted slice', emitting)
+            }
           }
-          config.socket.emit('slice', emitting)
-          console.log('emitted slice', emitting)
         }
       })
       return store
