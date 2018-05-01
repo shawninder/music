@@ -44,6 +44,7 @@ class App extends Component {
     this.jumpBackTo = this.jumpBackTo.bind(this)
     this.restartTrack = this.restartTrack.bind(this)
     this.onTrackEnd = this.onTrackEnd.bind(this)
+    this.getPartyState = this.getPartyState.bind(this)
 
     this.bar = {}
 
@@ -62,6 +63,12 @@ class App extends Component {
     if (!isServer) {
       global.removeEventListener('keydown', this.keyDown, false)
     }
+  }
+
+  getPartyState () {
+    return this.props.party.attending
+      ? this.props.party.state
+      : this.props
   }
 
   dispatch (action) {
@@ -97,10 +104,11 @@ class App extends Component {
   }
 
   play (data) {
-    if (this.props.queue.now && this.props.queue.now.key) {
+    const state = this.getPartyState()
+    if (state.queue.now && state.queue.now.key) {
       this.dispatch({
         type: 'Queue:toHistory',
-        data: this.props.queue.now
+        data: state.queue.now
       })
     }
     // play track
@@ -115,8 +123,9 @@ class App extends Component {
   }
 
   togglePlaying (data) {
-    if (this.props.queue.now) {
-      const newPlaying = !this.props.player.playing
+    const state = this.getPartyState()
+    if (state.queue.now) {
+      const newPlaying = !state.player.playing
       this.dispatch({
         type: 'Player:setPlaying',
         playing: newPlaying
@@ -148,7 +157,8 @@ class App extends Component {
   }
 
   dequeue (idx) {
-    const newUpNext = cloneDeep(this.props.queue.upNext)
+    const state = this.getPartyState()
+    const newUpNext = cloneDeep(state.queue.upNext)
     pullAt(newUpNext, idx)
     this.dispatch({
       type: 'Queue:dequeue',
@@ -214,9 +224,8 @@ class App extends Component {
   }
 
   jumpBackTo (data, idx) {
-    const len = this.props.party.attending
-      ? this.props.party.state.queue.history.length
-      : this.props.queue.history.length
+    const state = this.getPartyState()
+    const len = state.queue.history.length
     this.dispatch({
       type: 'Queue:jumpTo',
       data,
@@ -234,9 +243,8 @@ class App extends Component {
   }
 
   onTrackEnd () {
-    const len = this.props.party.attending
-      ? this.props.party.state.queue.upNext.length
-      : this.props.queue.upNext.length
+    const state = this.getPartyState()
+    const len = state.queue.upNext.length
     if (len > 0) {
       this.dispatch({
         type: 'Queue:next'
@@ -250,15 +258,7 @@ class App extends Component {
   }
 
   render () {
-    const history = this.props.party.attending
-      ? this.props.party.state.queue.history
-      : this.props.queue.history
-    const now = this.props.party.attending
-      ? this.props.party.state.queue.now
-      : this.props.queue.now
-    const upNext = this.props.party.attending
-      ? this.props.party.state.queue.upNext
-      : this.props.queue.upNext
+    const state = this.getPartyState()
     return (
       <div className='App'>
         <Bar
@@ -342,7 +342,7 @@ class App extends Component {
             <List
               title={this.dict.get('history.title')}
               className='history'
-              items={history}
+              items={state.queue.history}
               defaultComponent={makeResultComponent({
                 play: this.jumpBackTo,
                 remember: this.remember,
@@ -357,14 +357,14 @@ class App extends Component {
             <section>
               { this.props.party.attending
                 ? (
-                  (this.props.app.showPlayer && this.props.party.state.queue.now.data)
+                  (this.props.app.showPlayer && state.queue.now.data)
                     ? (
                       <img
                         className='player-alt'
-                        src={this.props.party.state.queue.now.data.snippet.thumbnails.high.url}
-                        width={this.props.party.state.queue.now.data.snippet.thumbnails.high.width}
-                        height={this.props.party.state.queue.now.data.snippet.thumbnails.high.height}
-                        alt={`Thumnail for ${this.props.party.state.queue.now.data.title}`}
+                        src={state.queue.now.data.snippet.thumbnails.high.url}
+                        width={state.queue.now.data.snippet.thumbnails.high.width}
+                        height={state.queue.now.data.snippet.thumbnails.high.height}
+                        alt={`Thumnail for ${state.queue.now.data.title}`}
                       />
                     )
                     : null
@@ -374,9 +374,9 @@ class App extends Component {
                     onRef={(playerEl) => {
                       this.playerEl = playerEl
                     }}
-                    playingNow={this.props.queue.now}
-                    playing={this.props.player.playing}
-                    show={this.props.app.showPlayer}
+                    playingNow={state.queue.now}
+                    playing={state.player.playing}
+                    show={state.app.showPlayer}
                     dispatch={this.dispatch}
                     onEnded={this.onTrackEnd}
                   />
@@ -386,7 +386,7 @@ class App extends Component {
             <List
               title={this.dict.get('upnext.title')}
               className='upNext'
-              items={upNext}
+              items={state.queue.upNext}
               defaultComponent={makeResultComponent({
                 play: this.jumpTo,
                 remember: this.remember,
@@ -401,7 +401,7 @@ class App extends Component {
           </div>
         </div>
         <Controls
-          playingNow={now}
+          playingNow={state.queue.now}
           PlayingNowComponent={makeResultComponent({
             play: this.togglePlaying,
             toggleShowPlayer: this.props.toggleShowPlayer,
@@ -409,10 +409,10 @@ class App extends Component {
             remember: this.remember,
             isInCollection: this.isInCollection
           })}
-          f={this.props.party.attending ? this.props.party.state.player.f : this.props.player.f}
-          t={this.props.party.attending ? this.props.party.state.player.t : this.props.player.t}
+          f={state.player.f}
+          t={state.player.t}
           restartTrack={this.restartTrack}
-          playing={this.props.party.attending ? this.props.party.state.player.playing : this.props.player.playing}
+          playing={state.player.playing}
           dispatch={this.dispatch}
           collection={this.props.collection}
           showPlayer={this.props.app.showPlayer}
