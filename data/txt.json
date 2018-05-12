@@ -35,14 +35,14 @@
     "es": "Commencar la Celebration"
   },
   "party.leave": {
-    "en": "Leave :(",
-    "fr": "Quitter :(",
-    "es": "Salir :("
+    "en": "Leave",
+    "fr": "Quitter",
+    "es": "Salir"
   },
   "party.stop": {
-    "en": "End :(",
-    "fr": "Fini :(",
-    "es": "Terminado :("
+    "en": "End",
+    "fr": "Fini",
+    "es": "Terminado"
   },
   "party.checking": {
     "en": "...",
@@ -50,14 +50,13 @@
     "es": "..."
   },
   "party.attending": {
-    "en": "Attending party named ",
+    "en": "Attending",
     "fr": "Vous êtes dans une fête nommée ",
     "es": "Asistir a una fiesta llamada "
   },
   "party.hosting": {
-    "en": "Hosting party named ",
-    "fr": "Vous êtes l'hôte d'une fête nommée ",
-    "es": "Fiesta anfitriona llamada "
+    "en": "Hosting",
+    "fr": "Hôte"
   },
   "history.title": {
     "en": "History",
