@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   viewBox="0 0 6.4112578 4.1300078">
+  <a
+     transform="translate(-13.774896,-3.8302961)">
+    <path
+       transform="matrix(0.004,0,0,-0.004,16.2264,5.8953)"
+       d="M 365,0 10,0 C 4,0 0,4 0,10 l 0,136 c 0,6 4,10 10,10 l 355,0 c 6,0 10,-4 10,-10 L 375,10 C 375,4 371,0 365,0 Z" />
+  </a>
+</svg>
