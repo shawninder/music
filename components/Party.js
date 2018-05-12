@@ -36,41 +36,46 @@ class Party extends Component {
 
   checkPartyName (providedName) {
     const name = providedName || this.props.name
-    if (this.props.socket.connected && !this.props.checking) {
-      const emitting = {
-        reqName: 'isParty',
-        socketKey: this.props.socketKey,
-        name
-      }
-      const onResponse = (res) => {
-        console.log('check party name response', res)
-        if (res.name === name && name === this.props.name) {
+    if (name !== '') {
+      if (this.props.socket.connected && !this.props.checking) {
+        const emitting = {
+          reqName: 'isParty',
+          socketKey: this.props.socketKey,
+          name
+        }
+        const onResponse = (res) => {
+          console.log('check party name response', res)
+          if (res.name === name && name === this.props.name) {
+            this.props.dispatch({
+              type: 'Party:exists',
+              value: res.exists
+            })
+          }
           this.props.dispatch({
-            type: 'Party:exists',
-            value: res.exists
+            type: 'Party:checking',
+            value: false
           })
         }
         this.props.dispatch({
           type: 'Party:checking',
-          value: false
+          value: true
         })
+        this.socketRequest(emitting, onResponse)
+      } else {
+        console.log("Can't check party name: this.props.socket.connected", this.props.socket.connected, 'this.props.checking', this.props.checking)
       }
-      this.props.dispatch({
-        type: 'Party:checking',
-        value: true
-      })
-      this.socketRequest(emitting, onResponse)
-    } else {
-      console.log("Can't check party name: this.props.socket.connected", this.props.socket.connected, 'this.props.checking', this.props.checking)
     }
   }
 
   onChange (event) {
+    const value = event.target.value
     this.props.dispatch({
       type: 'Party:setName',
-      value: event.target.value
+      value
     })
-    this.checkPartyName(event.target.value)
+    if (value !== '') {
+      this.checkPartyName(value)
+    }
   }
 
   onKeyDown (event) {
@@ -132,7 +137,7 @@ class Party extends Component {
   }
 
   onGlobalFocus () {
-    this.hydrate()
+    // this.hydrate()
   }
 
   // Object.keys(data.state).forEach((key) => {
@@ -339,13 +344,16 @@ class Party extends Component {
   }
 
   render () {
+    let title = 'Party!'
     const partying = (this.props.hosting || this.props.attending) && this.props.socket.connected
     let label = 'default'
     if (this.props.name !== '') {
       if (partying) {
         if (this.props.hosting) {
+          title = this.props.dict.get('party.hosting')
           label = 'stop'
         } else {
+          title = this.props.dict.get('party.attending')
           label = 'leave'
         }
       } else {
@@ -371,6 +379,9 @@ class Party extends Component {
     return (
       <div className={classes.join(' ')}>
         <form onSubmit={this.onSubmit}>
+          <h3>
+            {title}
+          </h3>
           <input
             type='text'
             placeholder={this.props.placeholder}

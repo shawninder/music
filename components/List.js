@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cloneDeep from 'lodash.clonedeep'
+import isEqual from 'lodash.isequal'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
@@ -13,6 +14,19 @@ class List extends Component {
     this.state = {
       collapsed: props.startsCollapsed
     }
+    this.previousItems = {}
+    this.previousCollapsed = {}
+  }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    if (!isEqual(this.previousCollapsed, nextState.collapsed) ||
+      !isEqual(this.previousItems, nextProps.items)) {
+      this.previousItems = nextProps.items
+      this.previousCollapsed = nextState.collapsed
+      return true
+    }
+
+    return false
   }
 
   keyDown (items) {
@@ -80,6 +94,7 @@ class List extends Component {
       )
     })
     const classes = this.props.className.split(' ')
+    classes.push('list')
     classes.push(this.state.collapsed ? 'collapsed' : 'not-collapsed')
     return (
       <div className={classes.join(' ')}>

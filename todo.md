@@ -1,5 +1,11 @@
 # TODO
 
+SVG layout
+
+Can no longer party, wtf
+
+Party name checking still sometimes coming in late
+
 Let's start syncing shit on ping and pong? :(
 
 Make mock YouTube-search for offline development and manual testing (and eventually automated tested)
@@ -26,7 +32,7 @@ Alternative method of deployment than zeit (npm start on Amazon I suppose) (Hero
 
 `cat "NODE_ENV=production" > .env` ?
 
-Autofocus doesn't bring up keyboard, at least not on Samsunb Galaxy A5 (Android) on Chrome
+Autofocus doesn't bring up keyboard, at least not on Samsung Galaxy A5 (Android) on Chrome
 
 Selecting a result doesn't automatically play it, though the UI button seems to think it worked. Pausing and resuming solves. (A5 chrome)
 
@@ -45,3 +51,5 @@ Guests should be notified when host is unreachable, perhaps a timeout clock coul
 Only put results in list if query hasn't changed since results came in... In fact, it should be more than that, making sure there was no other requests in between.
 
 On party end, what happens to guests?
+
+Find out how to obsolete shouldComponentUpdate

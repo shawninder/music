@@ -21,19 +21,26 @@ class YouTubeVideo extends Component {
       <div
         className={classes.join(' ')}
         onClick={this.props.onClick}
-        onDragStart={this.dragStart}
-        draggable
       >
-        <img
-          src={this.props.data.data.snippet.thumbnails.default.url}
-          alt={`Thumnail for ${this.props.data.title}`}
-        />
+        <div className='toggle'>
+          <div
+            className='art'
+            onDragStart={this.dragStart}
+            draggable
+          >
+            <img
+              className='art-img'
+              src={this.props.data.data.snippet.thumbnails.default.url}
+              alt={`Thumnail for ${this.props.data.data.snippet.title}`}
+            />
+          </div>
+        </div>
         <div className='youtube-result-info'>
+          <div>
+            {this.props.children}
+          </div>
           <p className='youtube-result-title'>{this.props.data.data.snippet.title}</p>
           <p className='youtube-result-channel'>{this.props.data.data.snippet.channelTitle}</p>
-        </div>
-        <div className='actionable-actions'>
-          {this.props.children}
         </div>
       </div>
     )

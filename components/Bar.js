@@ -86,6 +86,7 @@ class Bar extends Component {
     this.dismiss = this.dismiss.bind(this)
     this.cede = this.cede.bind(this)
     this.clear = this.clear.bind(this)
+    this.menuClicked = this.menuClicked.bind(this)
 
     this.debounced = debounce((query) => {
       props.suggest(query)
@@ -233,6 +234,10 @@ class Bar extends Component {
     }
   }
 
+  menuClicked () {
+    console.log('menu clicked')
+  }
+
   render () {
     return (
       <div
@@ -242,6 +247,10 @@ class Bar extends Component {
           this.el = el
         }}
       >
+        <button className='bar-menu invisibutton' onClick={this.menuClicked}
+        >
+          <img src='/static/search.svg' alt='search' title='search' className='icon' />
+        </button>
         <Field
           className='bar-field'
           autoFocus={this.props.autoFocus}
@@ -273,13 +282,13 @@ class Bar extends Component {
           )
           : null
         }
-        <button className='bar-dismiss' onClick={(event) => {
+        <button className='bar-dismiss invisibutton' onClick={(event) => {
           if (this.props.items.length === 0) {
             this.clear()
           } else {
             this.dismiss()
           }
-        }}>x</button>
+        }}><img src='/static/x.svg' alt='clear' title='clear' className='icon' /></button>
       </div>
     )
   }

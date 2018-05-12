@@ -33,8 +33,8 @@ class App extends Component {
     this.playNext = this.playNext.bind(this)
     this.enqueue = this.enqueue.bind(this)
     this.dequeue = this.dequeue.bind(this)
-    this.remember = this.remember.bind(this)
-    this.isInCollection = this.isInCollection.bind(this)
+    // this.remember = this.remember.bind(this)
+    // this.isInCollection = this.isInCollection.bind(this)
     this.toggleShowPlayer = this.toggleShowPlayer.bind(this)
     this.clearHistory = this.clearHistory.bind(this)
     this.clearUpNext = this.clearUpNext.bind(this)
@@ -156,26 +156,29 @@ class App extends Component {
     })
   }
 
-  dequeue (idx) {
+  dequeue (data, idx) {
+    console.log('DEQUEUE', idx)
     const state = this.getPartyState()
     const newUpNext = cloneDeep(state.queue.upNext)
+    console.log('BEFORE', newUpNext, idx)
     pullAt(newUpNext, idx)
+    console.log('AFTER', newUpNext, idx)
     this.dispatch({
       type: 'Queue:dequeue',
       newUpNext
     })
   }
 
-  remember (data) {
-    this.dispatch({
-      type: 'Collection:toggle',
-      data
-    })
-  }
+  // remember (data) {
+  //   this.dispatch({
+  //     type: 'Collection:toggle',
+  //     data
+  //   })
+  // }
 
-  isInCollection (data) {
-    return !!this.props.collection[data.data.id.videoId]
-  }
+  // isInCollection (data) {
+  //   return !!this.props.collection[data.data.id.videoId]
+  // }
 
   toggleShowPlayer (data) {
     this.dispatch({
@@ -268,11 +271,27 @@ class App extends Component {
           items={this.props.bar.items}
           suggest={this.props.findMusic}
           ResultComponent={makeResultComponent({
-            play: this.play,
-            playNext: this.playNext,
-            enqueue: this.enqueue,
-            remember: this.remember,
-            isInCollection: this.isInCollection
+            actions: {
+              play: {
+                go: this.play,
+                txt: 'play now',
+                icon: <img className='action-icon' src='/static/play.svg' title='play now' alt='play now' />
+              },
+              playNext: {
+                go: this.playNext,
+                txt: 'play next',
+                icon: <img className='action-icon' src='/static/next.svg' title='play next' alt='play next' />
+              },
+              enqueue: {
+                go: this.enqueue,
+                txt: 'play last',
+                icon: <img className='action-icon' src='/static/plus.svg' title='play last' alt='play last' />
+              }
+            },
+            onClick: this.enqueue
+
+            // remember: this.remember,
+            // isInCollection: this.isInCollection
           })}
           onResult={{
             enter: this.play,
@@ -318,12 +337,6 @@ class App extends Component {
           autoFocus
         />
         <div className='main'>
-          <h4>From env:</h4>
-          <ul>
-            <li>YouTube Search URL: {process.env.YOUTUBE_SEARCH_URL}</li>
-            <li>WS Server URL: {process.env.WS_SERVER_URL}</li>
-            <li>Internal IP: {process.env.INTERNAL_IP}</li>
-          </ul>
           <Party
             className='autoparty'
             placeholder={this.dict.get('party.placeholder')}
@@ -344,9 +357,31 @@ class App extends Component {
               className='history'
               items={state.queue.history}
               defaultComponent={makeResultComponent({
-                play: this.jumpBackTo,
-                remember: this.remember,
-                isInCollection: this.isInCollection
+                actions: {
+                  jumpTo: {
+                    go: this.jumpBackTo,
+                    txt: 'jump back to',
+                    icon: <img className='action-icon' src='/static/play.svg' title='jump back to' alt='jump back to' />
+                  },
+                  playNow: {
+                    go: this.playNow,
+                    txt: 'play now',
+                    icon: <img className='action-icon' src='/static/play.svg' title='play now' alt='play now' />
+                  },
+                  playNext: {
+                    go: this.playNext,
+                    txt: 'play next',
+                    icon: <img className='action-icon' src='/static/next.svg' title='play next' alt='play next' />
+                  },
+                  playLast: {
+                    go: this.enqueue,
+                    txt: 'play last',
+                    icon: <img className='action-icon' src='/static/plus.svg' title='play last' alt='play last' />
+                  }
+                },
+                onClick: this.jumpBackTo
+                // remember: this.remember,
+                // isInCollection: this.isInCollection
               })}
               onItem={{
                 enter: this.jumpBackTo
@@ -388,10 +423,37 @@ class App extends Component {
               className='upNext'
               items={state.queue.upNext}
               defaultComponent={makeResultComponent({
-                play: this.jumpTo,
-                remember: this.remember,
-                dismiss: this.dequeue,
-                isInCollection: this.isInCollection
+                actions: {
+                  jumpTo: {
+                    go: this.jumpTo,
+                    txt: 'jump to',
+                    icon: <img className='action-icon' src='/static/play.svg' title='jump to' alt='jump to' />
+                  },
+                  playNow: {
+                    go: this.play,
+                    txt: 'play now',
+                    icon: <img className='action-icon' src='/static/play.svg' title='play now' alt='play now' />
+                  },
+                  playNext: {
+                    go: this.playNext,
+                    txt: 'play next',
+                    icon: <img className='action-icon' src='/static/next.svg' title='play next' alt='play next' />
+                  },
+                  playLast: {
+                    go: this.enqueue,
+                    txt: 'play last',
+                    icon: <img className='action-icon' src='/static/plus.svg' title='play last' alt='play last' />
+                  },
+                  remove: {
+                    go: this.dequeue,
+                    txt: 'remove',
+                    icon: <img className='action-icon' src='/static/x.svg' title='remove' alt='remove' />
+                  }
+                },
+                onClick: this.jumpTo
+                // remember: this.remember,
+
+                // isInCollection: this.isInCollection
               })}
               onItem={{
                 enter: this.jumpTo
@@ -403,19 +465,35 @@ class App extends Component {
         <Controls
           playingNow={state.queue.now}
           PlayingNowComponent={makeResultComponent({
-            play: this.togglePlaying,
-            toggleShowPlayer: this.props.toggleShowPlayer,
-            showPlayer: this.props.app.showPlayer,
-            remember: this.remember,
-            isInCollection: this.isInCollection
+            actions: {
+              toggleShowPlayer: {
+                go: this.props.toggleShowPlayer,
+                txt: this.props.app.showingPlayer ? 'hide player' : 'show player',
+                icon: <img className='action-icon' src='/static/camera.svg' title='toggle player' alt='toggle player' />
+              }
+            },
+            onClick: this.togglePlaying
+            // play: {
+            //   go: this.togglePlaying,
+            //   txt: 'play/pause',
+            //   icon: <img src='/static/pause.svg' title='pause' alt='pause' />
+            // },
+            // toggleShowPlayer: this.props.toggleShowPlayer,
+            // showPlayer: this.props.app.showPlayer
+            // remember: this.remember,
+            // isInCollection: this.isInCollection
           })}
           f={state.player.f}
           t={state.player.t}
+          history={state.queue.history}
+          upNext={state.queue.upNext}
           restartTrack={this.restartTrack}
           playing={state.player.playing}
           dispatch={this.dispatch}
           collection={this.props.collection}
           showPlayer={this.props.app.showPlayer}
+          toggleShowHistory={this.toggleShowHistory}
+          toggleShowUpNext={this.toggleShowUpNext}
         />
       </div>
     )

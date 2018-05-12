@@ -4,10 +4,6 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   box-sizing: border-box;
 }
 
-button:enabled {
-  cursor: pointer;
-}
-
 body {
   /* Approximate system fonts
     -apple-system, BlinkMacSystemFont, // Safari Mac/iOS, Chrome
@@ -16,7 +12,7 @@ body {
     "Droid Sans", "Helvetica Neue", sans-serif; // Old Android
   */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  background: whitesmoke;
+  background-color: #0f205e;
 }
 
 input[type=text].disabled {
@@ -27,52 +23,110 @@ svg {
   fill: currentColor;
 }
 
+button:enabled {
+  cursor: pointer;
+}
+
+button.invisibutton {
+  border: 0;
+  background: transparent;
+}
+
+.list {
+  background: whitesmoke;
+}
+
+.list > ol > li:nth-child(odd) {
+  background: #eeeeee;
+}
+
+.list > ol > li:nth-child(even) {
+  background: whitesmoke;
+}
+
 .App {
   min-width: 250px;
+  position: relative;
 }
 
 .bar {
   position: relative;
   z-index: 3;
+  height: 50px;
+  width: 100%;
+  background: whitesmoke;
+}
+
+.bar-menu {
+  position: fixed;
+  top: 5px;
+  left: 5px;
+  z-index: 5;
+  padding: 10px;
+}
+
+.bar-menu .icon {
+  width: 20px;
 }
 
 .bar-field {
   position: fixed;
   top: 0;
+  height: 50px;
   width: 100%;
   font-size: large;
-  padding: 5px 8px 5px 30px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='30px' width='30px'><text x='5px' y='1.3em' font-size='large'>🔍</text></svg>");
-  background-repeat: no-repeat;
+  font-weight: bold;
+  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
+  padding: 5px 60px;
   z-index: 4;
+  color: dimgrey;
+  background: whitesmoke;
+  border: 0;
 }
 
-.bar-list {
-  position: absolute;
-  top: 35px;
-  z-index: 2;
-}
-
-.bar-list ol {
-  border: 1px solid grey;
-  background: white;
+.bar-field::placeholder {
+  color: darkgrey;
 }
 
 .bar-dismiss {
-  background: transparent;
-  border: 0;
   position: fixed;
-  top: 1px;
-  right: 1px;
+  top: 5px;
+  right: 10px;
   font-size: large;
-  padding: 5px 23px 5px 8px;
   z-index: 4;
+  padding: 13px 7px;
+}
+
+.bar-dismiss .icon {
+  width: 15px;
+}
+
+.bar-list {
+  max-width: 100%;
+  max-height: 100vh;
+  overflow-y: scroll;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  display: grid;
+  grid-template-rows: 50px 1fr;
+  grid-template-areas:
+    "nothing"
+    "results";
+  box-shadow: 0px 12px 15px 0px rgb(0,0,0,0.25);
+}
+
+.bar-list ol {
+  grid-area: results;
+  border: 1px solid grey;
+  background: whitesmoke;
 }
 
 .main {
   position: relative;
   z-index: 1;
-  padding: 50px 5px;
+  padding: 65px 5px;
   width: 100%;
 }
 .player-alt {
@@ -85,18 +139,27 @@ svg {
   max-width: 100%;
 }
 
-.youtube-result.actionable {
-  cursor: pointer;
+.youtube-result {
+  display: grid;
+  grid-template-columns: 60px auto;
+  grid-template-areas:
+    "left right"
 }
 
-.youtube-result img {
+.youtube-result .art {
+  grid-area: left;
+  border: 0;
+  position: relative;
+}
+
+.youtube-result .art-img {
   width: 60px;
   height: 45px;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 .youtube-result-info {
-  display: inline-block;
+  grid-area: right;
 }
 
 .youtube-result-title {
@@ -106,38 +169,57 @@ svg {
 
 .youtube-result-channel {
   font-size: x-small;
+  margin-right:
+
 }
 
 .youtube-result-title, .youtube-result-channel {
   padding: 5px;
 }
 
-.actionable {
-  position: relative;
+.youtube-result .icon {
+  width: 20px;
 }
 
-.actionable-actions {
-  position: absolute;
-  top: 0;
-  right: 0;
+
+
+
+.youtube-result.actionable {
+  cursor: pointer;
 }
 
-.youtube-result .actionable-actions {
-  top: 13px;
-}
-
-.actionable-actions button {
+.youtube-result button {
+  float: right;
+  padding: 15px 15px 5px 5px;
   border: 0;
   background: transparent;
 }
 
-.actionable-actions button:hover, .controls button:hover {
+.youtube-result button span, .youtube-result button img {
+  vertical-align: middle;
+}
+
+.youtube-result button:hover, .controls button:hover {
   color: steelblue;
+}
+
+.actions {
+  position: relative;
+  float: right;
+  clear: right;
+}
+
+.action-label {
+  margin-right: 15px;
+}
+
+.action-icon {
+  width: 20px;
 }
 
 .upNext, .history {
   text-align: left;
-  margin: 10px auto;
+  margin: 0 auto;
   width: 100%;
   max-width: 640px;
 }
@@ -146,43 +228,46 @@ svg {
   position: fixed;
   z-index: 1;
   bottom: 0;
+  left: 0;
   width: 100%;
   font-size: medium;
-
-  background: white;
+  padding: 5px 0;
+  background: whitesmoke;
   box-shadow: 0px -2px 5px 0px rgba(0,0,0,0.25);
+}
 
+.controls-buttons {
   display: grid;
-  grid-template-rows: minmax(30px, 1fr) 10px min(30px, 1fr);
-  grid-template-columns: 50px minmax(50px, 1fr) 50px;
+  grid-template-columns: 50px 50px minmax(50px, 1fr) 50px 50px;
   grid-template-areas:
-    "playingNow playingNow    playingNow"
-    "seekBar seekBar    seekBar"
-    "prev    togglePlaying next"
+    "history prev togglePlaying next upNext";
+  background: whitesmoke;
 }
 
 .controls button {
-  font-size: inherit;
+  padding: 10px 0;
   border: 0;
+  color: dimgrey;
+  fill: currentColor;
   background: transparent;
-  padding-bottom: 10px;
+  font-weight: bold;
+}
+
+.controls-buttons button img {
+  width: 20px;
 }
 
 .playingNow {
-  box-shadow: 0 -2px 5px rgba(200, 200, 200, 0.25);
-  grid-area: playingNow;
-  vertical-align: middle;
+  padding: 0 15px 0 0;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.25);
   font-size: small;
-  position: relative;
-}
-.playingNow .actionable-actions {
-  right: 20px;
+  background: whitesmoke;
 }
 
 .seek-bar {
   grid-area: seekBar;
   border: 1px solid #f8f8f8;
-  background: white;
+  background: dimgrey;
 }
 
 .seek-bar--played {
@@ -199,14 +284,22 @@ svg {
   margin-top: -13px;
 }
 
-.prev {
+.controls-history {
+  grid-area: history;
+}
+
+.controls-prev {
   grid-area: prev;
 }
-.togglePlaying {
+.controls-togglePlaying {
   grid-area: togglePlaying;
 }
-.next {
+
+.controls-next {
   grid-area: next;
+}
+.controls-upNext {
+  grid-area: upNext;
 }
 
 .queue {
@@ -214,9 +307,8 @@ svg {
 }
 
 .queue h3 {
-  text-align: center;
   font-size: large;
-  margin-top: 1em;
+  padding: 10px;
 }
 
 .inCollection {
@@ -229,22 +321,67 @@ svg {
 
 .autoparty {
   position: relative;
-  padding: 0;
+  padding: 15px;
   width: 100%;
   max-width: 640px;
   margin: 0 auto 30px;
+  background-color: dimgrey;
+  background-repeat: no-repeat;
+  background-position: top right;
+  background-origin: content-box;
+  background-size: 48px 48px;
 }
 
-.autoparty form {
-  display: grid;
-  grid-template-columns: 3fr 1fr;
+.autoparty h3 {
+  font-size: xx-large;
+  padding: 10px 5px 15px;
+}
+
+.autoparty.disconnected {
+  background-image: url('/static/party-disconnected.svg');
+}
+.autoparty.connected {
+  background-image: url('/static/party-connected.svg');
+}
+.autoparty.hosting.disconnected {
+  background-image: url('/static/party-hosting-disconnected.svg');
+}
+.autoparty.hosting.connected {
+  background-image: url('/static/party-hosting.svg');
+}
+.autoparty.attending.disconnected {
+  background-image: url('/static/party-attending-disconnected.svg')
+}
+.autoparty.attending.connected {
+  background-image: url('/static/party-attending.svg')
+}
+.autoparty.attending.host-disconnected {
+  background-image: url('/static/party-attending-host-disconnected.svg')
+}
+
+.autoparty.disconnected button, .autoparty:disabled {
+  color: grey;
+}
+
+.autoparty h3 {
+  width: 100%;
+}
+
+.autoparty input {
+  display: block;
+  width: 100%;
+}
+
+
+.autoparty button {
+  width: 100%;
 }
 
 .autoparty input, .autoparty button {
   padding: 5px;
   font-size: medium;
   /* border-radius: 0; */
-  background: transparent;
+  background: whitesmoke;
   line-height: 1.5em;
 }
 
@@ -253,54 +390,12 @@ svg {
   cursor: pointer;
 }
 
-.autoparty.connected::before {
-  content: 'connected'
-}
-.autoparty.disconnected::before {
-  content: 'disconnected'
-}
-.autoparty.checking::after {
-  content: 'checking'
-}
-.autoparty.hosting::after {
-  content: 'hosting'
-}
-.autoparty.attending::after {
-  content: 'attending'
-}
-
-.autoparty.disconnected button, .autoparty:disabled {
-  color: grey;
-}
-
-.autoparty input:enabled:hover, .autoparty button:enabled:hover {
-  background: rgba(0, 0, 0, 0.1);
-}
-
 .autoparty .dismiss {
   position: absolute;
   top: 0;
   right: 0;
   border: 0;
   padding: 5px 10px;
-}
-
-.showPlayerToggle {
-  color: black;
-}
-.showPlayerToggle svg {
-  width: 1.2em;
-  vertical-align: middle;
-}
-.showPlayerToggle--hiding {
-  color: black;
-}
-.showPlayerToggle--showing {
-  color: green;
-}
-
-.removeButton {
-  padding-right: 20px;
 }
 
 .command {

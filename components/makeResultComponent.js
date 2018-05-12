@@ -7,21 +7,51 @@ import YouTubeVideo from './YouTubeVideo'
 import Action from './Action'
 
 function makeResultComponent (opts) {
+  const options = opts
+  options.actions = opts.actions || {}
+  const nbActions = Object.keys(options.actions).length
   class ResultComponent extends Component {
     constructor (props) {
       super(props)
       this.onClick = this.onClick.bind(this)
+
+      this.state = {
+        showingActions: false
+      }
     }
 
     onClick (event) {
-      if (opts.play) {
-        opts.play(this.props.data, this.props.idx)
+      if (options.onClick) {
+        options.onClick(this.props.data, this.props.idx)
       }
     }
 
     render () {
       const classes = this.props.className.split(' ')
       classes.push('actionable')
+
+      let corner
+      if (nbActions > 0) {
+        if (this.state.showingActions) {
+          corner = (
+            <button className='invisibutton' onClick={(event) => {
+              event.stopPropagation()
+              this.setState({ 'showingActions': false })
+            }}>
+              <img src='/static/x.svg' className='icon' alt='cancel' title='cancel' />
+            </button>
+          )
+        } else {
+          corner = (
+            <button className='invisibutton' onClick={(event) => {
+              event.stopPropagation()
+              this.setState({ 'showingActions': true })
+            }}>
+              <img src='/static/plus.svg' className='icon' alt='more options' title='more options' />
+            </button>
+          )
+        }
+      }
       return (
         <YouTubeVideo
           data={this.props.data}
@@ -29,70 +59,136 @@ function makeResultComponent (opts) {
           onClick={this.onClick}
           className={classes.join(' ')}
         >
-          {opts.playNext
+          {corner}
+          {
+            (this.state.showingActions)
+              ? (
+                <ul className='actions'>
+                  {Object.keys(options.actions).map((key) => {
+                    const action = options.actions[key]
+                    return <li key={key}>
+                      <Action
+                        data={this.props.data}
+                        go={action.go}
+                        txt={action.txt}
+                        icon={action.icon}
+                        idx={this.props.idx}
+                      />
+                    </li>
+                  })}
+                </ul>
+              )
+              : null
+          }
+          {/* {
+            this.state.showingActions
+              ? (
+            <ul className='actions'>
+            {options.actions.play
             ? (
-              <Action
-                data={this.props.data}
-                go={opts.playNext}
-                txt='>'
-                className='toUpNextButton'
-              />
+            <li>
+            <Action
+            data={this.props.data}
+            go={options.actions.play}
+            txt='Play Now'
+            icon={(
+            <img
+            className='icon'
+            src='/static/play.svg'
+            alt='play now'
+            title='play now'
+            />
+            )}
+            className='toUpNextButton'
+            />
+            </li>
+            ) : null}
+            {options.actions.playNext
+            ? (
+            <li>
+            <Action
+            data={this.props.data}
+            go={options.actions.playNext}
+            txt='Play Next'
+            icon='>'
+            className='toUpNextButton'
+            />
+            </li>
             ) : null}
 
-          {opts.enqueue
+            {options.actions.enqueue
             ? (
-              <Action
-                data={this.props.data}
-                go={opts.enqueue}
-                txt='⤵'
-                className='enqueueButton'
-              />
+            <li>
+            <Action
+            data={this.props.data}
+            go={options.actions.enqueue}
+            txt='Play Last'
+            icon='⤵'
+            className='enqueueButton'
+            />
+            </li>
             ) : null}
+            {options.actions.remove
+            ? (
+            <li>
+            <Action
+            data={this.props.data}
+            go={options.actions.remove}
+            txt='Remove'
+            icon={(<img className='icon' src='/static/x.svg' title='remove' alt='remove' />)}
+            className='removeButton'
+            />
+            </li>
+            ) : null}
+            </ul>
+              )
+              : null
+          } */}
 
-          {opts.toggleShowPlayer
+          {/* {options.toggleShowPlayer
             ? (
               <Action
-                data={this.props.data}
-                go={opts.toggleShowPlayer}
-                txt='show/hide player'
-                inline={
-                  <svg version='1.1'
-                    xmlns='http://www.w3.org/2000/svg'
-                    viewBox='0 0 32 32'
-                  >
-                    <title>show/hide player</title>
-                    <path d='M12 9c0-2.761 2.239-5 5-5s5 2.239 5 5c0 2.761-2.239 5-5 5s-5-2.239-5-5zM0 9c0-2.761 2.239-5 5-5s5 2.239 5 5c0 2.761-2.239 5-5 5s-5-2.239-5-5zM24 19v-3c0-1.1-0.9-2-2-2h-20c-1.1 0-2 0.9-2 2v10c0 1.1 0.9 2 2 2h20c1.1 0 2-0.9 2-2v-3l8 5v-14l-8 5zM20 24h-16v-6h16v6z' />
-                  </svg>
-                }
-                className={opts.showPlayer
-                  ? 'showPlayerToggle showPlayerToggle--showing'
-                  : 'showPlayerToggle showPlayerToggle--hiding'}
+            data={this.props.data}
+            go={options.actions.toggleShowPlayer}
+            txt='show/hide player'
+            icon={
+            <svg version='1.1'
+            xmlns='http://www.w3.org/2000/svg'
+            viewBox='0 0 32 32'
+            >
+            <title>show/hide player</title>
+            <path d='M12 9c0-2.761 2.239-5 5-5s5 2.239 5 5c0 2.761-2.239 5-5 5s-5-2.239-5-5zM0 9c0-2.761 2.239-5 5-5s5 2.239 5 5c0 2.761-2.239 5-5 5s-5-2.239-5-5zM24 19v-3c0-1.1-0.9-2-2-2h-20c-1.1 0-2 0.9-2 2v10c0 1.1 0.9 2 2 2h20c1.1 0 2-0.9 2-2v-3l8 5v-14l-8 5zM20 24h-16v-6h16v6z' />
+            </svg>
+            }
+            className={options.showPlayer
+            ? 'showPlayerToggle showPlayerToggle--showing'
+            : 'showPlayerToggle showPlayerToggle--hiding'}
               />
-            ) : null}
+          ) : null} */}
 
-          {opts.remember && opts.isInCollection
+          {/* {options.remember && options.isInCollection
             ? (
               <Action
-                data={this.props.data}
-                go={opts.remember}
-                txt='✔'
-                className={
-                  opts.isInCollection(this.props.data)
-                    ? 'inCollection'
-                    : 'notInCollection'
-                }
+            data={this.props.data}
+            go={options.remember}
+            txt='✔'
+            className={
+            options.isInCollection(this.props.data)
+            ? 'inCollection'
+            : 'notInCollection'
+            }
               />
-            ) : null}
-          {opts.dismiss
+          ) : null} */}
+          {/* {options.dismiss
             ? (
               <Action
-                data={this.props.data}
-                go={() => {
-                  opts.dismiss(this.props.idx)
-                }}
-                txt='x'
+            data={this.props.data}
+            go={() => {
+            options.dismiss(this.props.idx)
+            }}
+            icon={(<img src='/static/x.svg' alt='remove' title='remove' className='remove-button icon' />)}
               />
-            ) : null}
+          ) : null} */}
         </YouTubeVideo>
       )
     }

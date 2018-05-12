@@ -11,7 +11,7 @@ class Action extends Component {
 
   onClick (event) {
     event.stopPropagation()
-    this.props.go(this.props.data)
+    this.props.go(this.props.data, this.props.idx)
   }
 
   render () {
@@ -22,7 +22,12 @@ class Action extends Component {
         onClick={this.onClick}
         tabIndex='-1'
       >
-        {this.props.inline || this.props.txt}
+        {this.props.txt
+          ? (
+            <span className='action-label'>{this.props.txt}</span>
+          )
+          : null}
+        {this.props.icon}
       </button>
     )
   }
@@ -33,7 +38,8 @@ const props = [
   { name: 'data', type: PropTypes.object.isRequired },
   { name: 'go', type: PropTypes.func.isRequired },
   { name: 'txt', type: PropTypes.string.isRequired },
-  { name: 'inline', type: PropTypes.node, val: null }
+  { name: 'icon', type: PropTypes.node, val: null },
+  { name: 'idx', type: PropTypes.number.isRequired }
 ]
 
 Action.defaultProps = defaultProps(props)
