@@ -1,5 +1,7 @@
 # TODO
 
+Field debugging capabilities in the Bar
+
 SVG layout
 
 Can no longer party, wtf
