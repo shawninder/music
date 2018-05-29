@@ -29,7 +29,15 @@ class Media {
           return []
         } else {
           console.log(`Got results from YouTube in ${Date.now() - start}ms`)
-          return data.items.filter(this.isPlayable)
+          return data.items.reduce((acc, item) => {
+            if (this.isPlayable(item)) {
+              acc.push({
+                type: 'YouTubeVideo',
+                ...item
+              })
+            }
+            return acc
+          }, [])
         }
       })
   }

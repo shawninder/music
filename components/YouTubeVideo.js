@@ -17,17 +17,26 @@ class YouTubeVideo extends Component {
   render () {
     const classes = this.props.className.split(' ')
     classes.push('youtube-result')
+    const toggleClasses = ['toggle']
+    if (this.props.data.inQueue) {
+      toggleClasses.push('toggled')
+    }
     return (
       <div
         className={classes.join(' ')}
         onClick={this.props.onClick}
       >
-        <div className='toggle'>
+        <div className={toggleClasses.join(' ')}>
           <div
             className='art'
             onDragStart={this.dragStart}
             draggable
           >
+            <div
+              className='idx'
+            >
+              {this.props.data.queueIndex}
+            </div>
             <img
               className='art-img'
               src={this.props.data.data.snippet.thumbnails.default.url}

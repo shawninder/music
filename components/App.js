@@ -45,8 +45,20 @@ class App extends Component {
     this.restartTrack = this.restartTrack.bind(this)
     this.onTrackEnd = this.onTrackEnd.bind(this)
     this.getPartyState = this.getPartyState.bind(this)
+    this.decorateBarItem = this.decorateBarItem.bind(this)
+    this.gotState = this.gotState.bind(this)
+    this.gotSlice = this.gotSlice.bind(this)
+    this.gotDispatch = this.gotDispatch.bind(this)
+    this.updateBarItems = this.updateBarItems.bind(this)
 
     this.bar = {}
+
+    this.queue = {
+      byId: (id) => {
+        const state = this.getPartyState()
+        return state.queue.ids[id]
+      }
+    }
 
     this.dict = new Dict(props.dict.txt, props.dict.availLangs, props.acceptLanguage, global.navigator)
 
@@ -79,6 +91,27 @@ class App extends Component {
     }
   }
 
+  gotDispatch (action) {
+    this.props.dispatch(action)
+    setTimeout(this.updateBarItems, 0)
+  }
+
+  gotState (state) {
+    this.props.dispatch({
+      type: 'Party:gotState',
+      state
+    })
+    setTimeout(this.updateBarItems, 0)
+  }
+
+  gotSlice (slice) {
+    this.props.dispatch({
+      type: 'Party:gotSlice',
+      slice
+    })
+    setTimeout(this.updateBarItems, 0)
+  }
+
   keyDown (event) {
     if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
       this.bar.focus()
@@ -105,7 +138,7 @@ class App extends Component {
 
   play (data) {
     const state = this.getPartyState()
-    if (state.queue.now && state.queue.now.key) {
+    if (state.queue.now.key) {
       this.dispatch({
         type: 'Queue:toHistory',
         data: state.queue.now
@@ -124,7 +157,7 @@ class App extends Component {
 
   togglePlaying (data) {
     const state = this.getPartyState()
-    if (state.queue.now) {
+    if (state.queue.now.key) {
       const newPlaying = !state.player.playing
       this.dispatch({
         type: 'Player:setPlaying',
@@ -138,22 +171,32 @@ class App extends Component {
   }
 
   playNext (data) {
-    const newData = cloneDeep(data)
-    // delete newData.Component
-    newData.key = `${data.data.id.videoId}:${Date.now()}`
-    this.dispatch({
-      type: 'Queue:playNext',
-      data: newData
-    })
+    const state = this.getPartyState()
+    if (!state.queue.now.key) {
+      this.play(data)
+    } else {
+      const newData = cloneDeep(data)
+      // delete newData.Component
+      newData.key = `${data.data.id.videoId}:${Date.now()}`
+      this.dispatch({
+        type: 'Queue:playNext',
+        data: newData
+      })
+    }
   }
 
   enqueue (data) {
-    const newData = cloneDeep(data)
-    newData.key = `${data.key || data.data.id.videoId}:${Date.now()}`
-    this.dispatch({
-      type: 'Queue:enqueue',
-      data: newData
-    })
+    const state = this.getPartyState()
+    if (!state.queue.now.key) {
+      this.play(data)
+    } else {
+      const newData = cloneDeep(data)
+      newData.key = `${data.key || data.data.id.videoId}:${Date.now()}`
+      this.dispatch({
+        type: 'Queue:enqueue',
+        data: newData
+      })
+    }
   }
 
   dequeue (data, idx) {
@@ -260,6 +303,48 @@ class App extends Component {
     }
   }
 
+  decorateBarItem (item) {
+    const state = this.getPartyState()
+    const decorated = cloneDeep(item)
+    const id = decorated.key
+    let queueIndex = null
+    const history = state.queue.history
+    if (history.length > 0) {
+      history.forEach((track) => {
+        if (track.data.id.videoId === id) {
+          queueIndex = track.queueIndex
+        }
+      })
+    }
+    const upNext = state.queue.upNext
+    if (upNext.length > 0) {
+      upNext.forEach((track) => {
+        if (track.data.id.videoId === id) {
+          queueIndex = track.queueIndex
+        }
+      })
+    }
+    const now = state.queue.now
+    if (now.data && now.data.id.videoId === id) {
+      queueIndex = now.queueIndex
+    }
+    item.queueIndex = queueIndex
+    const inQueue = (item.queueIndex !== null)
+    decorated.inQueue = inQueue
+    decorated.queueIndex = queueIndex
+    return decorated
+  }
+
+  updateBarItems () {
+    console.log('updateBarItems!')
+    const data = this.props.bar.items.map(this.decorateBarItem)
+    this.props.dispatch({
+      type: 'Bar:setItems',
+      data
+    })
+    console.log('====data', data)
+  }
+
   render () {
     const state = this.getPartyState()
     return (
@@ -269,7 +354,9 @@ class App extends Component {
           placeholder={this.dict.get('bar.placeholder')}
           query={this.props.bar.query}
           items={this.props.bar.items}
-          suggest={this.props.findMusic}
+          suggest={(query) => {
+            return this.props.findMusic(query)
+          }}
           ResultComponent={makeResultComponent({
             actions: {
               play: {
@@ -294,9 +381,10 @@ class App extends Component {
             // isInCollection: this.isInCollection
           })}
           onResult={{
-            enter: this.play,
+            enter: this.enqueue,
             'shift+enter': this.playNext,
-            'ctrl+enter': this.enqueue
+            'ctrl+enter': this.play,
+            'cmd+enter': this.play
           }}
           commands={{
             clearHistory: this.clearHistory,
@@ -335,6 +423,7 @@ class App extends Component {
             this.bar = ref
           }}
           autoFocus
+          decorateItem={this.decorateBarItem}
         />
         <div className='main'>
           <Party
@@ -350,6 +439,9 @@ class App extends Component {
             }}
             socket={this.props.socket}
             {...this.props.party} // state
+            gotState={this.gotState}
+            gotSlice={this.gotSlice}
+            gotDispatch={this.gotDispatch}
           />
           <div className='queue'>
             <List

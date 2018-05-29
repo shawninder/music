@@ -12,7 +12,7 @@ body {
     "Droid Sans", "Helvetica Neue", sans-serif; // Old Android
   */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  background-color: #0f205e;
+  background-color: #14152b;
 }
 
 input[type=text].disabled {
@@ -32,15 +32,13 @@ button.invisibutton {
   background: transparent;
 }
 
-.list {
-  background: whitesmoke;
-}
-
 .list > ol > li:nth-child(odd) {
+  color: black;
   background: #eeeeee;
 }
 
 .list > ol > li:nth-child(even) {
+  color: black;
   background: whitesmoke;
 }
 
@@ -141,15 +139,55 @@ button.invisibutton {
 
 .youtube-result {
   display: grid;
-  grid-template-columns: 60px auto;
+  grid-template-columns: 100px auto;
   grid-template-areas:
     "left right"
 }
 
+.youtube-result .toggle {
+  width: 100px;
+  padding: 2px 5px;
+  font-size: x-small;
+  font-weight: bold;
+}
+
+.youtube-result .toggle.toggled {
+  text-align: right;
+}
+
+.youtube-result .toggle.toggled img {
+  margin-left: 5px;
+}
+
+.youtube-result .toggle .idx {
+  display: inline;
+  color: #666666;
+}
 .youtube-result .art {
   grid-area: left;
-  border: 0;
+  border: 1px solid #a1b2e6;
+  border-radius: 5px;
   position: relative;
+}
+
+.youtube-result .art img {
+  border-radius: 5px;
+}
+
+.youtube-result .toggle .art {
+  background-color: #b6d2f0;
+  box-shadow: inset -3px 0px 5px -3px rgba(0,0,0,0.75);
+}
+
+.youtube-result .toggle.toggled .art {
+  box-shadow: inset 3px 0px 5px -3px rgba(0,0,0,0.75);
+}
+
+.youtube-result .toggle .art-img {
+  box-shadow: 3px 0 5px 0 rgba(0, 0, 0, 0.75);
+}
+.youtube-result .toggle.toggled .art-img {
+  box-shadow: -3px 0 5px 0 rgba(0, 0, 0, 0.75);
 }
 
 .youtube-result .art-img {
@@ -180,9 +218,6 @@ button.invisibutton {
 .youtube-result .icon {
   width: 20px;
 }
-
-
-
 
 .youtube-result.actionable {
   cursor: pointer;
@@ -217,11 +252,34 @@ button.invisibutton {
   width: 20px;
 }
 
+.upNext h3, .history h3 {
+  cursor: pointer;
+  text-align: center;
+}
+
+.upNext.not-collapsed>h3, .history.not-collapsed>h3 {
+  color: darkgrey;
+  background-color: whitesmoke;
+}
+
+.upNext.collapsed h3:hover, .history.collapsed h3:hover {
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.upNext.not-collapsed h3:hover, .history.not-collapsed h3:hover {
+  background-color: #e8e8e8;
+}
+
+.collapsed>ol {
+  display: none;
+}
+
 .upNext, .history {
   text-align: left;
   margin: 0 auto;
   width: 100%;
   max-width: 640px;
+  color: whitesmoke;
 }
 
 .controls {
@@ -275,15 +333,6 @@ button.invisibutton {
   background: hotpink;
 }
 
-.seek-bar--handle {
-  height: 15px;
-  width: 15px;
-  background: #e0e0e0;
-  border: 1px solid #f8f8f8;
-  border-radius: 2px;
-  margin-top: -13px;
-}
-
 .controls-history {
   grid-area: history;
 }
@@ -325,7 +374,7 @@ button.invisibutton {
   width: 100%;
   max-width: 640px;
   margin: 0 auto 30px;
-  background-color: dimgrey;
+  background-color: whitesmoke;
   background-repeat: no-repeat;
   background-position: top right;
   background-origin: content-box;
@@ -406,20 +455,4 @@ button.invisibutton {
 
 .fuzz--match {
   font-weight: bold;
-}
-
-.collapsed>h3::after {
-  content: 'v';
-  margin-left: 20px;
-  font-size: 70%;
-}
-
-.not-collapsed>h3::after {
-  content: '^';
-  margin-left: 20px;
-  font-size: 70%;
-}
-
-.collapsed>ol {
-  display: none;
 }

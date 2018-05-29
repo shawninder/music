@@ -93,12 +93,13 @@ class Bar extends Component {
         .then((results) => {
           if (this.props.query === query) {
             const items = results.map((item) => {
+              const id = item.id.videoId
               const obj = {
                 type: 'YouTubeVideo',
-                key: item.id.videoId,
+                key: id,
                 data: item
               }
-              return obj
+              return this.props.decorateItem(obj)
             })
             this.props.dispatch({
               type: 'Bar:setItems',

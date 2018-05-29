@@ -75,8 +75,8 @@ class List extends Component {
   render () {
     const items = this.props.items.map((item, idx) => {
       const itemClone = cloneDeep(item)
-      const Component = item.Component || this.props.defaultComponent
       delete itemClone.Component
+      const Component = item.Component || this.props.defaultComponent
       const node = (
         <Component
           data={itemClone}

@@ -51,6 +51,7 @@ class Party extends Component {
               value: res.exists
             })
           }
+          // TODO Make sure we're always showing the correct "checking" status
           this.props.dispatch({
             type: 'Party:checking',
             value: false
@@ -195,25 +196,19 @@ class Party extends Component {
     this.props.socket.on('state', (state) => {
       console.log('SOCKET state')
       if (this.props.attending) {
-        this.props.dispatch({
-          type: 'Party:gotState',
-          state
-        })
+        this.props.gotState(state)
       }
     })
 
     this.props.socket.on('slice', (slice) => {
       console.log('SOCKET slice')
       if (this.props.attending) {
-        this.props.dispatch({
-          type: 'Party:gotSlice',
-          slice
-        })
+        this.props.gotSlice(slice)
       }
     })
 
     this.props.socket.on('dispatch', (action) => {
-      this.props.dispatch(action)
+      this.props.gotDispatch(action)
     })
 
     this.props.socket.on('*', function () {

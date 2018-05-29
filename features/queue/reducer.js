@@ -2,27 +2,34 @@ import cloneDeep from 'lodash.clonedeep'
 
 function playNext (state, action) {
   const newState = cloneDeep(state)
-  let items = action.data
+  let items = cloneDeep(action.data)
   if (!Array.isArray(items)) {
     items = [items]
   }
   const now = Date.now()
-  items = items.map((item) => {
+  items = items.map((item, idx) => {
     item.key += `:${now}`
+    item.inQueue = true
+    item.queueIndex = 1 + idx
     return item
   })
-  newState.upNext = items.concat(newState.upNext)
+  newState.upNext = items.concat(newState.upNext.map((upcoming, idx) => {
+    upcoming.queueIndex = items.length + idx
+    return upcoming
+  }))
   return newState
 }
 function toHistory (state, action) {
   const newState = cloneDeep(state)
-  let items = action.data
+  let items = cloneDeep(action.data)
   if (!Array.isArray(items)) {
     items = [items]
   }
   const now = Date.now()
   newState.history = newState.history.concat(items.map((item, idx) => {
     item.key += `:${now}_${idx}`
+    item.inQueue = true
+    item.queueIndex = newState.history.length + idx
     return item
   }))
   return newState
@@ -32,7 +39,9 @@ export default function queueReducer (state = {}, action) {
   let newState = cloneDeep(state)
   switch (action.type) {
     case 'Queue:play':
-      newState.now = action.data
+      newState.now = cloneDeep(action.data)
+      newState.now.inQueue = true
+      newState.now.queueIndex = 0
       break
     case 'Queue:toHistory': {
       newState = toHistory(newState, action)
@@ -43,21 +52,33 @@ export default function queueReducer (state = {}, action) {
       break
     }
     case 'Queue:enqueue':
-      newState.upNext = newState.upNext.concat([action.data])
+      const newItem = cloneDeep(action.data)
+      newItem.inQueue = true
+      newItem.queueIndex = newState.upNext.length
+      newState.upNext = newState.upNext.concat([newItem])
       break
     case 'Queue:dequeue':
-      newState.upNext = action.newUpNext
+      newState.upNext = action.newUpNext.map((item, idx) => {
+        item.queueIndex = 1 + idx
+        return item
+      })
       break
     case 'Queue:prev': {
       const history = newState.history
       const len = history.length
       if (len !== 0) {
         const now = newState.now
-        const upNext = newState.upNext
+        let upNext = newState.upNext
         const previous = cloneDeep(history.pop())
         previous.key = `${previous.key.slice(0, previous.key.lastIndexOf(':'))}${Date.now()}`
+        previous.queueIndex = 0
         if (now && now.key) {
+          now.queueIndex = 1
           upNext.unshift(now)
+          upNext = upNext.map((item) => {
+            item.queueIndex += 1
+            return item
+          })
         }
         newState.now = previous
         newState.history = history
@@ -66,21 +87,31 @@ export default function queueReducer (state = {}, action) {
       break
     }
     case 'Queue:next': {
-      const history = newState.history
-      let now = newState.now
-      const upNext = newState.upNext
+      let history = cloneDeep(newState.history)
+      let now = cloneDeep(newState.now)
+      let upNext = cloneDeep(newState.upNext)
       if (upNext.length > 0) {
         // Put playing now in history
         if (now && now.key) {
           const item = cloneDeep(now)
           item.key += `:${Date.now()}`
+          item.queueIndex = -1
           delete item.Component
+          history = history.map((i) => {
+            i.queueIndex -= 1
+            return i
+          })
           history.push(cloneDeep(item))
         }
 
         // Play next track
         const next = upNext.shift()
+        upNext = upNext.map((item, idx) => {
+          item.queueIndex = 1 + idx
+          return item
+        })
         next.key = next.key.slice(0, next.key.lastIndexOf(';'))
+        next.queueIndex = 0
         newState.now = next
       } else {
         // TODO
@@ -124,6 +155,16 @@ export default function queueReducer (state = {}, action) {
         }
       }
       newState.now = data
+      const hLen = newState.history.length
+      newState.history = newState.history.map((item, idx) => {
+        item.queueIndex = -hLen + 1 + idx
+        return item
+      })
+      newState.now.queueIndex = 0
+      newState.upNext = newState.upNext.map((item, idx) => {
+        item.queueIndex = 1 + idx
+        return item
+      })
       break
     }
   }
