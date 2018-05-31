@@ -25,12 +25,6 @@ const defaultPlayer = {
 }
 
 const defaultQueue = {
-  ids: {},
-  order: [],
-  current: null,
-
-
-
   history: [],
   now: {},
   upNext: []

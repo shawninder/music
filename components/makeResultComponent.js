@@ -21,8 +21,17 @@ function makeResultComponent (opts) {
     }
 
     onClick (event) {
-      if (options.onClick) {
-        options.onClick(this.props.data, this.props.idx)
+      event.stopPropagation()
+      if (this.state.showingActions) {
+        this.setState({
+          showingActions: false
+        })
+      } else if (this.props.data.inQueue) {
+        this.setState({
+          showingActions: true
+        })
+      } else {
+        options.actions.enqueue.go(this.props.data, this.props.idx)
       }
     }
 
@@ -36,20 +45,13 @@ function makeResultComponent (opts) {
           corner = (
             <button className='invisibutton' onClick={(event) => {
               event.stopPropagation()
-              this.setState({ 'showingActions': false })
+              this.setState({ showingActions: false })
             }}>
               <img src='/static/x.svg' className='icon' alt='cancel' title='cancel' />
             </button>
           )
         } else {
-          corner = (
-            <button className='invisibutton' onClick={(event) => {
-              event.stopPropagation()
-              this.setState({ 'showingActions': true })
-            }}>
-              <img src='/static/plus.svg' className='icon' alt='more options' title='more options' />
-            </button>
-          )
+          corner = null
         }
       }
       return (

@@ -53,13 +53,6 @@ class App extends Component {
 
     this.bar = {}
 
-    this.queue = {
-      byId: (id) => {
-        const state = this.getPartyState()
-        return state.queue.ids[id]
-      }
-    }
-
     this.dict = new Dict(props.dict.txt, props.dict.availLangs, props.acceptLanguage, global.navigator)
 
     global.dev = props.dev
@@ -153,6 +146,7 @@ class App extends Component {
       type: 'Player:setPlaying',
       playing: true
     })
+    setTimeout(this.updateBarItems, 0)
   }
 
   togglePlaying (data) {
@@ -182,6 +176,7 @@ class App extends Component {
         type: 'Queue:playNext',
         data: newData
       })
+      setTimeout(this.updateBarItems, 0)
     }
   }
 
@@ -196,20 +191,19 @@ class App extends Component {
         type: 'Queue:enqueue',
         data: newData
       })
+      setTimeout(this.updateBarItems, 0)
     }
   }
 
   dequeue (data, idx) {
-    console.log('DEQUEUE', idx)
     const state = this.getPartyState()
     const newUpNext = cloneDeep(state.queue.upNext)
-    console.log('BEFORE', newUpNext, idx)
     pullAt(newUpNext, idx)
-    console.log('AFTER', newUpNext, idx)
     this.dispatch({
       type: 'Queue:dequeue',
       newUpNext
     })
+    setTimeout(this.updateBarItems, 0)
   }
 
   // remember (data) {
@@ -336,13 +330,11 @@ class App extends Component {
   }
 
   updateBarItems () {
-    console.log('updateBarItems!')
     const data = this.props.bar.items.map(this.decorateBarItem)
     this.props.dispatch({
       type: 'Bar:setItems',
       data
     })
-    console.log('====data', data)
   }
 
   render () {
@@ -373,9 +365,13 @@ class App extends Component {
                 go: this.enqueue,
                 txt: 'play last',
                 icon: <img className='action-icon' src='/static/plus.svg' title='play last' alt='play last' />
+              },
+              remove: {
+                go: this.dequeue,
+                txt: 'remove',
+                icon: <img className='action-icon' src='/static/x.svg' title='remove' alt='remove' />
               }
-            },
-            onClick: this.enqueue
+            }
 
             // remember: this.remember,
             // isInCollection: this.isInCollection
@@ -445,7 +441,7 @@ class App extends Component {
           />
           <div className='queue'>
             <List
-              title={this.dict.get('history.title')}
+              title={`${this.dict.get('history.title')} (${state.queue.history.length})`}
               className='history'
               items={state.queue.history}
               defaultComponent={makeResultComponent({
@@ -456,7 +452,7 @@ class App extends Component {
                     icon: <img className='action-icon' src='/static/play.svg' title='jump back to' alt='jump back to' />
                   },
                   playNow: {
-                    go: this.playNow,
+                    go: this.play,
                     txt: 'play now',
                     icon: <img className='action-icon' src='/static/play.svg' title='play now' alt='play now' />
                   },
@@ -470,8 +466,7 @@ class App extends Component {
                     txt: 'play last',
                     icon: <img className='action-icon' src='/static/plus.svg' title='play last' alt='play last' />
                   }
-                },
-                onClick: this.jumpBackTo
+                }
                 // remember: this.remember,
                 // isInCollection: this.isInCollection
               })}
@@ -511,7 +506,7 @@ class App extends Component {
               }
             </section>
             <List
-              title={this.dict.get('upnext.title')}
+              title={`${this.dict.get('upnext.title')} (${state.queue.upNext.length})`}
               className='upNext'
               items={state.queue.upNext}
               defaultComponent={makeResultComponent({
@@ -541,8 +536,7 @@ class App extends Component {
                     txt: 'remove',
                     icon: <img className='action-icon' src='/static/x.svg' title='remove' alt='remove' />
                   }
-                },
-                onClick: this.jumpTo
+                }
                 // remember: this.remember,
 
                 // isInCollection: this.isInCollection
@@ -563,8 +557,7 @@ class App extends Component {
                 txt: this.props.app.showingPlayer ? 'hide player' : 'show player',
                 icon: <img className='action-icon' src='/static/camera.svg' title='toggle player' alt='toggle player' />
               }
-            },
-            onClick: this.togglePlaying
+            }
             // play: {
             //   go: this.togglePlaying,
             //   txt: 'play/pause',

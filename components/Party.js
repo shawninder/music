@@ -189,8 +189,8 @@ class Party extends Component {
       })
     })
 
-    this.props.socket.on('err', (data) => {
-      console.log('data', data)
+    this.props.socket.on('err', (errData) => {
+      console.error('SOCKET ERROR', errData)
     })
 
     this.props.socket.on('state', (state) => {

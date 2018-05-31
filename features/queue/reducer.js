@@ -54,7 +54,7 @@ export default function queueReducer (state = {}, action) {
     case 'Queue:enqueue':
       const newItem = cloneDeep(action.data)
       newItem.inQueue = true
-      newItem.queueIndex = newState.upNext.length
+      newItem.queueIndex = newState.upNext.length + 1
       newState.upNext = newState.upNext.concat([newItem])
       break
     case 'Queue:dequeue':
@@ -157,7 +157,7 @@ export default function queueReducer (state = {}, action) {
       newState.now = data
       const hLen = newState.history.length
       newState.history = newState.history.map((item, idx) => {
-        item.queueIndex = -hLen + 1 + idx
+        item.queueIndex = -hLen + idx
         return item
       })
       newState.now.queueIndex = 0
