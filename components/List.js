@@ -33,28 +33,34 @@ class List extends Component {
     return (event) => {
       const idx = Array.prototype.indexOf.call(this.el.childNodes, event.target)
       if (idx !== -1 && this.el) { // found and got list ref
-        event.stopPropagation()
         const item = items[idx]
         if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
+          event.preventDefault()
           this.props.onItem.space(item, idx, event)
         }
         if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && event.shiftKey) { // shift+space
+          event.preventDefault()
           this.props.onItem['shift+space'](item, idx, event)
         }
         if (event.keyCode === 32 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+space
+          event.preventDefault()
           this.props.onItem['ctrl+space'](item, idx, event)
         }
         if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
+          event.preventDefault()
           event.target.childNodes[0].click()
         }
         if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && event.shiftKey) { // shift+enter
+          event.preventDefault()
           this.props.onItem['shift+enter'](item, idx, event)
         }
         if (event.keyCode === 13 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+enter
+          event.preventDefault()
           this.props.onItem['ctrl+enter'](item, idx, event)
         }
       }
       if (event.keyCode === 38) { // up
+        event.preventDefault()
         const previousSibling = event.target.previousSibling
         if (previousSibling) {
           previousSibling.focus()
@@ -88,6 +94,7 @@ class List extends Component {
           data={itemClone}
           query={this.props.query}
           idx={idx}
+          queueIndex={itemClone.queueIndex}
         />
       )
       return (

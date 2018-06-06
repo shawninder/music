@@ -12,18 +12,19 @@ class Action extends Component {
 
   onClick (event) {
     event.stopPropagation()
-    this.props.go(this.props.data, this.props.idx)
+    this.props.go(this.props.data, this.props.idx, this.props.queueIndex, event)
   }
 
   onKeyDown (event) {
     event.stopPropagation()
+    const track = event.target.parentNode.parentNode.parentNode.parentNode
     if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
-      const track = event.target.parentNode.parentNode.parentNode.parentNode
       track.childNodes[0].click()
       track.focus()
     }
     if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
       event.target.childNodes[0].click()
+      track.focus()
     }
     if (event.keyCode === 38) { // up
       const previousSibling = event.target.parentNode.previousSibling

@@ -79,6 +79,7 @@ function makeResultComponent (opts) {
                         txt={action.txt}
                         icon={action.icon}
                         idx={this.props.idx}
+                        queueIndex={this.props.queueIndex}
                         targetIdx={action.targetIdx}
                       />
                     </li>

@@ -195,7 +195,7 @@ class App extends Component {
     }
   }
 
-  dequeue (data, idx) {
+  dequeue (data, idx, queueIndex, event) {
     const state = this.getPartyState()
     const newUpNext = cloneDeep(state.queue.upNext)
     pullAt(newUpNext, idx)

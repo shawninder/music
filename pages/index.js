@@ -47,7 +47,7 @@ const defaultInitialState = {
   },
   player: defaultPlayer,
   queue: defaultQueue,
-  socketKey: Math.random(),
+  socketKey: 0,
   party: {
     name: '',
     checking: false,
@@ -71,7 +71,8 @@ const enhancer = (isServer)
     persistStateSS([
       'app',
       'queue',
-      'party'
+      'party',
+      'socketKey'
     ]),
     syncState([
       'queue',
@@ -84,6 +85,10 @@ const enhancer = (isServer)
 // TODO Compose reducers from all capabilities and components?
 
 const initStore = (initialState = defaultInitialState) => {
+  if (!isServer && !initialState.socketKey) {
+    initialState.socketKey = Math.random()
+    console.log('Generated socketKey', initialState.socketKey)
+  }
   return createStore(reducer, initialState, enhancer)
 }
 
