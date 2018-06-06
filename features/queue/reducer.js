@@ -14,7 +14,7 @@ function playNext (state, action) {
     return item
   })
   newState.upNext = items.concat(newState.upNext.map((upcoming, idx) => {
-    upcoming.queueIndex = items.length + idx
+    upcoming.queueIndex = items.length + idx + 1
     return upcoming
   }))
   return newState

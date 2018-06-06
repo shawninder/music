@@ -52,7 +52,7 @@ button.invisibutton {
   z-index: 3;
   height: 50px;
   width: 100%;
-  background: whitesmoke;
+  /* background: whitesmoke; */
 }
 
 .bar-menu {
@@ -141,7 +141,8 @@ button.invisibutton {
   display: grid;
   grid-template-columns: 100px auto;
   grid-template-areas:
-    "left right"
+    "left    right"
+    "actions actions"
 }
 
 .youtube-result .toggle {
@@ -207,8 +208,6 @@ button.invisibutton {
 
 .youtube-result-channel {
   font-size: x-small;
-  margin-right:
-
 }
 
 .youtube-result-title, .youtube-result-channel {
@@ -220,11 +219,11 @@ button.invisibutton {
 }
 
 .youtube-result.actionable {
+  position: relative;
   cursor: pointer;
 }
 
 .youtube-result button {
-  float: right;
   padding: 15px 15px 5px 5px;
   border: 0;
   background: transparent;
@@ -239,17 +238,59 @@ button.invisibutton {
 }
 
 .actions {
-  position: relative;
-  float: right;
-  clear: right;
+  grid-area: actions;
+  width: 100%;
+  position: absolute;
+  background: whitesmoke;
+  z-index: 10;
+  border-radius: 0 0 5px 5px;
+}
+
+li:nth-child(odd) .actions {
+  background: #eeeeee;
+}
+
+li:nth-child(odd) .actions {
+  background: whitesmoke;
+}
+
+.actions li div {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 100px auto 50px;
+  grid-template-areas:
+    "action-idx action-label action-icon"
+}
+
+.actions li div:hover {
+  background: white;
+}
+
+.action-idx, .action-label, .action-icon {
+  line-height: 20px;
+  padding: 5px;
+}
+
+.action-idx {
+  grid-area: action-idx;
+  font-size: x-small;
+  text-align: right;
+  width: 30px;
 }
 
 .action-label {
-  margin-right: 15px;
+  grid-area: action-label;
 }
 
 .action-icon {
-  width: 20px;
+  grid-area: action-icon;
+  text-align: right;
+  padding-right: 7px;
+}
+
+.action-icon img {
+  width: 1em;
+  height: 1em;
 }
 
 .upNext h3, .history h3 {

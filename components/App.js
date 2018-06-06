@@ -351,25 +351,29 @@ class App extends Component {
           }}
           ResultComponent={makeResultComponent({
             actions: {
-              play: {
-                go: this.play,
-                txt: 'play now',
-                icon: <img className='action-icon' src='/static/play.svg' title='play now' alt='play now' />
-              },
-              playNext: {
-                go: this.playNext,
-                txt: 'play next',
-                icon: <img className='action-icon' src='/static/next.svg' title='play next' alt='play next' />
-              },
               enqueue: {
+                targetIdx: state.queue.upNext.length + 1,
                 go: this.enqueue,
                 txt: 'play last',
-                icon: <img className='action-icon' src='/static/plus.svg' title='play last' alt='play last' />
+                icon: <img src='/static/plus.svg' title='play last' alt='play last' />
+              },
+              playNext: {
+                targetIdx: 1,
+                go: this.playNext,
+                txt: 'play next',
+                icon: <img src='/static/next.svg' title='play next' alt='play next' />
+              },
+              play: {
+                targetIdx: 0,
+                go: this.play,
+                txt: 'play now',
+                icon: <img src='/static/play.svg' title='play now' alt='play now' />
               },
               remove: {
+                targetIdx: null,
                 go: this.dequeue,
                 txt: 'remove',
-                icon: <img className='action-icon' src='/static/x.svg' title='remove' alt='remove' />
+                icon: <img src='/static/x.svg' title='remove' alt='remove' />
               }
             }
 
@@ -377,9 +381,11 @@ class App extends Component {
             // isInCollection: this.isInCollection
           })}
           onResult={{
-            enter: this.enqueue,
+            space: this.enqueue,
+            'shift+space': this.playNext,
             'shift+enter': this.playNext,
-            'ctrl+enter': this.play,
+            'ctrl+space': this.enqueue,
+            'ctrl+enter': this.enqueue,
             'cmd+enter': this.play
           }}
           commands={{
@@ -433,6 +439,7 @@ class App extends Component {
               player: this.props.player,
               queue: this.props.queue
             }}
+            socketKey={this.props.socketKey}
             socket={this.props.socket}
             {...this.props.party} // state
             gotState={this.gotState}
@@ -447,31 +454,35 @@ class App extends Component {
               defaultComponent={makeResultComponent({
                 actions: {
                   jumpTo: {
+                    targetIdx: 0,
                     go: this.jumpBackTo,
                     txt: 'jump back to',
-                    icon: <img className='action-icon' src='/static/play.svg' title='jump back to' alt='jump back to' />
+                    icon: <img src='/static/play.svg' title='jump back to' alt='jump back to' />
                   },
                   playNow: {
+                    targetIdx: 0,
                     go: this.play,
                     txt: 'play now',
-                    icon: <img className='action-icon' src='/static/play.svg' title='play now' alt='play now' />
+                    icon: <img src='/static/play.svg' title='play now' alt='play now' />
                   },
                   playNext: {
+                    targetIdx: 1,
                     go: this.playNext,
                     txt: 'play next',
-                    icon: <img className='action-icon' src='/static/next.svg' title='play next' alt='play next' />
+                    icon: <img src='/static/next.svg' title='play next' alt='play next' />
                   },
-                  playLast: {
+                  enqueue: {
+                    targetIdx: state.queue.upNext.length + 1,
                     go: this.enqueue,
                     txt: 'play last',
-                    icon: <img className='action-icon' src='/static/plus.svg' title='play last' alt='play last' />
+                    icon: <img src='/static/plus.svg' title='play last' alt='play last' />
                   }
                 }
                 // remember: this.remember,
                 // isInCollection: this.isInCollection
               })}
               onItem={{
-                enter: this.jumpBackTo
+                space: this.jumpBackTo
               }}
               startsCollapsed
               collapsible
@@ -512,29 +523,34 @@ class App extends Component {
               defaultComponent={makeResultComponent({
                 actions: {
                   jumpTo: {
+                    targetIdx: 0,
                     go: this.jumpTo,
                     txt: 'jump to',
-                    icon: <img className='action-icon' src='/static/play.svg' title='jump to' alt='jump to' />
+                    icon: <img src='/static/play.svg' title='jump to' alt='jump to' />
                   },
                   playNow: {
+                    targetIdx: 0,
                     go: this.play,
                     txt: 'play now',
-                    icon: <img className='action-icon' src='/static/play.svg' title='play now' alt='play now' />
+                    icon: <img src='/static/play.svg' title='play now' alt='play now' />
                   },
                   playNext: {
+                    targetIdx: 1,
                     go: this.playNext,
                     txt: 'play next',
-                    icon: <img className='action-icon' src='/static/next.svg' title='play next' alt='play next' />
+                    icon: <img src='/static/next.svg' title='play next' alt='play next' />
                   },
-                  playLast: {
+                  enqueue: {
+                    targetIdx: state.queue.upNext.length + 1,
                     go: this.enqueue,
                     txt: 'play last',
-                    icon: <img className='action-icon' src='/static/plus.svg' title='play last' alt='play last' />
+                    icon: <img src='/static/plus.svg' title='play last' alt='play last' />
                   },
                   remove: {
+                    targetIdx: null,
                     go: this.dequeue,
                     txt: 'remove',
-                    icon: <img className='action-icon' src='/static/x.svg' title='remove' alt='remove' />
+                    icon: <img src='/static/x.svg' title='remove' alt='remove' />
                   }
                 }
                 // remember: this.remember,
@@ -542,7 +558,6 @@ class App extends Component {
                 // isInCollection: this.isInCollection
               })}
               onItem={{
-                enter: this.jumpTo
               }}
               collapsible
             />
@@ -553,9 +568,9 @@ class App extends Component {
           PlayingNowComponent={makeResultComponent({
             actions: {
               toggleShowPlayer: {
-                go: this.props.toggleShowPlayer,
+                go: this.toggleShowPlayer,
                 txt: this.props.app.showingPlayer ? 'hide player' : 'show player',
-                icon: <img className='action-icon' src='/static/camera.svg' title='toggle player' alt='toggle player' />
+                icon: <img src='/static/camera.svg' title='toggle player' alt='toggle player' />
               }
             }
             // play: {
@@ -592,7 +607,8 @@ const props = [
   { name: 'bar', type: PropTypes.object.isRequired },
   { name: 'player', type: PropTypes.object.isRequired },
   { name: 'queue', type: PropTypes.object.isRequired },
-  { name: 'party', type: PropTypes.object.isRequired }
+  { name: 'party', type: PropTypes.object.isRequired },
+  { name: 'socketKey', type: PropTypes.number.isRequired }
 ]
 
 App.defaultProps = defaultProps(props)

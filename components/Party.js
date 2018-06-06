@@ -121,7 +121,6 @@ class Party extends Component {
 
   middleware (action) {
     if (this.props.attending && (action.type.startsWith('Player:') || action.type.startsWith('Queue:'))) {
-      console.log('Intercepting', action)
       const emitting = {
         ...action,
         socketKey: this.props.socketKey,
@@ -132,7 +131,6 @@ class Party extends Component {
       console.log('emitted', emitting)
       return true
     } else {
-      console.log('Letting this one go through', action)
       return false
     }
   }
@@ -339,16 +337,16 @@ class Party extends Component {
   }
 
   render () {
-    let title = 'Party!'
+    let title = this.props.dict.get('party.default')
     const partying = (this.props.hosting || this.props.attending) && this.props.socket.connected
     let label = 'default'
     if (this.props.name !== '') {
       if (partying) {
         if (this.props.hosting) {
-          title = this.props.dict.get('party.hosting')
+          // title = this.props.dict.get('party.hosting')
           label = 'stop'
         } else {
-          title = this.props.dict.get('party.attending')
+          // title = this.props.dict.get('party.attending')
           label = 'leave'
         }
       } else {
@@ -412,7 +410,8 @@ const props = [
   { name: 'hosting', type: PropTypes.bool.isRequired },
   { name: 'registerMiddleware', type: PropTypes.func.isRequired },
   { name: 'unregisterMiddleware', type: PropTypes.func.isRequired },
-  { name: 'dispatch', type: PropTypes.func.isRequired }
+  { name: 'dispatch', type: PropTypes.func.isRequired },
+  { name: 'socketKey', type: PropTypes.number.isRequired }
 ]
 
 Party.defaultProps = defaultProps(props)

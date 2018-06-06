@@ -33,19 +33,25 @@ class List extends Component {
     return (event) => {
       const idx = Array.prototype.indexOf.call(this.el.childNodes, event.target)
       if (idx !== -1 && this.el) { // found and got list ref
+        event.stopPropagation()
         const item = items[idx]
+        if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
+          this.props.onItem.space(item, idx, event)
+        }
+        if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && event.shiftKey) { // shift+space
+          this.props.onItem['shift+space'](item, idx, event)
+        }
+        if (event.keyCode === 32 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+space
+          this.props.onItem['ctrl+space'](item, idx, event)
+        }
         if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
-          if (item.type === 'command') {
-            event.target.childNodes[0].click()
-          } else {
-            this.props.onItem.enter(item, idx)
-          }
+          event.target.childNodes[0].click()
         }
         if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && event.shiftKey) { // shift+enter
-          this.props.onItem['shift+enter'](item, idx)
+          this.props.onItem['shift+enter'](item, idx, event)
         }
         if (event.keyCode === 13 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+enter
-          this.props.onItem['ctrl+enter'](item, idx)
+          this.props.onItem['ctrl+enter'](item, idx, event)
         }
       }
       if (event.keyCode === 38) { // up

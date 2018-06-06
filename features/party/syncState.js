@@ -26,7 +26,7 @@ export default function syncState (paths, config) {
               const emitting = {
                 type: 'Party:slice',
                 slice,
-                socketKey: state.party.socketKey,
+                socketKey: state.socketKey,
                 name: state.party.name,
                 as: 'host'
               }

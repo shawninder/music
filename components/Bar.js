@@ -212,7 +212,7 @@ class Bar extends Component {
       event.stopPropagation()
     }
 
-    if (event.keyCode === 27) { // esc
+    if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
       event.stopPropagation()
       if (event.target === this.field) {
         if (trim(this.field.value) !== '') {

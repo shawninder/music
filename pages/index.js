@@ -4,7 +4,8 @@ import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import thunk from 'redux-thunk'
 import withRedux from 'next-redux-wrapper'
 import pull from 'lodash.pull'
-import persistState from 'redux-sessionstorage'
+import persistStateSS from 'redux-sessionstorage'
+import persistStateLS from 'redux-localstorage'
 import syncState from '../features/party/syncState'
 import App from '../components/App'
 import reducer from '../reducer'
@@ -36,7 +37,6 @@ const defaultInitialState = {
     showUpNext: true,
     showPlayer: true
   },
-  collection: {},
   dict: {
     txt,
     availLangs: ['en', 'fr', 'es']
@@ -47,6 +47,7 @@ const defaultInitialState = {
   },
   player: defaultPlayer,
   queue: defaultQueue,
+  socketKey: Math.random(),
   party: {
     name: '',
     checking: false,
@@ -54,7 +55,6 @@ const defaultInitialState = {
     hosting: false,
     attending: false,
     socketUrl: process.env.WS_SERVER_URL,
-    socketKey: Math.random(),
     state: {
       player: defaultPlayer,
       queue: defaultQueue
@@ -68,7 +68,7 @@ const enhancer = (isServer)
   ? composeWithDevTools(applyMiddleware(thunk))
   : composeWithDevTools(
     applyMiddleware(thunk),
-    persistState([
+    persistStateSS([
       'app',
       'queue',
       'party'
@@ -88,49 +88,49 @@ const initStore = (initialState = defaultInitialState) => {
 }
 
 const mapStateToProps = (state) => {
-  const hostKey = Math.random().toString()
-  const guestKey = Math.random().toString()
-  return { ...state, hostKey, guestKey, socket }
+  return { ...state, socket }
 }
 
 const middlewares = []
+// TODO clean up nested `_dispatch`s
 const mapDispatchToProps = (dispatch) => {
   return bindActionCreators({
     dispatch: (action) => {
-      return (dispatch) => {
+      return (_dispatch) => {
         let stopPropagation = false
         middlewares.forEach((mw) => {
           if (mw(action)) {
             stopPropagation = true
           }
         })
-        if (!stopPropagation) {
-          dispatch(action)
+        if (stopPropagation) {
+          console.log('Intercepted and stopped propagation of', action)
         } else {
-          console.log('Intercepted a stopped propagation of', action)
+          _dispatch(action)
         }
       }
     },
     registerMiddleware: (middleware) => {
-      return (dispatch, getState) => {
+      return (_dispatch, getState) => {
+        console.log('REGISTERING DISPATCH MIDDLEWARE')
         middlewares.push(middleware)
       }
     },
     unregisterMiddleware: (middleware) => {
-      return (dispatch, getState) => {
-        console.warn('UNREGISTERING MIDDLEWARE!!')
+      return (_dispatch, getState) => {
+        console.warn('UNREGISTERING DISPATCH MIDDLEWARE')
         pull(middlewares, middleware)
       }
     },
     findMusic: (query) => {
-      return (dispatch, getState) => {
+      return (_dispatch, getState) => {
         console.log(`media.search(${query})`)
         return media.search(query)
       }
     },
     dev: () => {
-      return (dispatch, getState) => {
-        return { dispatch, getState }
+      return (_dispatch, getState) => {
+        return { _dispatch, getState }
       }
     }
   }, dispatch)

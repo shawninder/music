@@ -26,7 +26,7 @@ class YouTubeVideo extends Component {
         className={classes.join(' ')}
         onClick={this.props.onClick}
       >
-        <div className={toggleClasses.join(' ')}>
+        <div className={toggleClasses.join(' ')} onClick={this.props.onToggle}>
           <div
             className='art'
             onDragStart={this.dragStart}
@@ -45,12 +45,10 @@ class YouTubeVideo extends Component {
           </div>
         </div>
         <div className='youtube-result-info'>
-          <div>
-            {this.props.children}
-          </div>
           <p className='youtube-result-title'>{this.props.data.data.snippet.title}</p>
           <p className='youtube-result-channel'>{this.props.data.data.snippet.channelTitle}</p>
         </div>
+        {this.props.children}
       </div>
     )
   }
@@ -60,7 +58,8 @@ const props = [
   { name: 'className', type: PropTypes.string, val: '' },
   { name: 'query', type: PropTypes.string, val: '' },
   { name: 'data', type: PropTypes.object.isRequired },
-  { name: 'onClick', type: PropTypes.func, val: () => {} }
+  { name: 'onClick', type: PropTypes.func, val: () => {} },
+  { name: 'onToggle', type: PropTypes.func, val: () => {} }
 ]
 
 YouTubeVideo.defaultProps = defaultProps(props)

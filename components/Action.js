@@ -7,6 +7,7 @@ class Action extends Component {
   constructor (props) {
     super(props)
     this.onClick = this.onClick.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
   }
 
   onClick (event) {
@@ -14,21 +15,48 @@ class Action extends Component {
     this.props.go(this.props.data, this.props.idx)
   }
 
+  onKeyDown (event) {
+    event.stopPropagation()
+    if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
+      const track = event.target.parentNode.parentNode.parentNode.parentNode
+      track.childNodes[0].click()
+      track.focus()
+    }
+    if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
+      event.target.childNodes[0].click()
+    }
+    if (event.keyCode === 38) { // up
+      const previousSibling = event.target.parentNode.previousSibling
+      if (previousSibling) {
+        previousSibling.childNodes[0].focus()
+      }
+    }
+    if (event.keyCode === 40) { // down
+      event.preventDefault()
+      const nextSibling = event.target.parentNode.nextSibling
+      if (nextSibling) {
+        nextSibling.childNodes[0].focus()
+      }
+    }
+  }
+
   render () {
     return (
-      <button
+      <div
         key={this.props.txt}
         className={this.props.className}
         onClick={this.onClick}
         tabIndex='-1'
+        onKeyDown={this.onKeyDown}
       >
+        <span className='action-idx'>{this.props.targetIdx}</span>
         {this.props.txt
           ? (
             <span className='action-label'>{this.props.txt}</span>
           )
           : null}
-        {this.props.icon}
-      </button>
+        <span className='action-icon'>{this.props.icon}</span>
+      </div>
     )
   }
 }

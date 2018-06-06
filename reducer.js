@@ -21,5 +21,8 @@ export default combineReducers({
   bar: barReducer,
   controls: controlsReducer,
   party: partyReducer,
-  player: playerReducer
+  player: playerReducer,
+  socketKey: (state = {}) => {
+    return state
+  }
 })

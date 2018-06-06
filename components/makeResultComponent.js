@@ -9,15 +9,17 @@ import Action from './Action'
 function makeResultComponent (opts) {
   const options = opts
   options.actions = opts.actions || {}
-  const nbActions = Object.keys(options.actions).length
   class ResultComponent extends Component {
     constructor (props) {
       super(props)
       this.onClick = this.onClick.bind(this)
+      this.onToggle = this.onToggle.bind(this)
 
       this.state = {
         showingActions: false
       }
+      this.previousProps = props
+      this.previousState = this.state
     }
 
     onClick (event) {
@@ -26,12 +28,27 @@ function makeResultComponent (opts) {
         this.setState({
           showingActions: false
         })
-      } else if (this.props.data.inQueue) {
+      } else {
         this.setState({
           showingActions: true
         })
+        setTimeout(() => {
+          if (this.actions) {
+            const li = this.actions.childNodes[0]
+            if (li) {
+              li.childNodes[0].focus()
+            }
+          }
+        }, 0)
+      }
+    }
+
+    onToggle (event) {
+      event.stopPropagation()
+      if (!this.props.data.inQueue) {
+        options.actions.enqueue.go(this.props.data)
       } else {
-        options.actions.enqueue.go(this.props.data, this.props.idx)
+        this.onClick(event)
       }
     }
 
@@ -39,33 +56,20 @@ function makeResultComponent (opts) {
       const classes = this.props.className.split(' ')
       classes.push('actionable')
 
-      let corner
-      if (nbActions > 0) {
-        if (this.state.showingActions) {
-          corner = (
-            <button className='invisibutton' onClick={(event) => {
-              event.stopPropagation()
-              this.setState({ showingActions: false })
-            }}>
-              <img src='/static/x.svg' className='icon' alt='cancel' title='cancel' />
-            </button>
-          )
-        } else {
-          corner = null
-        }
-      }
       return (
         <YouTubeVideo
           data={this.props.data}
           query={this.props.query}
           onClick={this.onClick}
+          onToggle={this.onToggle}
           className={classes.join(' ')}
         >
-          {corner}
           {
             (this.state.showingActions)
               ? (
-                <ul className='actions'>
+                <ul className='actions' ref={(ref) => {
+                  this.actions = ref
+                }}>
                   {Object.keys(options.actions).map((key) => {
                     const action = options.actions[key]
                     return <li key={key}>
@@ -75,6 +79,7 @@ function makeResultComponent (opts) {
                         txt={action.txt}
                         icon={action.icon}
                         idx={this.props.idx}
+                        targetIdx={action.targetIdx}
                       />
                     </li>
                   })}
