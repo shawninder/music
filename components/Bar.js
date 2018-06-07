@@ -283,13 +283,19 @@ class Bar extends Component {
           )
           : null
         }
-        <button className='bar-dismiss invisibutton' onClick={(event) => {
-          if (this.props.items.length === 0) {
-            this.clear()
-          } else {
-            this.dismiss()
-          }
-        }}><img src='/static/x.svg' alt='clear' title='clear' className='icon' /></button>
+        {
+          this.props.query
+            ? (
+              <button className='bar-dismiss invisibutton' onClick={(event) => {
+                if (this.props.items.length === 0) {
+                  this.clear()
+                } else {
+                  this.dismiss()
+                }
+              }}><img src='/static/x.svg' alt='clear' title='clear' className='icon' /></button>
+            ) : null
+        }
+
       </div>
     )
   }
