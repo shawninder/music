@@ -27,6 +27,7 @@ class Action extends Component {
       track.focus()
     }
     if (event.keyCode === 38) { // up
+      event.preventDefault()
       const previousSibling = event.target.parentNode.previousSibling
       if (previousSibling) {
         previousSibling.childNodes[0].focus()

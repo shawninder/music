@@ -35,7 +35,8 @@ const defaultInitialState = {
   app: {
     showHistory: false,
     showUpNext: true,
-    showPlayer: true
+    showPlayer: true,
+    partyCollapsed: false
   },
   dict: {
     txt,

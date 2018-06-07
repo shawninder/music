@@ -343,10 +343,10 @@ class Party extends Component {
     if (this.props.name !== '') {
       if (partying) {
         if (this.props.hosting) {
-          // title = this.props.dict.get('party.hosting')
+          title = this.props.dict.get('party.hosting')
           label = 'stop'
         } else {
-          // title = this.props.dict.get('party.attending')
+          title = this.props.dict.get('party.attending')
           label = 'leave'
         }
       } else {
@@ -371,28 +371,36 @@ class Party extends Component {
     }
     return (
       <div className={classes.join(' ')}>
-        <form onSubmit={this.onSubmit}>
-          <h3>
-            {title}
-          </h3>
-          <input
-            type='text'
-            placeholder={this.props.placeholder}
-            autoFocus={this.props.autoFocus}
-            onChange={this.onChange}
-            onKeyDown={this.onKeyDown}
-            disabled={partying}
-            ref={(ref) => {
-              // Using this instead of defaultValue since the initial render is done on the server where we don't have this value yet
-              if (ref) {
-                ref.value = this.props.name
-              }
-            }}
-          />
-          <button disabled={!isServer && (this.props.checking || this.props.name === '')} onClick={this.onSubmit}>{
-            this.props.dict.get(`party.${label}`)
-          }</button>
-        </form>
+        {
+          this.props.collapsed
+            ? (
+              <p onClick={this.props.onClickCollapsed}>{title}</p>
+            )
+            : (
+              <form onSubmit={this.onSubmit}>
+                <h3>
+                  {title}
+                </h3>
+                <input
+                  type='text'
+                  placeholder={this.props.placeholder}
+                  autoFocus={this.props.autoFocus}
+                  onChange={this.onChange}
+                  onKeyDown={this.onKeyDown}
+                  disabled={partying}
+                  ref={(ref) => {
+                    // Using this instead of defaultValue since the initial render is done on the server where we don't have this value yet
+                    if (ref) {
+                      ref.value = this.props.name
+                    }
+                  }}
+                />
+                <button disabled={!isServer && (this.props.checking || this.props.name === '')} onClick={this.onSubmit}>{
+                  this.props.dict.get(`party.${label}`)
+                }</button>
+              </form>
+            )
+        }
       </div>
     )
   }
@@ -411,7 +419,8 @@ const props = [
   { name: 'registerMiddleware', type: PropTypes.func.isRequired },
   { name: 'unregisterMiddleware', type: PropTypes.func.isRequired },
   { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'socketKey', type: PropTypes.number.isRequired }
+  { name: 'socketKey', type: PropTypes.number.isRequired },
+  { name: 'collapsed', type: PropTypes.bool.isRequired }
 ]
 
 Party.defaultProps = defaultProps(props)

@@ -94,20 +94,25 @@ function makeResultComponent (opts) {
                 <ul className='actions' ref={(ref) => {
                   this.actions = ref
                 }}>
-                  {Object.keys(options.actions).map((key) => {
+                  {Object.keys(options.actions).reduce((arr, key) => {
                     const action = options.actions[key]
-                    return <li key={key}>
-                      <Action
-                        data={this.props.data}
-                        go={action.go}
-                        txt={action.txt}
-                        icon={action.icon}
-                        idx={this.props.idx}
-                        queueIndex={this.props.queueIndex}
-                        targetIdx={action.targetIdx}
-                      />
-                    </li>
-                  })}
+                    if (!action.cdn || action.cdn(this.props.queueIndex)) {
+                      arr.push(
+                        <li key={key}>
+                          <Action
+                            data={this.props.data}
+                            go={action.go}
+                            txt={action.txt}
+                            icon={action.icon}
+                            idx={this.props.idx}
+                            queueIndex={this.props.queueIndex}
+                            targetIdx={action.targetIdx}
+                          />
+                        </li>
+                      )
+                    }
+                    return arr
+                  }, [])}
                 </ul>
               )
               : null

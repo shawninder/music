@@ -28,6 +28,7 @@ class App extends Component {
     super(props)
     this.dispatch = this.dispatch.bind(this)
     this.keyDown = this.keyDown.bind(this)
+    this.figureClicked = this.figureClicked.bind(this)
     this.play = this.play.bind(this)
     this.togglePlaying = this.togglePlaying.bind(this)
     this.playNext = this.playNext.bind(this)
@@ -127,6 +128,12 @@ class App extends Component {
         })
       }
     }
+  }
+
+  figureClicked (event) {
+    this.dispatch({
+      type: 'App:toggleParty'
+    })
   }
 
   play (data) {
@@ -339,6 +346,26 @@ class App extends Component {
 
   render () {
     const state = this.getPartyState()
+    const figureClasses = ['figure']
+    figureClasses.push(this.props.socket.connected ? 'connected' : 'disconnected')
+    if (this.props.party.hosting) {
+      figureClasses.push('hosting')
+    }
+    if (this.props.party.attending) {
+      figureClasses.push('attending')
+    }
+    const cdn = (queueIndex) => {
+      return !queueIndex
+    }
+    const cdnNeg = (queueIndex) => {
+      return queueIndex < 0
+    }
+    const cdnPos = (queueIndex) => {
+      return queueIndex > 0
+    }
+    const cdnQueued = (queueIndex) => {
+      return !!queueIndex
+    }
     return (
       <div className='App'>
         <Bar
@@ -355,25 +382,43 @@ class App extends Component {
                 targetIdx: state.queue.upNext.length + 1,
                 go: this.enqueue,
                 txt: 'play last',
-                icon: <img src='/static/plus.svg' title='play last' alt='play last' />
+                icon: <img src='/static/plus.svg' title='play last' alt='play last' />,
+                cdn
               },
               playNext: {
                 targetIdx: 1,
                 go: this.playNext,
                 txt: 'play next',
-                icon: <img src='/static/next.svg' title='play next' alt='play next' />
+                icon: <img src='/static/next.svg' title='play next' alt='play next' />,
+                cdn
               },
               play: {
                 targetIdx: 0,
                 go: this.play,
                 txt: 'play now',
-                icon: <img src='/static/play.svg' title='play now' alt='play now' />
+                icon: <img src='/static/play.svg' title='play now' alt='play now' />,
+                cdn
+              },
+              jumpBackTo: {
+                targetIdx: 0,
+                go: this.jumpBackTo,
+                txt: 'jump back to this track',
+                icon: <img src='/static/play.svg' title='jump back to' alt='jump back to' />,
+                cdn: cdnNeg
+              },
+              jumpTo: {
+                targetIdx: 0,
+                go: this.jumpTo,
+                txt: 'jump to this track',
+                icon: <img src='/static/play.svg' title='jump to' alt='jump to' />,
+                cdn: cdnPos
               },
               remove: {
                 targetIdx: null,
                 go: this.dequeue,
                 txt: 'remove',
-                icon: <img src='/static/x.svg' title='remove' alt='remove' />
+                icon: <img src='/static/x.svg' title='remove' alt='remove' />,
+                cdn: cdnQueued
               }
             }
 
@@ -427,9 +472,12 @@ class App extends Component {
           autoFocus
           decorateItem={this.decorateBarItem}
         />
+        <div className={figureClasses.join(' ')} onClick={this.figureClicked}>
+          {/* <img src='/static/party-hosting.svg' alt='hosting' title='hosting' /> */}
+        </div>
         <div className='main'>
           <Party
-            className='autoparty'
+            className={`autoparty ${this.props.app.partyCollapsed ? 'collapsed' : 'not-collapsed'}`}
             placeholder={this.dict.get('party.placeholder')}
             dict={this.dict}
             registerMiddleware={this.props.registerMiddleware}
@@ -445,6 +493,12 @@ class App extends Component {
             gotState={this.gotState}
             gotSlice={this.gotSlice}
             gotDispatch={this.gotDispatch}
+            collapsed={this.props.app.partyCollapsed}
+            onClickCollapsed={() => {
+              this.dispatch({
+                type: 'App:toggleParty'
+              })
+            }}
           />
           <div className='queue'>
             <List
@@ -456,26 +510,8 @@ class App extends Component {
                   jumpTo: {
                     targetIdx: 0,
                     go: this.jumpBackTo,
-                    txt: 'jump back to',
+                    txt: 'jump back to this track',
                     icon: <img src='/static/play.svg' title='jump back to' alt='jump back to' />
-                  },
-                  playNow: {
-                    targetIdx: 0,
-                    go: this.play,
-                    txt: 'play now',
-                    icon: <img src='/static/play.svg' title='play now' alt='play now' />
-                  },
-                  playNext: {
-                    targetIdx: 1,
-                    go: this.playNext,
-                    txt: 'play next',
-                    icon: <img src='/static/next.svg' title='play next' alt='play next' />
-                  },
-                  enqueue: {
-                    targetIdx: state.queue.upNext.length + 1,
-                    go: this.enqueue,
-                    txt: 'play last',
-                    icon: <img src='/static/plus.svg' title='play last' alt='play last' />
                   }
                 }
                 // remember: this.remember,
@@ -525,26 +561,8 @@ class App extends Component {
                   jumpTo: {
                     targetIdx: 0,
                     go: this.jumpTo,
-                    txt: 'jump to',
+                    txt: 'jump to this track',
                     icon: <img src='/static/play.svg' title='jump to' alt='jump to' />
-                  },
-                  playNow: {
-                    targetIdx: 0,
-                    go: this.play,
-                    txt: 'play now',
-                    icon: <img src='/static/play.svg' title='play now' alt='play now' />
-                  },
-                  playNext: {
-                    targetIdx: 1,
-                    go: this.playNext,
-                    txt: 'play next',
-                    icon: <img src='/static/next.svg' title='play next' alt='play next' />
-                  },
-                  enqueue: {
-                    targetIdx: state.queue.upNext.length + 1,
-                    go: this.enqueue,
-                    txt: 'play last',
-                    icon: <img src='/static/plus.svg' title='play last' alt='play last' />
                   },
                   remove: {
                     targetIdx: null,
@@ -552,6 +570,14 @@ class App extends Component {
                     txt: 'remove',
                     icon: <img src='/static/x.svg' title='remove' alt='remove' />
                   }
+                  // more: {
+                  //   targetIdx: null,
+                  //   go: () => {
+                  //     console.log('MORE', 'coming soon')
+                  //   },
+                  //   txt: 'more options',
+                  //   icon: <img src='/static/dots.svg' title='more options' alt='more options' />
+                  // }
                 }
                 // remember: this.remember,
 
