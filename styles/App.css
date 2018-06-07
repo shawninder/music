@@ -123,7 +123,6 @@ button.invisibutton {
 
 .main {
   position: relative;
-  z-index: 1;
   padding: 65px 5px;
   width: 100%;
 }
@@ -139,10 +138,10 @@ button.invisibutton {
 
 .youtube-result {
   display: grid;
-  grid-template-columns: 100px auto;
+  grid-template-columns: 100px auto 50px;
   grid-template-areas:
-    "left    right"
-    "actions actions"
+    "left    right corner"
+    "actions actions actions"
 }
 
 .youtube-result .toggle {
@@ -214,6 +213,10 @@ button.invisibutton {
   padding: 5px;
 }
 
+.youtube-result .corner {
+  grid-area: corner;
+}
+
 .youtube-result .icon {
   width: 20px;
 }
@@ -242,7 +245,7 @@ button.invisibutton {
   width: 100%;
   position: absolute;
   background: whitesmoke;
-  z-index: 10;
+  z-index: 5;
   border-radius: 0 0 5px 5px;
 }
 

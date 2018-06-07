@@ -9,6 +9,7 @@ import Action from './Action'
 function makeResultComponent (opts) {
   const options = opts
   options.actions = opts.actions || {}
+  const nbActions = Object.keys(options.actions).length
   class ResultComponent extends Component {
     constructor (props) {
       super(props)
@@ -56,6 +57,28 @@ function makeResultComponent (opts) {
       const classes = this.props.className.split(' ')
       classes.push('actionable')
 
+      let corner
+      if (nbActions > 0) {
+        if (this.state.showingActions) {
+          corner = (
+            <button className='corner invisibutton' onClick={(event) => {
+              event.stopPropagation()
+              this.setState({ 'showingActions': false })
+            }}>
+              <img src='/static/x.svg' className='icon' alt='cancel' title='cancel' />
+            </button>
+          )
+        } else {
+          corner = (
+            <button className='corner invisibutton' onClick={(event) => {
+              event.stopPropagation()
+              this.setState({ 'showingActions': true })
+            }}>
+              <img src='/static/dots.svg' className='icon' alt='more options' title='more options' />
+            </button>
+          )
+        }
+      }
       return (
         <YouTubeVideo
           data={this.props.data}
@@ -64,6 +87,7 @@ function makeResultComponent (opts) {
           onToggle={this.onToggle}
           className={classes.join(' ')}
         >
+          {corner}
           {
             (this.state.showingActions)
               ? (
