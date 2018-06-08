@@ -205,12 +205,16 @@ class App extends Component {
   dequeue (data, idx, queueIndex, event) {
     const state = this.getPartyState()
     const newUpNext = cloneDeep(state.queue.upNext)
-    pullAt(newUpNext, idx)
-    this.dispatch({
-      type: 'Queue:dequeue',
-      newUpNext
-    })
-    setTimeout(this.updateBarItems, 0)
+    if (queueIndex > 0) {
+      pullAt(newUpNext, queueIndex - 1)
+      this.dispatch({
+        type: 'Queue:dequeue',
+        newUpNext
+      })
+      setTimeout(this.updateBarItems, 0)
+    } else {
+      // TODO
+    }
   }
 
   // remember (data) {
@@ -593,11 +597,11 @@ class App extends Component {
           playingNow={state.queue.now}
           PlayingNowComponent={makeResultComponent({
             actions: {
-              toggleShowPlayer: {
-                go: this.toggleShowPlayer,
-                txt: this.props.app.showingPlayer ? 'hide player' : 'show player',
-                icon: <img src='/static/camera.svg' title='toggle player' alt='toggle player' />
-              }
+              // toggleShowPlayer: {
+              //   go: this.toggleShowPlayer,
+              //   txt: this.props.app.showingPlayer ? 'hide player' : 'show player',
+              //   icon: <img src='/static/camera.svg' title='toggle player' alt='toggle player' />
+              // }
             }
             // play: {
             //   go: this.togglePlaying,

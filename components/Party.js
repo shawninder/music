@@ -136,7 +136,7 @@ class Party extends Component {
   }
 
   onGlobalFocus () {
-    // this.hydrate()
+    this.hydrate()
   }
 
   // Object.keys(data.state).forEach((key) => {
@@ -343,10 +343,10 @@ class Party extends Component {
     if (this.props.name !== '') {
       if (partying) {
         if (this.props.hosting) {
-          title = this.props.dict.get('party.hosting')
+          title = `${this.props.dict.get('party.hosting')} "${this.props.name}"`
           label = 'stop'
         } else {
-          title = this.props.dict.get('party.attending')
+          title = `${this.props.dict.get('party.attending')} "${this.props.name}"`
           label = 'leave'
         }
       } else {
@@ -372,12 +372,19 @@ class Party extends Component {
     return (
       <div className={classes.join(' ')}>
         {
+          // this.props.collapsed
+          //   ? (
+          //     <p onClick={this.props.onClickCollapsed}>
+          //       {title}
+          //     </p>
+          //   )
           this.props.collapsed
-            ? (
-              <p onClick={this.props.onClickCollapsed}>{title}</p>
-            )
+            ? null
             : (
               <form onSubmit={this.onSubmit}>
+                <div className='dismiss-button' onClick={this.props.onClickCollapsed}>
+                  <img src='/static/x.svg' title='dismiss' alt='dismiss' />
+                </div>
                 <h3>
                   {title}
                 </h3>

@@ -457,18 +457,26 @@ li:nth-child(odd) .actions {
   top: 50px;
   right: 0;
   z-index: 1;
-  padding: 15px;
 }
 
 .autoparty.not-collapsed {
   background-color: khaki;
   width: 100%;
   max-width: 640px;
+  padding: 15px;
 }
 
 .autoparty.collapsed {
   background-color: beige;
   text-align: right;
+  padding: 0;
+}
+
+.autoparty .dismiss-button {
+  width: 15px;
+  height: 15px;
+  float: right;
+  cursor: pointer;
 }
 
 .autoparty h3 {
