@@ -63,7 +63,10 @@ const defaultInitialState = {
   }
 }
 
-const socket = io(defaultInitialState.party.socketUrl)
+let socket = {}
+if (!isServer) {
+  socket = io(defaultInitialState.party.socketUrl)
+}
 
 const enhancer = (isServer)
   ? composeWithDevTools(applyMiddleware(thunk))

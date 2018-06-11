@@ -6,6 +6,7 @@
 - ![](./party-hosting.svg) hosting ![](./party-hosting-disconnected.svg) hosting (diconnected)
 - ![](./party-attending.svg) attending ![](./party-attending-disconnected.svg) attending (disconnected) ![](./party-attending-host-disconnected.svg) attending (host disconnected)
 - ![](./history.svg) history ![](./prev.svg) prev ![](./play.svg) play ![](./pause.svg) pause ![](./next.svg) next ![](./upNext.svg) upNext
+- ![](./sad.svg) Partying (disconnected)
 
 <style>
   .markdown-preview img {
