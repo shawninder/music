@@ -240,6 +240,13 @@ button.invisibutton {
   color: steelblue;
 }
 
+.youtube-result .grabbed {
+  position: fixed;
+  width: 60px;
+  height: 45px;
+  z-index: 5;
+}
+
 .actions {
   grid-area: actions;
   width: 100%;
