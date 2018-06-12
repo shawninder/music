@@ -32,7 +32,7 @@ class List extends Component {
   keyDown (items) {
     return (event) => {
       const idx = Array.prototype.indexOf.call(this.el.childNodes, event.target)
-      if (idx !== -1 && this.el) { // found and got list ref
+      if (idx !== -1 && this.el) {
         const item = items[idx]
         if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
           event.preventDefault()
