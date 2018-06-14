@@ -600,10 +600,8 @@ class App extends Component {
               registerMiddleware={this.props.registerMiddleware}
               unregisterMiddleware={this.props.unregisterMiddleware}
               dispatch={this.dispatch}
-              state={{
-                player: this.props.player,
-                queue: this.props.queue
-              }}
+              player={this.props.player}
+              queue={this.props.queue}
               socketKey={this.props.socketKey}
               socket={this.props.socket}
               {...this.props.party} // state

@@ -254,7 +254,10 @@ class Party extends Component {
       name: this.props.name,
       hosting: this.props.hosting,
       attending: this.props.attending,
-      state: this.props.state
+      state: {
+        player: this.props.player,
+        queue: this.props.queue
+      }
     }
     const onResponse = (res) => {
       this.props.dispatch({
@@ -266,13 +269,14 @@ class Party extends Component {
   }
 
   start (event) {
-    console.log('START')
-
     const emitting = {
       reqName: 'startParty',
       socketKey: this.props.socketKey,
       name: this.props.name,
-      state: this.props.state
+      state: {
+        player: this.props.player,
+        queue: this.props.queue
+      }
     }
     const onResponse = (res) => {
       this.props.dispatch({
