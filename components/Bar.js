@@ -129,7 +129,7 @@ class Bar extends Component {
   globalClick (event) {
     if (this.list) {
       const idx = Array.prototype.indexOf.call(this.list.childNodes, event.target)
-      if (idx === -1) { // not found
+      if (idx === -1 && !event.defaultPrevented) { // not found
         this.clickOutside(event)
       }
     }
@@ -277,8 +277,8 @@ class Bar extends Component {
               onRef={(el) => {
                 this.list = el
               }}
-              clickOutside={this.clickOutside}
               defaultComponent={this.props.ResultComponent}
+              isDropDisabled
             />
           )
           : null

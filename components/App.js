@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { DragDropContext } from 'react-beautiful-dnd'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 import cloneDeep from 'lodash.clonedeep'
@@ -28,6 +29,9 @@ class App extends Component {
     super(props)
     this.dispatch = this.dispatch.bind(this)
     this.keyDown = this.keyDown.bind(this)
+    this.onDragStart = this.onDragStart.bind(this)
+    this.onDragUpdate = this.onDragUpdate.bind(this)
+    this.onDragEnd = this.onDragEnd.bind(this)
     this.figureClicked = this.figureClicked.bind(this)
     this.play = this.play.bind(this)
     this.togglePlaying = this.togglePlaying.bind(this)
@@ -126,6 +130,114 @@ class App extends Component {
         this.dispatch({
           type: 'Queue:prev'
         })
+      }
+    }
+  }
+
+  onDragStart (data, { announce }) {
+    // TODO Use `announce` to deliver an aural message to screen readers
+  }
+
+  onDragUpdate (data, { announce }) {
+    // TODO Use `announce` to deliver an aural message to screen readers
+  }
+
+  onDragEnd ({ type, reason, destination, source }, { announce }) {
+    // TODO Use `announce` to deliver an aural message to screen readers
+    if (type === 'DEFAULT' && reason === 'DROP') {
+      if (destination) { // else item was returned to initial position or such
+        switch (destination.droppableId) {
+          case 'droppable-upNext':
+            switch (source.droppableId) {
+              case 'droppable-upNext':
+                this.dispatch({
+                  type: 'Queue:move',
+                  from: {
+                    name: 'upNext',
+                    idx: source.index
+                  },
+                  to: {
+                    name: 'upNext',
+                    idx: destination.index
+                  }
+                })
+                break
+              case 'droppable-history':
+                this.dispatch({
+                  type: 'Queue:move',
+                  from: {
+                    name: 'history',
+                    idx: source.index
+                  },
+                  to: {
+                    name: 'upNext',
+                    idx: destination.index
+                  }
+                })
+                break
+              case 'droppable-bar-list':
+                this.dispatch({
+                  type: 'Queue:insert',
+                  data: this.props.bar.items[source.index],
+                  at: {
+                    name: 'upNext',
+                    idx: destination.index
+                  }
+                })
+                break
+              default:
+                console.log(`Unhandled drag source ${source.droppableId}`)
+                break
+            }
+            break
+          case 'droppable-history':
+            switch (source.droppableId) {
+              case 'droppable-upNext':
+                this.dispatch({
+                  type: 'Queue:move',
+                  from: {
+                    name: 'upNext',
+                    idx: source.index
+                  },
+                  to: {
+                    name: 'history',
+                    idx: destination.index
+                  }
+                })
+                break
+              case 'droppable-history':
+                this.dispatch({
+                  type: 'Queue:move',
+                  from: {
+                    name: 'history',
+                    idx: source.index
+                  },
+                  to: {
+                    name: 'history',
+                    idx: destination.index
+                  }
+                })
+                break
+              case 'droppable-bar-list':
+                this.dispatch({
+                  type: 'Queue:insert',
+                  data: this.props.bar.items[source.index],
+                  at: {
+                    name: 'history',
+                    idx: destination.index
+                  }
+                })
+                break
+              default:
+                console.log(`Unhandled drag source ${source.droppableId}`)
+                break
+            }
+            break
+          default:
+            console.log(`Unhandled drop zone ${destination.droppableId}`)
+            break
+        }
+        setTimeout(this.updateBarItems, 10)
       }
     }
   }
@@ -371,261 +483,263 @@ class App extends Component {
       return !!queueIndex
     }
     return (
-      <div className='App'>
-        <Bar
-          dispatch={this.dispatch}
-          placeholder={this.dict.get('bar.placeholder')}
-          query={this.props.bar.query}
-          items={this.props.bar.items}
-          suggest={(query) => {
-            return this.props.findMusic(query)
-          }}
-          ResultComponent={makeResultComponent({
-            actions: {
-              enqueue: {
-                targetIdx: state.queue.upNext.length + 1,
-                go: this.enqueue,
-                txt: 'play last',
-                icon: <img src='/static/plus.svg' title='play last' alt='play last' />,
-                cdn
-              },
-              playNext: {
-                targetIdx: 1,
-                go: this.playNext,
-                txt: 'play next',
-                icon: <img src='/static/next.svg' title='play next' alt='play next' />,
-                cdn
-              },
-              play: {
-                targetIdx: 0,
-                go: this.play,
-                txt: 'play now',
-                icon: <img src='/static/play.svg' title='play now' alt='play now' />,
-                cdn
-              },
-              jumpBackTo: {
-                targetIdx: 0,
-                go: this.jumpBackTo,
-                txt: 'jump back to this track',
-                icon: <img src='/static/play.svg' title='jump back to' alt='jump back to' />,
-                cdn: cdnNeg
-              },
-              jumpTo: {
-                targetIdx: 0,
-                go: this.jumpTo,
-                txt: 'jump to this track',
-                icon: <img src='/static/play.svg' title='jump to' alt='jump to' />,
-                cdn: cdnPos
-              },
-              remove: {
-                targetIdx: null,
-                go: this.dequeue,
-                txt: 'remove',
-                icon: <img src='/static/x.svg' title='remove' alt='remove' />,
-                cdn: cdnQueued
-              }
-            }
-
-            // remember: this.remember,
-            // isInCollection: this.isInCollection
-          })}
-          onResult={{
-            space: this.enqueue,
-            'shift+space': this.playNext,
-            'shift+enter': this.playNext,
-            'ctrl+space': this.enqueue,
-            'ctrl+enter': this.enqueue,
-            'cmd+enter': this.play
-          }}
-          commands={{
-            clearHistory: this.clearHistory,
-            clearUpNext: this.clearUpNext,
-            toggleShowHistory: this.toggleShowHistory,
-            toggleShowUpNext: this.toggleShowUpNext
-          }}
-          filters={{
-            // TODO
-            // Component:
-            // history: this.props.queue.history,
-            // upNext: this.props.queue.upNext,
-            // artist: this.props.findArtist
-            // track: this.props.findTracks
-            // collection: this.props.collection
-            // playlist: this.props.collection.playlists
-            //
-          }}
-          // getComponent={(item, idx) => {
-          //   switch (item.type) {
-          //     case 'YouTubeVideo':
-          //       return actionable(ResultComponent, [play(), dismiss()], [
-          //         playNext(), enqueue(), remember(this.props.collection)
-          //       ])
-          //     case 'command':
-          //       const Component = commandComponents[item.label]
-          //       if (!Component) {
-          //         throw new Error(`Unrecognized command ${item.label}`)
-          //       }
-          //       return Component
-          //     default:
-          //       throw new Error(`Unrecognized item type ${item.type}`)
-          //   }
-          // }}
-          onRef={(ref) => {
-            this.bar = ref
-          }}
-          autoFocus
-          decorateItem={this.decorateBarItem}
-        />
-        <div className={figureClasses.join(' ')} onClick={this.figureClicked}>
-          {/* <img src='/static/party-hosting.svg' alt='hosting' title='hosting' /> */}
-        </div>
-        <div className='main'>
-          <Party
-            className={`autoparty ${this.props.app.partyCollapsed ? 'collapsed' : 'not-collapsed'}`}
-            placeholder={this.dict.get('party.placeholder')}
-            dict={this.dict}
-            registerMiddleware={this.props.registerMiddleware}
-            unregisterMiddleware={this.props.unregisterMiddleware}
+      <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
+        <div className='App'>
+          <Bar
             dispatch={this.dispatch}
-            state={{
-              player: this.props.player,
-              queue: this.props.queue
+            placeholder={this.dict.get('bar.placeholder')}
+            query={this.props.bar.query}
+            items={this.props.bar.items}
+            suggest={(query) => {
+              return this.props.findMusic(query)
             }}
-            socketKey={this.props.socketKey}
-            socket={this.props.socket}
-            {...this.props.party} // state
-            gotState={this.gotState}
-            gotSlice={this.gotSlice}
-            gotDispatch={this.gotDispatch}
-            collapsed={this.props.app.partyCollapsed}
-            onClickCollapsed={() => {
-              this.dispatch({
-                type: 'App:toggleParty'
-              })
-            }}
-          />
-          <div className='queue'>
-            <List
-              title={`${this.dict.get('history.title')} (${state.queue.history.length})`}
-              className='history'
-              items={state.queue.history}
-              defaultComponent={makeResultComponent({
-                actions: {
-                  jumpTo: {
-                    targetIdx: 0,
-                    go: this.jumpBackTo,
-                    txt: 'jump back to this track',
-                    icon: <img src='/static/play.svg' title='jump back to' alt='jump back to' />
-                  }
+            ResultComponent={makeResultComponent({
+              actions: {
+                enqueue: {
+                  targetIdx: state.queue.upNext.length + 1,
+                  go: this.enqueue,
+                  txt: 'play last',
+                  icon: <img src='/static/plus.svg' title='play last' alt='play last' />,
+                  cdn
+                },
+                playNext: {
+                  targetIdx: 1,
+                  go: this.playNext,
+                  txt: 'play next',
+                  icon: <img src='/static/next.svg' title='play next' alt='play next' />,
+                  cdn
+                },
+                play: {
+                  targetIdx: 0,
+                  go: this.play,
+                  txt: 'play now',
+                  icon: <img src='/static/play.svg' title='play now' alt='play now' />,
+                  cdn
+                },
+                jumpBackTo: {
+                  targetIdx: 0,
+                  go: this.jumpBackTo,
+                  txt: 'jump back to this track',
+                  icon: <img src='/static/play.svg' title='jump back to' alt='jump back to' />,
+                  cdn: cdnNeg
+                },
+                jumpTo: {
+                  targetIdx: 0,
+                  go: this.jumpTo,
+                  txt: 'jump to this track',
+                  icon: <img src='/static/play.svg' title='jump to' alt='jump to' />,
+                  cdn: cdnPos
+                },
+                remove: {
+                  targetIdx: null,
+                  go: this.dequeue,
+                  txt: 'remove',
+                  icon: <img src='/static/x.svg' title='remove' alt='remove' />,
+                  cdn: cdnQueued
                 }
-                // remember: this.remember,
-                // isInCollection: this.isInCollection
-              })}
-              onItem={{
-                space: this.jumpBackTo
-              }}
-              startsCollapsed
-              collapsible
-            />
-            <section>
-              { this.props.party.attending
-                ? (
-                  (this.props.app.showPlayer && state.queue.now.data)
-                    ? (
-                      <img
-                        className='player-alt'
-                        src={state.queue.now.data.snippet.thumbnails.high.url}
-                        width={state.queue.now.data.snippet.thumbnails.high.width}
-                        height={state.queue.now.data.snippet.thumbnails.high.height}
-                        alt={`Thumnail for ${state.queue.now.data.title}`}
-                      />
-                    )
-                    : null
-                )
-                : (
-                  <Player
-                    onRef={(playerEl) => {
-                      this.playerEl = playerEl
-                    }}
-                    playingNow={state.queue.now}
-                    playing={state.player.playing}
-                    show={state.app.showPlayer}
-                    dispatch={this.dispatch}
-                    onEnded={this.onTrackEnd}
-                  />
-                )
               }
-            </section>
-            <List
-              title={`${this.dict.get('upnext.title')} (${state.queue.upNext.length})`}
-              className='upNext'
-              items={state.queue.upNext}
-              defaultComponent={makeResultComponent({
-                actions: {
-                  jumpTo: {
-                    targetIdx: 0,
-                    go: this.jumpTo,
-                    txt: 'jump to this track',
-                    icon: <img src='/static/play.svg' title='jump to' alt='jump to' />
-                  },
-                  remove: {
-                    targetIdx: null,
-                    go: this.dequeue,
-                    txt: 'remove',
-                    icon: <img src='/static/x.svg' title='remove' alt='remove' />
-                  }
-                  // more: {
-                  //   targetIdx: null,
-                  //   go: () => {
-                  //     console.log('MORE', 'coming soon')
-                  //   },
-                  //   txt: 'more options',
-                  //   icon: <img src='/static/dots.svg' title='more options' alt='more options' />
-                  // }
-                }
-                // remember: this.remember,
 
-                // isInCollection: this.isInCollection
-              })}
-              onItem={{
-              }}
-              collapsible
-            />
+              // remember: this.remember,
+              // isInCollection: this.isInCollection
+            })}
+            onResult={{
+              space: this.enqueue,
+              'shift+space': this.playNext,
+              'shift+enter': this.playNext,
+              'ctrl+space': this.enqueue,
+              'ctrl+enter': this.enqueue,
+              'cmd+enter': this.play
+            }}
+            commands={{
+              clearHistory: this.clearHistory,
+              clearUpNext: this.clearUpNext,
+              toggleShowHistory: this.toggleShowHistory,
+              toggleShowUpNext: this.toggleShowUpNext
+            }}
+            filters={{
+              // TODO
+              // Component:
+              // history: this.props.queue.history,
+              // upNext: this.props.queue.upNext,
+              // artist: this.props.findArtist
+              // track: this.props.findTracks
+              // collection: this.props.collection
+              // playlist: this.props.collection.playlists
+              //
+            }}
+            // getComponent={(item, idx) => {
+            //   switch (item.type) {
+            //     case 'YouTubeVideo':
+            //       return actionable(ResultComponent, [play(), dismiss()], [
+            //         playNext(), enqueue(), remember(this.props.collection)
+            //       ])
+            //     case 'command':
+            //       const Component = commandComponents[item.label]
+            //       if (!Component) {
+            //         throw new Error(`Unrecognized command ${item.label}`)
+            //       }
+            //       return Component
+            //     default:
+            //       throw new Error(`Unrecognized item type ${item.type}`)
+            //   }
+            // }}
+            onRef={(ref) => {
+              this.bar = ref
+            }}
+            autoFocus
+            decorateItem={this.decorateBarItem}
+          />
+          <div className={figureClasses.join(' ')} onClick={this.figureClicked}>
+            {/* <img src='/static/party-hosting.svg' alt='hosting' title='hosting' /> */}
           </div>
+          <div className='main'>
+            <Party
+              className={`autoparty ${this.props.app.partyCollapsed ? 'collapsed' : 'not-collapsed'}`}
+              placeholder={this.dict.get('party.placeholder')}
+              dict={this.dict}
+              registerMiddleware={this.props.registerMiddleware}
+              unregisterMiddleware={this.props.unregisterMiddleware}
+              dispatch={this.dispatch}
+              state={{
+                player: this.props.player,
+                queue: this.props.queue
+              }}
+              socketKey={this.props.socketKey}
+              socket={this.props.socket}
+              {...this.props.party} // state
+              gotState={this.gotState}
+              gotSlice={this.gotSlice}
+              gotDispatch={this.gotDispatch}
+              collapsed={this.props.app.partyCollapsed}
+              onClickCollapsed={() => {
+                this.dispatch({
+                  type: 'App:toggleParty'
+                })
+              }}
+            />
+            <div className='queue'>
+              <List
+                title={`${this.dict.get('history.title')} (${state.queue.history.length})`}
+                className='history'
+                items={state.queue.history}
+                defaultComponent={makeResultComponent({
+                  actions: {
+                    jumpTo: {
+                      targetIdx: 0,
+                      go: this.jumpBackTo,
+                      txt: 'jump back to this track',
+                      icon: <img src='/static/play.svg' title='jump back to' alt='jump back to' />
+                    }
+                  }
+                  // remember: this.remember,
+                  // isInCollection: this.isInCollection
+                })}
+                onItem={{
+                  space: this.jumpBackTo
+                }}
+                startsCollapsed
+                collapsible
+              />
+              <section>
+                { this.props.party.attending
+                  ? (
+                    (this.props.app.showPlayer && state.queue.now.data)
+                      ? (
+                        <img
+                          className='player-alt'
+                          src={state.queue.now.data.snippet.thumbnails.high.url}
+                          width={state.queue.now.data.snippet.thumbnails.high.width}
+                          height={state.queue.now.data.snippet.thumbnails.high.height}
+                          alt={`Thumnail for ${state.queue.now.data.title}`}
+                        />
+                      )
+                      : null
+                  )
+                  : (
+                    <Player
+                      onRef={(playerEl) => {
+                        this.playerEl = playerEl
+                      }}
+                      playingNow={state.queue.now}
+                      playing={state.player.playing}
+                      show={state.app.showPlayer}
+                      dispatch={this.dispatch}
+                      onEnded={this.onTrackEnd}
+                    />
+                  )
+                }
+              </section>
+              <List
+                title={`${this.dict.get('upnext.title')} (${state.queue.upNext.length})`}
+                className='upNext'
+                items={state.queue.upNext}
+                defaultComponent={makeResultComponent({
+                  actions: {
+                    jumpTo: {
+                      targetIdx: 0,
+                      go: this.jumpTo,
+                      txt: 'jump to this track',
+                      icon: <img src='/static/play.svg' title='jump to' alt='jump to' />
+                    },
+                    remove: {
+                      targetIdx: null,
+                      go: this.dequeue,
+                      txt: 'remove',
+                      icon: <img src='/static/x.svg' title='remove' alt='remove' />
+                    }
+                    // more: {
+                    //   targetIdx: null,
+                    //   go: () => {
+                    //     console.log('MORE', 'coming soon')
+                    //   },
+                    //   txt: 'more options',
+                    //   icon: <img src='/static/dots.svg' title='more options' alt='more options' />
+                    // }
+                  }
+                  // remember: this.remember,
+
+                  // isInCollection: this.isInCollection
+                })}
+                onItem={{
+                }}
+                collapsible
+              />
+            </div>
+          </div>
+          <Controls
+            playingNow={state.queue.now}
+            PlayingNowComponent={makeResultComponent({
+              actions: {
+                // toggleShowPlayer: {
+                //   go: this.toggleShowPlayer,
+                //   txt: this.props.app.showingPlayer ? 'hide player' : 'show player',
+                //   icon: <img src='/static/camera.svg' title='toggle player' alt='toggle player' />
+                // }
+              }
+              // play: {
+              //   go: this.togglePlaying,
+              //   txt: 'play/pause',
+              //   icon: <img src='/static/pause.svg' title='pause' alt='pause' />
+              // },
+              // toggleShowPlayer: this.props.toggleShowPlayer,
+              // showPlayer: this.props.app.showPlayer
+              // remember: this.remember,
+              // isInCollection: this.isInCollection
+            })}
+            f={state.player.f}
+            t={state.player.t}
+            history={state.queue.history}
+            upNext={state.queue.upNext}
+            restartTrack={this.restartTrack}
+            playing={state.player.playing}
+            dispatch={this.dispatch}
+            collection={this.props.collection}
+            showPlayer={this.props.app.showPlayer}
+            toggleShowHistory={this.toggleShowHistory}
+            toggleShowUpNext={this.toggleShowUpNext}
+          />
         </div>
-        <Controls
-          playingNow={state.queue.now}
-          PlayingNowComponent={makeResultComponent({
-            actions: {
-              // toggleShowPlayer: {
-              //   go: this.toggleShowPlayer,
-              //   txt: this.props.app.showingPlayer ? 'hide player' : 'show player',
-              //   icon: <img src='/static/camera.svg' title='toggle player' alt='toggle player' />
-              // }
-            }
-            // play: {
-            //   go: this.togglePlaying,
-            //   txt: 'play/pause',
-            //   icon: <img src='/static/pause.svg' title='pause' alt='pause' />
-            // },
-            // toggleShowPlayer: this.props.toggleShowPlayer,
-            // showPlayer: this.props.app.showPlayer
-            // remember: this.remember,
-            // isInCollection: this.isInCollection
-          })}
-          f={state.player.f}
-          t={state.player.t}
-          history={state.queue.history}
-          upNext={state.queue.upNext}
-          restartTrack={this.restartTrack}
-          playing={state.player.playing}
-          dispatch={this.dispatch}
-          collection={this.props.collection}
-          showPlayer={this.props.app.showPlayer}
-          toggleShowHistory={this.toggleShowHistory}
-          toggleShowUpNext={this.toggleShowUpNext}
-        />
-      </div>
+      </DragDropContext>
     )
   }
 }

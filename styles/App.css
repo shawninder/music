@@ -100,7 +100,7 @@ button.invisibutton {
 }
 
 .bar-list {
-  max-width: 100%;
+  max-width: 640px;
   max-height: 100vh;
   overflow-y: scroll;
   position: fixed;
@@ -468,8 +468,6 @@ li:nth-child(odd) .actions {
 
 .autoparty.not-collapsed {
   background-color: khaki;
-  width: 100%;
-  max-width: 640px;
   padding: 15px;
 }
 

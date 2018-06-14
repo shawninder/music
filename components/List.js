@@ -5,6 +5,8 @@ import isEqual from 'lodash.isequal'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
+import { Droppable, Draggable } from 'react-beautiful-dnd'
+
 class List extends Component {
   constructor (props) {
     super(props)
@@ -89,26 +91,33 @@ class List extends Component {
       const itemClone = cloneDeep(item)
       delete itemClone.Component
       const Component = item.Component || this.props.defaultComponent
-      const node = (
-        <Component
-          data={itemClone}
-          query={this.props.query}
-          idx={idx}
-          queueIndex={itemClone.queueIndex}
-        />
-      )
       return (
-        <li
-          key={itemClone.key}
-          tabIndex='0'
-        >
-          {node}
-        </li>
+        <Draggable key={`draggable-${itemClone.key}`} draggableId={`draggable-${itemClone.key}`} index={idx}>
+          {(draggableProvided, snapshot) => {
+            return (
+              <li
+                key={itemClone.key}
+                tabIndex='0'
+                ref={draggableProvided.innerRef}
+                {...draggableProvided.draggableProps}
+              >
+                <Component
+                  data={itemClone}
+                  query={this.props.query}
+                  idx={idx}
+                  queueIndex={itemClone.queueIndex}
+                  dragHandleProps={draggableProvided.dragHandleProps}
+                />
+              </li>
+            )
+          }}
+        </Draggable>
       )
     })
     const classes = this.props.className.split(' ')
     classes.push('list')
     classes.push(this.state.collapsed ? 'collapsed' : 'not-collapsed')
+
     return (
       <div className={classes.join(' ')}>
         {/* TODO handle `this.props.collapsible && !this.props.title` */}
@@ -121,15 +130,23 @@ class List extends Component {
             </h3>
           ) : null
         }
-        <ol
-          onKeyDown={this.keyDown(this.props.items)}
-          ref={(el) => {
-            this.el = el
-            this.props.onRef(el)
+        <Droppable droppableId={`droppable-${this.props.className}`} isDropDisabled={this.props.isDropDisabled}>
+          {(droppableProvided, snapshot) => {
+            return (
+              <ol
+                onKeyDown={this.keyDown(this.props.items)}
+                ref={(el) => {
+                  this.el = el
+                  this.props.onRef(el)
+                  return droppableProvided.innerRef(el)
+                }}
+              >
+                {items}
+                {droppableProvided.placeholder}
+              </ol>
+            )
           }}
-        >
-          {items}
-        </ol>
+        </Droppable>
       </div>
     )
   }
@@ -148,7 +165,8 @@ const props = [
       return <pre>{JSON.stringify(props, null, 2)}</pre>
     }
   },
-  { name: 'collapsible', type: PropTypes.bool, val: false }
+  { name: 'collapsible', type: PropTypes.bool, val: false },
+  { name: 'isDropDisabled', type: PropTypes.bool, val: false }
 ]
 
 List.defaultProps = defaultProps(props)

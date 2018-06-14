@@ -86,6 +86,7 @@ function makeResultComponent (opts) {
           onClick={this.onClick}
           onToggle={this.onToggle}
           className={classes.join(' ')}
+          dragHandleProps={this.props.dragHandleProps}
         >
           {corner}
           {
@@ -127,7 +128,8 @@ function makeResultComponent (opts) {
     { name: 'query', type: PropTypes.string, val: '' },
     { name: 'data', type: PropTypes.object.isRequired },
     { name: 'onClick', type: PropTypes.func, val: () => {} },
-    { name: 'idx', type: PropTypes.number, val: -1 }
+    { name: 'idx', type: PropTypes.number, val: -1 },
+    { name: 'dragHandleProps', type: PropTypes.object, val: {} }
   ]
 
   ResultComponent.defaultProps = defaultProps(props)

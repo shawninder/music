@@ -77,6 +77,7 @@ export default function queueReducer (state = {}, action) {
           upNext.unshift(now)
           upNext = upNext.map((item) => {
             item.queueIndex += 1
+            item.inQueue = true
             return item
           })
         }
@@ -99,6 +100,7 @@ export default function queueReducer (state = {}, action) {
           delete item.Component
           history = history.map((i) => {
             i.queueIndex -= 1
+            i.inQueue = true
             return i
           })
           history.push(cloneDeep(item))
@@ -108,6 +110,7 @@ export default function queueReducer (state = {}, action) {
         const next = upNext.shift()
         upNext = upNext.map((item, idx) => {
           item.queueIndex = 1 + idx
+          item.inQueue = true
           return item
         })
         next.key = next.key.slice(0, next.key.lastIndexOf(';'))
@@ -158,13 +161,64 @@ export default function queueReducer (state = {}, action) {
       const hLen = newState.history.length
       newState.history = newState.history.map((item, idx) => {
         item.queueIndex = -hLen + idx
+        item.inQueue = true
         return item
       })
       newState.now.queueIndex = 0
       newState.upNext = newState.upNext.map((item, idx) => {
         item.queueIndex = 1 + idx
+        item.inQueue = true
         return item
       })
+      break
+    }
+    case 'Queue:move': {
+      if (action.from.name === action.to.name) {
+        if (action.from.idx > action.to.idx) {
+          const item = newState[action.from.name].splice(action.from.idx, 1)[0]
+          newState[action.to.name].splice(action.to.idx, 0, item)
+        } else {
+          const item = newState[action.from.name].splice(action.from.idx, 1)[0]
+          newState[action.to.name].splice(action.to.idx, 0, item)
+        }
+      } else {
+        const item = newState[action.from.name].splice(action.from.idx, 1)[0]
+        newState[action.to.name].splice(action.to.idx, 0, item)
+      }
+      const hLen = newState.history.length
+      newState.history = newState.history.map((item, idx) => {
+        item.queueIndex = -hLen + idx
+        item.inQueue = true
+        return item
+      })
+      newState.now.queueIndex = 0
+      newState.now.inQueue = true
+      newState.upNext = newState.upNext.map((item, idx) => {
+        item.queueIndex = 1 + idx
+        item.inQueue = true
+        return item
+      })
+      break
+    }
+    case 'Queue:insert': {
+      const item = action.data
+      item.key += `:${Date.now()}`
+      newState[action.at.name].splice(action.at.idx, 0, item)
+      if (action.at.name === 'history') {
+        const hLen = newState.history.length
+        newState.history = newState.history.map((item, idx) => {
+          item.queueIndex = -hLen + idx
+          item.inQueue = true
+          return item
+        })
+      } else if (action.at.name === 'upNext') {
+        newState.upNext = newState.upNext.map((item, idx) => {
+          item.queueIndex = 1 + idx
+          item.inQueue = true
+          return item
+        })
+      }
+      // newState.now.queueIndex = 0
       break
     }
   }
