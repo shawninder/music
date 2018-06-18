@@ -103,7 +103,8 @@ class Bar extends Component {
             })
             this.props.dispatch({
               type: 'Bar:setItems',
-              data: items
+              data: items,
+              areCommands: false
             })
           }
         })
@@ -179,7 +180,8 @@ class Bar extends Component {
         // order by score
         this.props.dispatch({
           type: 'Bar:setItems',
-          data: items
+          data: items,
+          areCommands: true
         })
       } else {
         this.debounced(value)
@@ -279,6 +281,7 @@ class Bar extends Component {
               }}
               defaultComponent={this.props.ResultComponent}
               isDropDisabled
+              areDraggable={!this.props.areCommands}
             />
           )
           : null
@@ -308,7 +311,8 @@ const props = [
   { name: 'autoFocus', type: PropTypes.bool, val: false },
   { name: 'onRef', type: PropTypes.func, val: () => {} },
   { name: 'autoDismiss', type: PropTypes.bool, val: true },
-  { name: 'onResult', type: PropTypes.object, val: {} }
+  { name: 'onResult', type: PropTypes.object, val: {} },
+  { name: 'areCommands', type: PropTypes.bool, val: true }
 ]
 
 Bar.defaultProps = defaultProps(props)

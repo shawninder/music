@@ -81,6 +81,22 @@ class App extends Component {
       : this.props
   }
 
+  inspectParty (data) {
+    if (this.props.socket.connected) {
+
+    } else {
+      console.log("Can't inspect party, socket disconnected")
+    }
+  }
+
+  inspectPartyServer (data) {
+    if (this.props.socket.connected) {
+
+    } else {
+      console.log("Can't inspect party server, socket disconnected")
+    }
+  }
+
   dispatch (action) {
     if (action.type === 'Queue:restartTrack' && !this.props.party.attending) {
       this.restartTrack()
@@ -490,6 +506,7 @@ class App extends Component {
             placeholder={this.dict.get('bar.placeholder')}
             query={this.props.bar.query}
             items={this.props.bar.items}
+            areCommands={this.props.bar.areCommands}
             suggest={(query) => {
               return this.props.findMusic(query)
             }}
@@ -554,7 +571,9 @@ class App extends Component {
               clearHistory: this.clearHistory,
               clearUpNext: this.clearUpNext,
               toggleShowHistory: this.toggleShowHistory,
-              toggleShowUpNext: this.toggleShowUpNext
+              toggleShowUpNext: this.toggleShowUpNext,
+              inspectParty: this.inspectParty,
+              inspectPartyServer: this.inspectPartyServer
             }}
             filters={{
               // TODO
@@ -637,6 +656,7 @@ class App extends Component {
                 }}
                 startsCollapsed
                 collapsible
+                areDraggable
               />
               <section>
                 { this.props.party.attending
@@ -701,6 +721,7 @@ class App extends Component {
                 onItem={{
                 }}
                 collapsible
+                areDraggable
               />
             </div>
           </div>

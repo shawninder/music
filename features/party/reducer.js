@@ -26,6 +26,7 @@ export default function partyReducer (state = {}, action) {
     case 'Party:joined':
       newState.attending = true
       newState.state = action.res.state
+      newState.name = action.res.name
       break
     case 'Party:left':
       newState.attending = false

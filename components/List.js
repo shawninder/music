@@ -91,45 +91,50 @@ class List extends Component {
       const itemClone = cloneDeep(item)
       delete itemClone.Component
       const Component = item.Component || this.props.defaultComponent
-      return (
-        <Draggable key={`draggable-${itemClone.key}`} draggableId={`draggable-${itemClone.key}`} index={idx}>
-          {(draggableProvided, snapshot) => {
-            return (
-              <li
-                key={itemClone.key}
-                tabIndex='0'
-                ref={draggableProvided.innerRef}
-                {...draggableProvided.draggableProps}
-              >
-                <Component
-                  data={itemClone}
-                  query={this.props.query}
-                  idx={idx}
-                  queueIndex={itemClone.queueIndex}
-                  dragHandleProps={draggableProvided.dragHandleProps}
-                />
-              </li>
-            )
-          }}
-        </Draggable>
-      )
+      if (this.props.areDraggable) {
+        return (
+          <Draggable key={`draggable-${itemClone.key}`} draggableId={`draggable-${itemClone.key}`} index={idx}>
+            {(draggableProvided, snapshot) => {
+              return (
+                <li
+                  key={itemClone.key}
+                  tabIndex='0'
+                  ref={draggableProvided.innerRef}
+                  {...draggableProvided.draggableProps}
+                >
+                  <Component
+                    data={itemClone}
+                    query={this.props.query}
+                    idx={idx}
+                    queueIndex={itemClone.queueIndex}
+                    dragHandleProps={draggableProvided.dragHandleProps}
+                  />
+                </li>
+              )
+            }}
+          </Draggable>
+        )
+      } else {
+        return (
+          <li
+            key={itemClone.key}
+            tabIndex='0'
+          >
+            <Component
+              data={itemClone}
+              query={this.props.query}
+              idx={idx}
+            />
+          </li>
+        )
+      }
     })
     const classes = this.props.className.split(' ')
     classes.push('list')
     classes.push(this.state.collapsed ? 'collapsed' : 'not-collapsed')
 
-    return (
-      <div className={classes.join(' ')}>
-        {/* TODO handle `this.props.collapsible && !this.props.title` */}
-        {this.props.title
-          ? (
-            <h3
-              onClick={this.toggleCollapsed}
-            >
-              {this.props.title}
-            </h3>
-          ) : null
-        }
+    const dropZone = this.props.areDraggable
+      ? (
         <Droppable droppableId={`droppable-${this.props.className}`} isDropDisabled={this.props.isDropDisabled}>
           {(droppableProvided, snapshot) => {
             return (
@@ -147,6 +152,31 @@ class List extends Component {
             )
           }}
         </Droppable>
+      )
+      : (
+        <ol
+          onKeyDown={this.keyDown(this.props.items)}
+          ref={(el) => {
+            this.el = el
+            this.props.onRef(el)
+          }}
+        >
+          {items}
+        </ol>
+      )
+    return (
+      <div className={classes.join(' ')}>
+        {/* TODO handle `this.props.collapsible && !this.props.title` */}
+        {this.props.title
+          ? (
+            <h3
+              onClick={this.toggleCollapsed}
+            >
+              {this.props.title}
+            </h3>
+          ) : null
+        }
+        {dropZone}
       </div>
     )
   }
@@ -166,7 +196,8 @@ const props = [
     }
   },
   { name: 'collapsible', type: PropTypes.bool, val: false },
-  { name: 'isDropDisabled', type: PropTypes.bool, val: false }
+  { name: 'isDropDisabled', type: PropTypes.bool, val: false },
+  { name: 'areDraggable', type: PropTypes.bool, val: false }
 ]
 
 List.defaultProps = defaultProps(props)

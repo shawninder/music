@@ -44,7 +44,8 @@ const defaultInitialState = {
   },
   bar: {
     query: '',
-    items: []
+    items: [],
+    areCommands: false
   },
   player: defaultPlayer,
   queue: defaultQueue,
