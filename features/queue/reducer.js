@@ -58,10 +58,19 @@ export default function queueReducer (state = {}, action) {
       newState.upNext = newState.upNext.concat([newItem])
       break
     case 'Queue:dequeue':
-      newState.upNext = action.newUpNext.map((item, idx) => {
-        item.queueIndex = 1 + idx
-        return item
-      })
+      if (action.newHistory) {
+        newState.history = action.newHistory.map((item, idx) => {
+          item.inQueue = true
+          item.queueIndex = newState.history.length + idx
+          return item
+        })
+      }
+      if (action.newUpNext) {
+        newState.upNext = action.newUpNext.map((item, idx) => {
+          item.queueIndex = 1 + idx
+          return item
+        })
+      }
       break
     case 'Queue:prev': {
       const history = newState.history
@@ -149,8 +158,11 @@ export default function queueReducer (state = {}, action) {
         }
       } else {
         if (newState.history.length > 0) {
-          skipped = (idx === -1) ? skipped : newState.history.slice(idx + 1)
-            .concat(skipped)
+          skipped = (
+            (idx === -1)
+              ? skipped
+              : newState.history.slice(idx + 1)
+          ).concat(skipped)
           newState.history = newState.history.slice(0, idx)
         }
         if (skipped.length > 0) {

@@ -147,12 +147,23 @@ class Party extends Component {
   //   parties[data.name].guests[guestKey].emit('state', data.state)
   // })
 
+  startPulse () {
+    this.pulse = setInterval(() => {
+      if (document.hasFocus()) {
+        // TODO on hydrate if document didn't have focus at last pulse?
+        this.hydrate()
+      }
+    }, 3000)
+  }
+
   startListening () {
     this.props.registerMiddleware(this.middleware)
 
     if (window) {
       window.addEventListener('focus', this.onGlobalFocus, false)
     }
+
+    this.startPulse()
 
     this.props.socket.on('connect', () => {
       console.log('SOCKET connect')
@@ -221,7 +232,12 @@ class Party extends Component {
       window.removeEventListener('focus', this.onGlobalFocus, false)
     }
 
+    if (this.pulse) {
+      clearInterval(this.pulse)
+    }
+
     // TODO test that this really removes all listeners of all events
+    this.props.socket.removeAllListeners()
     this.props.socket.off()
     this.props.socket.close()
   }

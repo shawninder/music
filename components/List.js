@@ -100,6 +100,7 @@ class List extends Component {
                   key={itemClone.key}
                   tabIndex='0'
                   ref={draggableProvided.innerRef}
+                  className={snapshot.isDragging ? 'dragging' : ''}
                   {...draggableProvided.draggableProps}
                 >
                   <Component

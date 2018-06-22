@@ -281,7 +281,7 @@ class Bar extends Component {
               }}
               defaultComponent={this.props.ResultComponent}
               isDropDisabled
-              areDraggable={!this.props.areCommands}
+              areDraggable={this.props.areCommands !== true}
             />
           )
           : null

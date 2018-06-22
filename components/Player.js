@@ -47,9 +47,6 @@ class Player extends Component {
           })
         }}
         onEnded={this.props.onEnded}
-        style={{
-          display: this.props.show ? 'block' : 'none'
-        }}
         config={{
           youtube: {
             start: 0

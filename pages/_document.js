@@ -17,7 +17,7 @@ export default class MyDocument extends Document {
           <title>Mass Play</title>
           <link rel='shotcut icon' href='/static/favicon.ico' />
           <meta httpEquiv='Content-Language' content={lang} />
-          <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no' />
+          <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0' />
           <meta name='theme-color' content='whitesmoke' />
           <link rel='manifest' href='/static/manifest.json' />
           <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' />

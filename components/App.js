@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { DragDropContext } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 import cloneDeep from 'lodash.clonedeep'
@@ -40,7 +40,6 @@ class App extends Component {
     this.dequeue = this.dequeue.bind(this)
     // this.remember = this.remember.bind(this)
     // this.isInCollection = this.isInCollection.bind(this)
-    this.toggleShowPlayer = this.toggleShowPlayer.bind(this)
     this.clearHistory = this.clearHistory.bind(this)
     this.clearUpNext = this.clearUpNext.bind(this)
     this.toggleShowHistory = this.toggleShowHistory.bind(this)
@@ -55,6 +54,7 @@ class App extends Component {
     this.gotSlice = this.gotSlice.bind(this)
     this.gotDispatch = this.gotDispatch.bind(this)
     this.updateBarItems = this.updateBarItems.bind(this)
+    this.inspectPartyServer = this.inspectPartyServer.bind(this)
 
     this.bar = {}
 
@@ -81,17 +81,22 @@ class App extends Component {
       : this.props
   }
 
-  inspectParty (data) {
-    if (this.props.socket.connected) {
-
-    } else {
-      console.log("Can't inspect party, socket disconnected")
-    }
-  }
+  // inspectParty (data) {
+  //   if (this.props.socket.connected) {
+  //     this.props.socket.once('partyDetails')
+  //     this.props.socket.emit('get')
+  //   } else {
+  //     console.log("Can't inspect party, socket disconnected")
+  //   }
+  // }
 
   inspectPartyServer (data) {
     if (this.props.socket.connected) {
-
+      this.props.socket.once('gotDetails', (details) => {
+        console.log('details', details)
+      })
+      console.log('emitting getDetails')
+      this.props.socket.emit('getDetails')
     } else {
       console.log("Can't inspect party server, socket disconnected")
     }
@@ -107,7 +112,7 @@ class App extends Component {
 
   gotDispatch (action) {
     this.props.dispatch(action)
-    setTimeout(this.updateBarItems, 0)
+    setTimeout(this.updateBarItems, 10)
   }
 
   gotState (state) {
@@ -115,7 +120,7 @@ class App extends Component {
       type: 'Party:gotState',
       state
     })
-    setTimeout(this.updateBarItems, 0)
+    setTimeout(this.updateBarItems, 10)
   }
 
   gotSlice (slice) {
@@ -123,7 +128,7 @@ class App extends Component {
       type: 'Party:gotSlice',
       slice
     })
-    setTimeout(this.updateBarItems, 0)
+    setTimeout(this.updateBarItems, 10)
   }
 
   keyDown (event) {
@@ -152,6 +157,11 @@ class App extends Component {
 
   onDragStart (data, { announce }) {
     // TODO Use `announce` to deliver an aural message to screen readers
+    this.dispatch({
+      type: 'App:dragging',
+      value: true,
+      data
+    })
   }
 
   onDragUpdate (data, { announce }) {
@@ -160,8 +170,13 @@ class App extends Component {
 
   onDragEnd ({ type, reason, destination, source }, { announce }) {
     // TODO Use `announce` to deliver an aural message to screen readers
+    this.dispatch({
+      type: 'App:dragging',
+      value: false
+    })
     if (type === 'DEFAULT' && reason === 'DROP') {
       if (destination) { // else item was returned to initial position or such
+        const state = this.getPartyState()
         switch (destination.droppableId) {
           case 'droppable-upNext':
             switch (source.droppableId) {
@@ -202,7 +217,7 @@ class App extends Component {
                 })
                 break
               default:
-                console.log(`Unhandled drag source ${source.droppableId}`)
+                console.log(`Unhandled drag source ${source.droppableId} dropped on Up Next`)
                 break
             }
             break
@@ -245,7 +260,49 @@ class App extends Component {
                 })
                 break
               default:
-                console.log(`Unhandled drag source ${source.droppableId}`)
+                console.log(`Unhandled drag source ${source.droppableId} dropped on History`)
+                break
+            }
+            break
+          case 'droppable-playingNow':
+            switch (source.droppableId) {
+              case 'droppable-history': {
+                const hist = cloneDeep(state.queue.history)
+                const item = cloneDeep(hist[source.index])
+                pullAt(hist, source.index)
+                this.dispatch({
+                  type: 'Queue:dequeue',
+                  newHistory: hist
+                })
+                this.dispatch({
+                  type: 'Queue:play',
+                  data: item
+                })
+                break
+              }
+              case 'droppable-upNext':
+                const un = cloneDeep(state.queue.upNext)
+                const item = cloneDeep(un[source.index])
+                pullAt(un, source.index)
+                this.dispatch({
+                  type: 'Queue:dequeue',
+                  newUpNext: un
+                })
+                this.dispatch({
+                  type: 'Queue:play',
+                  data: item
+                })
+                break
+              case 'droppable-bar-list':
+                const dragged = state.bar.items[source.index]
+                console.log('dragged.key', dragged.key)
+                this.dispatch({
+                  type: 'Queue:play',
+                  data: dragged
+                })
+                break
+              default:
+                console.log(`Unhandled drag source ${source.droppableId} dropped on Playing Now`)
                 break
             }
             break
@@ -281,7 +338,7 @@ class App extends Component {
       type: 'Player:setPlaying',
       playing: true
     })
-    setTimeout(this.updateBarItems, 0)
+    setTimeout(this.updateBarItems, 10)
   }
 
   togglePlaying (data) {
@@ -311,7 +368,7 @@ class App extends Component {
         type: 'Queue:playNext',
         data: newData
       })
-      setTimeout(this.updateBarItems, 0)
+      setTimeout(this.updateBarItems, 10)
     }
   }
 
@@ -326,7 +383,7 @@ class App extends Component {
         type: 'Queue:enqueue',
         data: newData
       })
-      setTimeout(this.updateBarItems, 0)
+      setTimeout(this.updateBarItems, 10)
     }
   }
 
@@ -339,7 +396,7 @@ class App extends Component {
         type: 'Queue:dequeue',
         newUpNext
       })
-      setTimeout(this.updateBarItems, 0)
+      setTimeout(this.updateBarItems, 10)
     } else {
       // TODO
     }
@@ -355,12 +412,6 @@ class App extends Component {
   // isInCollection (data) {
   //   return !!this.props.collection[data.data.id.videoId]
   // }
-
-  toggleShowPlayer (data) {
-    this.dispatch({
-      type: 'App:toggleShowPlayer'
-    })
-  }
 
   clearHistory (data) {
     this.dispatch({
@@ -498,9 +549,33 @@ class App extends Component {
     const cdnQueued = (queueIndex) => {
       return !!queueIndex
     }
+    const appClasses = ['App']
+    if (this.props.app.dragging) {
+      appClasses.push('dragging')
+    }
+
+    const PlayingNowC = makeResultComponent()
+
+    const playingNowZone = state.queue.now.key
+      ? (
+        <PlayingNowC data={{
+          data: state.queue.now.data,
+          inQueue: true,
+          queueIndex: 0
+        }} />
+      )
+      : (
+        <Droppable droppableId={`droppable-playingNow`}>
+          {(droppableProvided, snapshot) => {
+            return (
+              <ol ref={droppableProvided.innerRef} />
+            )
+          }}
+        </Droppable>
+      )
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
-        <div className='App'>
+        <div className={appClasses.join(' ')}>
           <Bar
             dispatch={this.dispatch}
             placeholder={this.dict.get('bar.placeholder')}
@@ -572,7 +647,7 @@ class App extends Component {
               clearUpNext: this.clearUpNext,
               toggleShowHistory: this.toggleShowHistory,
               toggleShowUpNext: this.toggleShowUpNext,
-              inspectParty: this.inspectParty,
+              // inspectParty: this.inspectParty,
               inspectPartyServer: this.inspectPartyServer
             }}
             filters={{
@@ -658,33 +733,24 @@ class App extends Component {
                 collapsible
                 areDraggable
               />
-              <section>
-                { this.props.party.attending
+              <section className='playingNow'>
+                <h3>
+                  {this.dict.get('queue.playingNow.title')}
+                </h3>
+                {playingNowZone}
+                {state.queue.now.key && !this.props.party.attending
                   ? (
-                    (this.props.app.showPlayer && state.queue.now.data)
-                      ? (
-                        <img
-                          className='player-alt'
-                          src={state.queue.now.data.snippet.thumbnails.high.url}
-                          width={state.queue.now.data.snippet.thumbnails.high.width}
-                          height={state.queue.now.data.snippet.thumbnails.high.height}
-                          alt={`Thumnail for ${state.queue.now.data.title}`}
-                        />
-                      )
-                      : null
-                  )
-                  : (
                     <Player
                       onRef={(playerEl) => {
                         this.playerEl = playerEl
                       }}
                       playingNow={state.queue.now}
                       playing={state.player.playing}
-                      show={state.app.showPlayer}
                       dispatch={this.dispatch}
                       onEnded={this.onTrackEnd}
                     />
                   )
+                  : null
                 }
               </section>
               <List
@@ -726,25 +792,6 @@ class App extends Component {
             </div>
           </div>
           <Controls
-            playingNow={state.queue.now}
-            PlayingNowComponent={makeResultComponent({
-              actions: {
-                // toggleShowPlayer: {
-                //   go: this.toggleShowPlayer,
-                //   txt: this.props.app.showingPlayer ? 'hide player' : 'show player',
-                //   icon: <img src='/static/camera.svg' title='toggle player' alt='toggle player' />
-                // }
-              }
-              // play: {
-              //   go: this.togglePlaying,
-              //   txt: 'play/pause',
-              //   icon: <img src='/static/pause.svg' title='pause' alt='pause' />
-              // },
-              // toggleShowPlayer: this.props.toggleShowPlayer,
-              // showPlayer: this.props.app.showPlayer
-              // remember: this.remember,
-              // isInCollection: this.isInCollection
-            })}
             f={state.player.f}
             t={state.player.t}
             history={state.queue.history}
@@ -753,7 +800,6 @@ class App extends Component {
             playing={state.player.playing}
             dispatch={this.dispatch}
             collection={this.props.collection}
-            showPlayer={this.props.app.showPlayer}
             toggleShowHistory={this.toggleShowHistory}
             toggleShowUpNext={this.toggleShowUpNext}
           />

@@ -58,6 +58,10 @@
     "en": "Hosting",
     "fr": "Hôte"
   },
+  "queue.playingNow.title": {
+    "en": "Playing Now",
+    "fr": "En Cours"
+  },
   "history.title": {
     "en": "History",
     "fr": "Historique",

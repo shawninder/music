@@ -7,8 +7,8 @@ import YouTubeVideo from './YouTubeVideo'
 import Action from './Action'
 
 function makeResultComponent (opts) {
-  const options = opts
-  options.actions = opts.actions || {}
+  const options = opts || {}
+  options.actions = options.actions || {}
   const nbActions = Object.keys(options.actions).length
   class ResultComponent extends Component {
     constructor (props) {

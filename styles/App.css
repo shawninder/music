@@ -113,12 +113,29 @@ button.invisibutton {
     "nothing"
     "results";
   box-shadow: 0px 12px 15px 0px rgb(0,0,0,0.25);
+  transition-property: opacity, box-shadow;
+  transition-duration: 0.5s;
+}
+
+.App.dragging .bar-list {
+  box-shadow: 0px 12px 15px 0px rgb(0,0,0,0.0);
+}
+
+.App .bar-list li {
+  transition-property: opacity, box-shadow;
+  transition-duration: 0.5s;
+}
+
+.App.dragging .bar-list li {
+  opacity: 0.05;
+}
+
+.App.dragging .bar-list li.dragging {
+  opacity: 1.01;
 }
 
 .bar-list ol {
   grid-area: results;
-  border: 1px solid grey;
-  background: whitesmoke;
 }
 
 .main {
@@ -126,6 +143,7 @@ button.invisibutton {
   padding: 50px 5px 130px;
   width: 100%;
 }
+
 .player-alt {
   display: block;
   margin: auto auto;
@@ -151,6 +169,10 @@ button.invisibutton {
   font-weight: bold;
 }
 
+
+.youtube-result .toggle {
+  width: 100%;
+}
 .youtube-result .toggle.toggled {
   text-align: right;
 }
@@ -218,7 +240,7 @@ button.invisibutton {
 }
 
 .youtube-result .icon {
-  width: 20px;
+  width: 15px;
 }
 
 .youtube-result.actionable {
@@ -305,12 +327,15 @@ li:nth-child(odd) .actions {
   height: 1em;
 }
 
-.upNext h3, .history h3 {
+.upNext>h3, .history>h3 {
   cursor: pointer;
+}
+
+.upNext>h3, .history>h3, .playingNow>h3 {
   text-align: center;
 }
 
-.upNext.not-collapsed>h3, .history.not-collapsed>h3 {
+.upNext.not-collapsed>h3, .history.not-collapsed>h3, .playingNow>h3 {
   color: darkgrey;
   background-color: whitesmoke;
 }
@@ -327,12 +352,18 @@ li:nth-child(odd) .actions {
   display: none;
 }
 
-.upNext, .history {
+.upNext, .history, .playingNow {
   text-align: left;
   margin: 0 auto;
   width: 100%;
   max-width: 640px;
   color: whitesmoke;
+}
+
+.upNext ol, .history ol, .playingNow ol {
+  width: 100%;
+  background: beige;
+  min-height: 45px;
 }
 
 .controls {
@@ -349,9 +380,9 @@ li:nth-child(odd) .actions {
 
 .controls-buttons {
   display: grid;
-  grid-template-columns: 50px 50px minmax(50px, 1fr) 50px 50px;
+  grid-template-columns: 50px minmax(50px, 1fr) 50px;
   grid-template-areas:
-    "history prev togglePlaying next upNext";
+    "prev togglePlaying next";
   background: whitesmoke;
 }
 
@@ -369,10 +400,8 @@ li:nth-child(odd) .actions {
 }
 
 .playingNow {
-  padding: 0 15px 0 0;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.25);
   font-size: small;
-  background: whitesmoke;
+  /* background: whitesmoke; */
 }
 
 .seek-bar {
@@ -386,10 +415,6 @@ li:nth-child(odd) .actions {
   background: hotpink;
 }
 
-.controls-history {
-  grid-area: history;
-}
-
 .controls-prev {
   grid-area: prev;
 }
@@ -399,9 +424,6 @@ li:nth-child(odd) .actions {
 
 .controls-next {
   grid-area: next;
-}
-.controls-upNext {
-  grid-area: upNext;
 }
 
 .queue {

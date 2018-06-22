@@ -9,9 +9,6 @@ export default function appReducer (state = {}, action) {
     case 'App:mergeState':
       Object.assign(newState, action.state)
       break
-    case 'App:toggleShowPlayer':
-      newState.showPlayer = !state.showPlayer
-      break
     case 'App:toggleShowHistory':
       newState.showHistory = !state.showHistory
       break
@@ -20,6 +17,9 @@ export default function appReducer (state = {}, action) {
       break
     case 'App:toggleParty':
       newState.partyCollapsed = !state.partyCollapsed
+      break
+    case 'App:dragging':
+      newState.dragging = action.value
       break
   }
   return newState

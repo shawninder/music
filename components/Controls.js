@@ -5,24 +5,11 @@ import propTypes from '../helpers/propTypes'
 
 class Controls extends Component {
   render () {
-    const playingNow = this.props.playingNow
-
     return (
       <div
         key='controls'
         className='controls'
       >
-        {
-          playingNow && playingNow.data && playingNow.data.id
-            ? (
-              <this.props.PlayingNowComponent
-                className='playingNow'
-                data={playingNow}
-              />
-            )
-            : null
-        }
-
         <div key='seek-bar' className='seek-bar'>
           <div key='seek-bar--played' className='seek-bar--played'
             style={{
@@ -43,14 +30,6 @@ class Controls extends Component {
         Obviously a better fix is required */}
 
         <div key='controls-buttons' className='controls-buttons'>
-          <button
-            key='controls-history'
-            className='controls-history'
-            onClick={this.props.toggleShowHistory}
-          >
-            {this.props.history.length}
-          </button>
-
           <button
             key='controls-prev'
             className='controls-prev'
@@ -99,14 +78,6 @@ class Controls extends Component {
           >
             <img src='/static/next.svg' alt='next' title='next' className='icon' />
           </button>
-
-          <button
-            key='controls-upNext'
-            className='controls-upNext'
-            onClick={this.props.toggleShowUpNext}
-          >
-            {this.props.upNext.length}
-          </button>
         </div>
       </div>
     )
@@ -115,15 +86,10 @@ class Controls extends Component {
 
 const props = [
   { name: 'playing', type: PropTypes.bool.isRequired },
-  { name: 'playingNow', type: PropTypes.object.isRequired },
-  { name: 'PlayingNowComponent', type: PropTypes.func.isRequired },
   { name: 'f', type: PropTypes.number, val: 0 },
   { name: 'history', type: PropTypes.array.isRequired },
   { name: 'upNext', type: PropTypes.array.isRequired },
-  { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'showPlayer', type: PropTypes.bool.isRequired },
-  { name: 'toggleShowHistory', type: PropTypes.func.isRequired },
-  { name: 'toggleShowUpNext', type: PropTypes.func.isRequired }
+  { name: 'dispatch', type: PropTypes.func.isRequired }
 ]
 
 Controls.defaultProps = defaultProps(props)
