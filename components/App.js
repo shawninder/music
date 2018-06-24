@@ -310,7 +310,6 @@ class App extends Component {
             console.log(`Unhandled drop zone ${destination.droppableId}`)
             break
         }
-        setTimeout(this.updateBarItems, 10)
       }
     }
   }
@@ -523,7 +522,8 @@ class App extends Component {
     const data = this.props.bar.items.map(this.decorateBarItem)
     this.props.dispatch({
       type: 'Bar:setItems',
-      data
+      data,
+      areCommands: false
     })
   }
 
