@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
-import debounce from 'lodash.debounce'
 import trim from 'lodash.trim'
 import { filter, match, score } from 'fuzzaldrin'
 
@@ -88,27 +87,7 @@ class Bar extends Component {
     this.clear = this.clear.bind(this)
     this.menuClicked = this.menuClicked.bind(this)
 
-    this.debounced = debounce((query) => {
-      props.suggest(query)
-        .then((results) => {
-          if (this.props.query === query) {
-            const items = results.map((item) => {
-              const id = item.id.videoId
-              const obj = {
-                type: 'YouTubeVideo',
-                key: id,
-                data: item
-              }
-              return this.props.decorateItem(obj)
-            })
-            this.props.dispatch({
-              type: 'Bar:setItems',
-              data: items,
-              areCommands: false
-            })
-          }
-        })
-    }, 500, { maxWait: 1000 })
+    this.query = this.query.bind(this)
   }
 
   componentDidMount () {
@@ -141,21 +120,21 @@ class Bar extends Component {
   }
 
   onChange (event) {
+    const value = event.target.value
     this.props.dispatch({
       type: 'Bar:setQuery',
-      data: event.target.value
+      data: value
     })
-    this.suggest(event.target.value)
+    this.suggest(value)
   }
 
   onEnter (event) {
-    this.suggest(event.target.value)
+    this.query(event.target.value)
   }
 
   suggest (value) {
     const val = trim(value)
     if (val === '') {
-      this.debounced.cancel()
       this.dismiss()
     } else {
       if (val.startsWith('/')) {
@@ -184,9 +163,35 @@ class Bar extends Component {
           areCommands: true
         })
       } else {
-        this.debounced(value)
+        this.props.dispatch({
+          type: 'Bar:setItems',
+          data: [],
+          areCommands: true
+        })
       }
     }
+  }
+
+  query (query) {
+    this.props.suggest(query)
+      .then((results) => {
+        if (this.props.query === query) {
+          const items = results.map((item) => {
+            const id = item.id.videoId
+            const obj = {
+              type: 'YouTubeVideo',
+              key: id,
+              data: item
+            }
+            return this.props.decorateItem(obj)
+          })
+          this.props.dispatch({
+            type: 'Bar:setItems',
+            data: items,
+            areCommands: false
+          })
+        }
+      })
   }
 
   clear () {
@@ -209,11 +214,6 @@ class Bar extends Component {
   }
 
   keyDown (event) {
-    // TODO The following belongs in the App not the Bar
-    if (event.keyCode === 32) { // space
-      event.stopPropagation()
-    }
-
     if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
       event.stopPropagation()
       if (event.target === this.field) {

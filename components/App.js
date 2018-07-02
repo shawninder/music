@@ -137,16 +137,16 @@ class App extends Component {
     }
     // TODO if (focus not in input[type=text]|textarea)
     if (true) {
-      if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
+      if (event.keyCode === 32 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+space
         event.preventDefault()
         this.togglePlaying()
       }
-      if (event.keyCode === 39 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // right
+      if (event.keyCode === 39 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+right
         this.dispatch({
           type: 'Queue:next'
         })
       }
-      if (event.keyCode === 37 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // left
+      if (event.keyCode === 37 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+left
         event.stopPropagation()
         this.dispatch({
           type: 'Queue:prev'
@@ -635,12 +635,9 @@ class App extends Component {
               // isInCollection: this.isInCollection
             })}
             onResult={{
-              space: this.enqueue,
-              'shift+space': this.playNext,
-              'shift+enter': this.playNext,
-              'ctrl+space': this.enqueue,
               'ctrl+enter': this.enqueue,
-              'cmd+enter': this.play
+              'shift+enter': this.playNext,
+              'ctrl+shift+enter': this.play
             }}
             commands={{
               clearHistory: this.clearHistory,

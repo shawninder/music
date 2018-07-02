@@ -36,29 +36,36 @@ class List extends Component {
       const idx = Array.prototype.indexOf.call(this.el.childNodes, event.target)
       if (idx !== -1 && this.el) {
         const item = items[idx]
-        if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
-          event.preventDefault()
-          this.props.onItem.space(item, idx, event)
-        }
-        if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && event.shiftKey) { // shift+space
-          event.preventDefault()
-          this.props.onItem['shift+space'](item, idx, event)
-        }
-        if (event.keyCode === 32 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+space
-          event.preventDefault()
-          this.props.onItem['ctrl+space'](item, idx, event)
-        }
         if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
           event.preventDefault()
           event.target.childNodes[0].click()
         }
-        if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && event.shiftKey) { // shift+enter
+        if (this.props.onItem['ctrl+enter'] &&
+          event.keyCode === 13 &&
+          !event.metaKey &&
+          event.ctrlKey &&
+          !event.shiftKey
+        ) { // ctrl+enter
+          event.preventDefault()
+          this.props.onItem['ctrl+enter'](item, idx, event)
+        }
+        if (this.props.onItem['shift+enter'] &&
+          event.keyCode === 13 &&
+          !event.metaKey &&
+          !event.ctrlKey &&
+          event.shiftKey
+        ) { // shift+enter
           event.preventDefault()
           this.props.onItem['shift+enter'](item, idx, event)
         }
-        if (event.keyCode === 13 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+enter
+        if (this.props.onItem['ctrl+shift+enter'] &&
+          event.keyCode === 13 &&
+          !event.metaKey &&
+          event.ctrlKey &&
+          event.shiftKey
+        ) { // ctrl+shift+enter
           event.preventDefault()
-          this.props.onItem['ctrl+enter'](item, idx, event)
+          this.props.onItem['ctrl+shift+enter'](item, idx, event)
         }
       }
       if (event.keyCode === 38) { // up

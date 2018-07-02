@@ -84,14 +84,6 @@ class Party extends Component {
     //   event.preventDefault()
     //   this.party(event)
     // }
-    // TODO Remove need for this in the app, perhaps by listening on an element rather than the window...
-    if (event.keyCode === 39 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // right
-      event.stopPropagation()
-    }
-    // TODO Remove need for this in the app, perhaps by listening on an element rather than the window...
-    if (event.keyCode === 37 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // left
-      event.stopPropagation()
-    }
   }
   onSubmit (event) {
     event.preventDefault()

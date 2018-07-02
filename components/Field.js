@@ -16,12 +16,6 @@ class Field extends Component {
       this.props.onDown()
       event.preventDefault() // Prevent cursor from jumping to the end of the field
     }
-    if (event.keyCode === 39 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // right
-      event.stopPropagation()
-    }
-    if (event.keyCode === 37 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // left
-      event.stopPropagation()
-    }
   }
   render () {
     return (
