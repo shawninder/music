@@ -9,4 +9,8 @@
 - Crowd List
 - Crowd Playlist
 - Chinanou Music
-  
+- DJapp
+- DJus
+- DJwe
+- weDJ
+- Collabo
