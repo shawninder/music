@@ -2,10 +2,10 @@ import deepEqual from 'deep-equal'
 import cloneDeep from 'lodash.clonedeep'
 
 export default function syncState (paths, config) {
-  const filter = (state) => {
+  const filter = (state = {}) => {
     let slice = {}
     paths.forEach((path) => {
-      const item = cloneDeep(state[path])
+      const item = cloneDeep(state[path]) // TODO why did this fail for Laura?
       if (item) {
         slice[path] = item
       }
