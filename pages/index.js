@@ -35,7 +35,7 @@ const defaultInitialState = {
   app: {
     showHistory: false,
     showUpNext: true,
-    partyCollapsed: false,
+    partyCollapsed: true,
     dragging: false
   },
   dict: {
