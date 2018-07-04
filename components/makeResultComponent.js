@@ -127,7 +127,6 @@ function makeResultComponent (opts) {
     { name: 'className', type: PropTypes.string, val: '' },
     { name: 'query', type: PropTypes.string, val: '' },
     { name: 'data', type: PropTypes.object.isRequired },
-    { name: 'onClick', type: PropTypes.func, val: () => {} },
     { name: 'idx', type: PropTypes.number, val: -1 },
     { name: 'dragHandleProps', type: PropTypes.object, val: {} }
   ]

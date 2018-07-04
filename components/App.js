@@ -634,6 +634,7 @@ class App extends Component {
               // isInCollection: this.isInCollection
             })}
             onResult={{
+              'space': this.enqueue,
               'ctrl+enter': this.enqueue,
               'shift+enter': this.playNext,
               'ctrl+shift+enter': this.play

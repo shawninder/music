@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 import trim from 'lodash.trim'
+import debounce from 'lodash.debounce'
 import { filter, match, score } from 'fuzzaldrin'
 
 import Field from './Field'
@@ -86,8 +87,8 @@ class Bar extends Component {
     this.cede = this.cede.bind(this)
     this.clear = this.clear.bind(this)
     this.menuClicked = this.menuClicked.bind(this)
-
     this.query = this.query.bind(this)
+    this.debouncedQuery = debounce(this.query, { maxWait: 500 })
   }
 
   componentDidMount () {
@@ -135,6 +136,7 @@ class Bar extends Component {
   suggest (value) {
     const val = trim(value)
     if (val === '') {
+      this.debouncedQuery.cancel()
       this.dismiss()
     } else {
       if (val.startsWith('/')) {
@@ -163,11 +165,7 @@ class Bar extends Component {
           areCommands: true
         })
       } else {
-        this.props.dispatch({
-          type: 'Bar:setItems',
-          data: [],
-          areCommands: true
-        })
+        this.debouncedQuery(value)
       }
     }
   }

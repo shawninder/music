@@ -36,9 +36,18 @@ class List extends Component {
       const idx = Array.prototype.indexOf.call(this.el.childNodes, event.target)
       if (idx !== -1 && this.el) {
         const item = items[idx]
-        if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
-          event.preventDefault()
-          event.target.childNodes[0].click()
+        if (event.keyCode === 13 &&
+          !event.metaKey &&
+          !event.ctrlKey &&
+          !event.shiftKey
+        ) {
+          if (this.props.onItem['enter']) {
+            event.preventDefault()
+            this.props.onItem['enter'](item, idx, event)
+          } else { // default enter => click
+            event.preventDefault()
+            event.target.childNodes[0].click()
+          }
         }
         if (this.props.onItem['ctrl+enter'] &&
           event.keyCode === 13 &&
@@ -66,6 +75,15 @@ class List extends Component {
         ) { // ctrl+shift+enter
           event.preventDefault()
           this.props.onItem['ctrl+shift+enter'](item, idx, event)
+        }
+        if (this.props.onItem['space'] &&
+          event.keyCode === 32 &&
+          !event.metaKey &&
+          !event.ctrlKey &&
+          !event.shiftKey
+        ) { // space
+          event.preventDefault()
+          this.props.onItem['space'](item, idx, event)
         }
       }
       if (event.keyCode === 38) { // up
