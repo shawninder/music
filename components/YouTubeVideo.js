@@ -25,6 +25,7 @@ class YouTubeVideo extends Component {
       <div
         className={classes.join(' ')}
         onClick={this.props.onClick}
+        {...this.props.dragHandleProps}
       >
         <div className={toggleClasses.join(' ')} onClick={this.props.onToggle}>
           <div
@@ -44,7 +45,6 @@ class YouTubeVideo extends Component {
               className='art-img'
               src={this.props.data.data.snippet.thumbnails.default.url}
               alt={`Thumnail for ${this.props.data.data.snippet.title}`}
-              {...this.props.dragHandleProps}
             />
           </div>
         </div>
