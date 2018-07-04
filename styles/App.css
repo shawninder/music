@@ -169,7 +169,6 @@ button.invisibutton {
   font-weight: bold;
 }
 
-
 .youtube-result .toggle {
   width: 100%;
 }
@@ -187,7 +186,6 @@ button.invisibutton {
 }
 .youtube-result .art {
   grid-area: left;
-  border: 1px solid #a1b2e6;
   border-radius: 5px;
   position: relative;
 }
@@ -196,13 +194,14 @@ button.invisibutton {
   border-radius: 5px;
 }
 
-.youtube-result .toggle .art {
+.queue .youtube-result .toggle .art {
+  border: 1px solid #a1b2e6;
   background-color: #b6d2f0;
   box-shadow: inset -3px 0px 5px -3px rgba(0,0,0,0.75);
 }
 
 .youtube-result .toggle.toggled .art {
-  box-shadow: inset 3px 0px 5px -3px rgba(0,0,0,0.75);
+  box-shadow: inset 3px 0px 15px -3px rgba(0,0,0,0.75);
 }
 
 .youtube-result .toggle .art-img {
@@ -249,7 +248,7 @@ button.invisibutton {
 }
 
 .youtube-result button {
-  padding: 15px 15px 5px 5px;
+  padding: 7px 15px 5px 5px;
   border: 0;
   background: transparent;
 }
