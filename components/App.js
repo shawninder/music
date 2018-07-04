@@ -135,24 +135,23 @@ class App extends Component {
     if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
       this.bar.focus()
     }
-    // TODO if (focus not in input[type=text]|textarea)
-    if (true) {
-      if (event.keyCode === 32 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+space
-        event.preventDefault()
-        this.togglePlaying()
-      }
-      if (event.keyCode === 39 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+right
-        this.dispatch({
-          type: 'Queue:next'
-        })
-      }
-      if (event.keyCode === 37 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+left
-        event.stopPropagation()
-        this.dispatch({
-          type: 'Queue:prev'
-        })
-      }
+    if (event.keyCode === 32 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+space
+      event.preventDefault()
+      this.togglePlaying()
     }
+    // TODO ctrl+right and ctrl+left don't work, find something else
+    // if (event.keyCode === 39 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+right
+    //   console.log('ctrl+right')
+    //   this.dispatch({
+    //     type: 'Queue:next'
+    //   })
+    // }
+    // if (event.keyCode === 37 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+left
+    //   event.stopPropagation()
+    //   this.dispatch({
+    //     type: 'Queue:prev'
+    //   })
+    // }
   }
 
   onDragStart (data, { announce }) {
