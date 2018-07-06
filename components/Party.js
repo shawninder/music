@@ -80,11 +80,12 @@ class Party extends Component {
   }
 
   onKeyDown (event) {
-    // if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
-    //   event.preventDefault()
-    //   this.party(event)
-    // }
+    if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
+      event.preventDefault()
+      this.party(event)
+    }
   }
+
   onSubmit (event) {
     event.preventDefault()
     if (this.props.checking) {
