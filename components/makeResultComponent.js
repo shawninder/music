@@ -6,22 +6,24 @@ import propTypes from '../helpers/propTypes'
 import YouTubeVideo from './YouTubeVideo'
 import Action from './Action'
 
+const isServer = typeof window === 'undefined'
+
 // TODO Find a way to import svgs
 const cancelIcon = (
   <svg
     xmlns='http://www.w3.org/2000/svg'
     version='1.1'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     viewBox='0 0 2060.5001 2060.5001'
     title='cancel'
     alt='cancel'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3541.75,-3541.75)'
@@ -39,16 +41,16 @@ const moreIcon = (
     xmlns='http://www.w3.org/2000/svg'
     version='1.1'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     viewBox='0 0 4233.9999 4233.9999'
     title='more'
     alt='more'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-2383.2373,-3674.9661)'
@@ -81,6 +83,7 @@ function makeResultComponent (opts) {
   class ResultComponent extends Component {
     constructor (props) {
       super(props)
+      this.globalClick = this.globalClick.bind(this)
       this.onClick = this.onClick.bind(this)
       this.onToggle = this.onToggle.bind(this)
 
@@ -89,6 +92,23 @@ function makeResultComponent (opts) {
       }
       this.previousProps = props
       this.previousState = this.state
+    }
+
+    componentDidMount () {
+      if (!isServer) {
+        global.addEventListener('click', this.globalClick, false)
+      }
+    }
+    componentWillUnmount () {
+      if (!isServer) {
+        global.removeEventListener('click', this.globalClick, false)
+      }
+    }
+
+    globalClick (event) {
+      if (this.state.showingActions) {
+        this.setState({ showingActions: false })
+      }
     }
 
     onClick (event) {

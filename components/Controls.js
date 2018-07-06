@@ -9,16 +9,16 @@ const playIcon = (
     xmlns='http://www.w3.org/2000/svg'
     viewBox='0 0 2080.7722 2080.7722'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     version='1.1'
     title='play'
     alt='play'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3233.5713,-3531.2278)'
@@ -35,16 +35,16 @@ const pauseIcon = (
     xmlns='http://www.w3.org/2000/svg'
     version='1.1'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     viewBox='0 0 1657.9999 1657.9999'
     title='pause'
     alt='pause'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3743,-3743)'
@@ -61,16 +61,16 @@ const prevIcon = (
     xmlns='http://www.w3.org/2000/svg'
     version='1.1'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     viewBox='0 0 2199.9999 2199.9999'
     title='previous'
     alt='previous'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3472,-3471.5)'
@@ -90,16 +90,16 @@ const nextIcon = (
     xmlns='http://www.w3.org/2000/svg'
     viewBox='0 0 2199.9999 2199.9999'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     version='1.1'
     title='next'
     alt='next'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3472,-3471.5)'

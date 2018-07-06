@@ -18,6 +18,9 @@ export default function appReducer (state = {}, action) {
     case 'App:toggleParty':
       newState.partyCollapsed = !state.partyCollapsed
       break
+    case 'App:collapseParty':
+      newState.partyCollapsed = true
+      break
     case 'App:dragging':
       newState.dragging = action.value
       break

@@ -24,16 +24,16 @@ const playNowIcon = (
     xmlns='http://www.w3.org/2000/svg'
     viewBox='0 0 2080.7722 2080.7722'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     version='1.1'
     title='play'
     alt='play'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3233.5713,-3531.2278)'
@@ -51,16 +51,16 @@ const jumpToIcon = (
     xmlns='http://www.w3.org/2000/svg'
     viewBox='0 0 2080.7722 2080.7722'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     version='1.1'
     title='jump to this track'
     alt='jump to this track'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3233.5713,-3531.2278)'
@@ -78,16 +78,16 @@ const jumpBackToIcon = (
     xmlns='http://www.w3.org/2000/svg'
     viewBox='0 0 2080.7722 2080.7722'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     version='1.1'
     title='jump back to this track'
     alt='jump back to this track'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3233.5713,-3531.2278)'
@@ -105,16 +105,16 @@ const enqueueIcon = (
     xmlns='http://www.w3.org/2000/svg'
     viewBox='0 0 2839.7594 2839.7594'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     version='1.1'
     title='enqueue'
     alt='enqueue'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3152.1203,-3152.1203)'
@@ -132,16 +132,16 @@ const nextIcon = (
     xmlns='http://www.w3.org/2000/svg'
     viewBox='0 0 2199.9999 2199.9999'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     version='1.1'
     title='next'
     alt='next'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3472,-3471.5)'
@@ -159,16 +159,16 @@ const dequeueIcon = (
     xmlns='http://www.w3.org/2000/svg'
     version='1.1'
     style={{
-      'clip-rule': 'evenodd',
-      'fill-rule': 'evenodd',
-      'image-rendering': 'optimizeQuality',
-      'shape-rendering': 'geometricPrecision',
-      'text-rendering': 'geometricPrecision'
+      clipRule: 'evenodd',
+      fillRule: 'evenodd',
+      imageRendering: 'optimizeQuality',
+      shapeRendering: 'geometricPrecision',
+      textRendering: 'geometricPrecision'
     }}
     viewBox='0 0 2060.5001 2060.5001'
     title='dequeue'
     alt='dequeue'
-    class='icon'
+    className='icon'
   >
     <g
       transform='translate(-3541.75,-3541.75)'
@@ -190,6 +190,7 @@ class App extends Component {
   constructor (props) {
     super(props)
     this.dispatch = this.dispatch.bind(this)
+    this.globalClick = this.globalClick.bind(this)
     this.keyDown = this.keyDown.bind(this)
     this.onDragStart = this.onDragStart.bind(this)
     this.onDragUpdate = this.onDragUpdate.bind(this)
@@ -228,13 +229,19 @@ class App extends Component {
   componentDidMount () {
     if (!isServer) {
       global.addEventListener('keydown', this.keyDown, false)
+      global.addEventListener('click', this.globalClick, false)
     }
   }
 
   componentWillUnmount () {
     if (!isServer) {
       global.removeEventListener('keydown', this.keyDown, false)
+      global.removeEventListener('click', this.globalClick, false)
     }
+  }
+
+  globalClick (event) {
+    this.dispatch({ type: 'App:collapseParty' })
   }
 
   getPartyState () {
@@ -476,6 +483,7 @@ class App extends Component {
   }
 
   figureClicked (event) {
+    event.stopPropagation()
     this.dispatch({
       type: 'App:toggleParty'
     })
