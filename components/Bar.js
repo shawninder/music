@@ -11,6 +11,53 @@ import List from './List'
 
 const isServer = typeof window === 'undefined'
 
+// TODO Find a way to import svgs
+const searchIcon = (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    version='1.1'
+    style={{
+      'clip-rule': 'evenodd',
+      'fill-rule': 'evenodd',
+      'image-rendering': 'optimizeQuality',
+      'shape-rendering': 'geometricPrecision',
+      'text-rendering': 'geometricPrecision'
+    }}
+    viewBox='0 0 41.495709 41.495709'
+    title='search'
+    alt='search'
+    class='icon'
+  >
+    <path
+      d='M 14.367,1.7e-4 C 6.4538,1.7e-4 0,6.45417 0,14.36717 c 0,7.9132 6.454,14.367 14.367,14.367 3.2414,0 6.2283,-1.0954 8.6367,-2.918 a 2.0002,2.0002 0 0 0 0.15039,0.16602 l 14.898,14.898 a 2.0002,2.0002 0 1 0 2.8281,-2.8281 l -14.898,-14.898 A 2.0002,2.0002 0 0 0 25.81617,23.0037 c 1.8225,-2.4084 2.918,-5.3953 2.918,-8.6367 C 28.73417,6.4538 22.28017,0 14.36717,0 Z m 0,3.5898 c 5.9732,0 10.777,4.8042 10.777,10.777 0,5.9732 -4.8042,10.777 -10.777,10.777 -5.9728,0 -10.777,-4.8042 -10.777,-10.777 2e-7,-5.9732 4.8042,-10.777 10.777,-10.777 z'
+    />
+  </svg>
+)
+
+// TODO Find a way to import svgs
+const clearIcon = (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    version='1.1'
+    style={{
+      'clip-rule': 'evenodd',
+      'fill-rule': 'evenodd',
+      'image-rendering': 'optimizeQuality',
+      'shape-rendering': 'geometricPrecision',
+      'text-rendering': 'geometricPrecision'
+    }}
+    viewBox='0 0 2060.5001 2060.5001'
+  >
+    <g
+      transform='translate(-3541.75,-3541.75)'
+    >
+      <path
+        d='m 3568,3692 c -35,-34 -35,-90 0,-124 34,-35 90,-35 124,0 l 880,879 880,-879 c 34,-35 90,-35 124,0 35,34 35,90 0,124 l -879,880 879,880 c 35,34 35,90 0,124 -34,35 -90,35 -124,0 l -880,-879 -880,879 c -34,35 -90,35 -124,0 -35,-34 -35,-90 0,-124 l 879,-880 z'
+      />
+    </g>
+  </svg>
+)
+
 function highlight (str, matches) {
   const spans = []
   var len = matches.length
@@ -250,7 +297,7 @@ class Bar extends Component {
       >
         <button className='bar-menu invisibutton' onClick={this.menuClicked}
         >
-          <img src='/static/search.svg' alt='search' title='search' className='icon' />
+          {searchIcon}
         </button>
         <Field
           className='bar-field'
@@ -293,7 +340,7 @@ class Bar extends Component {
                 } else {
                   this.dismiss()
                 }
-              }}><img src='/static/x.svg' alt='clear' title='clear' className='icon' /></button>
+              }}>{clearIcon}</button>
             ) : null
         }
 

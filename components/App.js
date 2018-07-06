@@ -18,6 +18,168 @@ import Dict from '../data/Dict.js'
 
 const isServer = typeof window === 'undefined'
 
+// TODO Find a way to import svgs
+const playNowIcon = (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 2080.7722 2080.7722'
+    style={{
+      'clip-rule': 'evenodd',
+      'fill-rule': 'evenodd',
+      'image-rendering': 'optimizeQuality',
+      'shape-rendering': 'geometricPrecision',
+      'text-rendering': 'geometricPrecision'
+    }}
+    version='1.1'
+    title='play'
+    alt='play'
+    class='icon'
+  >
+    <g
+      transform='translate(-3233.5713,-3531.2278)'
+    >
+      <path
+        d='M 3648,5363 4879,4572 3648,3780 Z m -36,232 c -14,11 -32,17 -52,17 -49,0 -88,-39 -88,-88 v -1905 0 c 0,-16 4,-33 14,-48 26,-40 81,-52 122,-26 567.4233,315.5455 1395.2655,934.8411 1429.2366,959.0457 34.6354,24.6779 29.879,31.1801 37.3045,70.0595 7.9536,41.6444 -19.6035,85.8883 -57.4606,115.7788 C 4959.4747,4735.3673 4077.4111,5292.9447 3612,5595 Z'
+      />
+    </g>
+  </svg>
+)
+
+// TODO Find a way to import svgs
+const jumpToIcon = (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 2080.7722 2080.7722'
+    style={{
+      'clip-rule': 'evenodd',
+      'fill-rule': 'evenodd',
+      'image-rendering': 'optimizeQuality',
+      'shape-rendering': 'geometricPrecision',
+      'text-rendering': 'geometricPrecision'
+    }}
+    version='1.1'
+    title='jump to this track'
+    alt='jump to this track'
+    class='icon'
+  >
+    <g
+      transform='translate(-3233.5713,-3531.2278)'
+    >
+      <path
+        d='M 3648,5363 4879,4572 3648,3780 Z m -36,232 c -14,11 -32,17 -52,17 -49,0 -88,-39 -88,-88 v -1905 0 c 0,-16 4,-33 14,-48 26,-40 81,-52 122,-26 567.4233,315.5455 1395.2655,934.8411 1429.2366,959.0457 34.6354,24.6779 29.879,31.1801 37.3045,70.0595 7.9536,41.6444 -19.6035,85.8883 -57.4606,115.7788 C 4959.4747,4735.3673 4077.4111,5292.9447 3612,5595 Z'
+      />
+    </g>
+  </svg>
+)
+
+// TODO Find a way to import svgs
+const jumpBackToIcon = (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 2080.7722 2080.7722'
+    style={{
+      'clip-rule': 'evenodd',
+      'fill-rule': 'evenodd',
+      'image-rendering': 'optimizeQuality',
+      'shape-rendering': 'geometricPrecision',
+      'text-rendering': 'geometricPrecision'
+    }}
+    version='1.1'
+    title='jump back to this track'
+    alt='jump back to this track'
+    class='icon'
+  >
+    <g
+      transform='translate(-3233.5713,-3531.2278)'
+    >
+      <path
+        d='M 3648,5363 4879,4572 3648,3780 Z m -36,232 c -14,11 -32,17 -52,17 -49,0 -88,-39 -88,-88 v -1905 0 c 0,-16 4,-33 14,-48 26,-40 81,-52 122,-26 567.4233,315.5455 1395.2655,934.8411 1429.2366,959.0457 34.6354,24.6779 29.879,31.1801 37.3045,70.0595 7.9536,41.6444 -19.6035,85.8883 -57.4606,115.7788 C 4959.4747,4735.3673 4077.4111,5292.9447 3612,5595 Z'
+      />
+    </g>
+  </svg>
+)
+
+// TODO Find a way to import svgs
+const enqueueIcon = (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 2839.7594 2839.7594'
+    style={{
+      'clip-rule': 'evenodd',
+      'fill-rule': 'evenodd',
+      'image-rendering': 'optimizeQuality',
+      'shape-rendering': 'geometricPrecision',
+      'text-rendering': 'geometricPrecision'
+    }}
+    version='1.1'
+    title='enqueue'
+    alt='enqueue'
+    class='icon'
+  >
+    <g
+      transform='translate(-3152.1203,-3152.1203)'
+    >
+      <path
+        d='m 3239.8108,4659.6812 c -48.7903,0.7071 -88.3883,-38.8908 -87.6812,-87.6812 -0.7071,-48.7904 38.8909,-88.3883 87.6812,-87.6812 l 1243.8009,-0.7071 0.7071,-1243.8009 c -0.7071,-48.7903 38.8908,-88.3883 87.6812,-87.6812 48.7904,-0.7071 88.3883,38.8909 87.6812,87.6812 l 0.7071,1243.8009 1243.8009,0.7071 c 48.7903,-0.7071 88.3883,38.8908 87.6812,87.6812 0.7071,48.7904 -38.8909,88.3883 -87.6812,87.6812 l -1243.8009,0.7071 -0.7071,1243.8009 c 0.7071,48.7903 -38.8908,88.3883 -87.6812,87.6812 -48.7904,0.7071 -88.3883,-38.8909 -87.6812,-87.6812 l -0.7071,-1243.8009 z'
+      />
+    </g>
+  </svg>
+)
+
+// TODO Find a way to import svgs
+const nextIcon = (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    viewBox='0 0 2199.9999 2199.9999'
+    style={{
+      'clip-rule': 'evenodd',
+      'fill-rule': 'evenodd',
+      'image-rendering': 'optimizeQuality',
+      'shape-rendering': 'geometricPrecision',
+      'text-rendering': 'geometricPrecision'
+    }}
+    version='1.1'
+    title='next'
+    alt='next'
+    class='icon'
+  >
+    <g
+      transform='translate(-3472,-3471.5)'
+    >
+      <path
+        d='m 5042,3531 h 542 c 49,0 88,39 88,88 v 1905 c 0,49 -39,88 -88,88 h -542 c -49,0 -88,-39 -88,-88 v -791 -322 -792 c 0,-49 39,-88 88,-88 z m 454,176 h -366 v 1729 h 366 z M 3648,5363 4258.3007,4970.8409 4879,4572 3648,3780 Z m 1306,-630 -1342,862 c -14,11 -32,17 -52,17 -49,0 -88,-39 -88,-88 v -1905 0 c 0,-16 4,-33 14,-48 26,-40 81,-52 122,-26 l 1346,866 z'
+      />
+    </g>
+  </svg>
+)
+
+// TODO Find a way to import svgs
+const dequeueIcon = (
+  <svg
+    xmlns='http://www.w3.org/2000/svg'
+    version='1.1'
+    style={{
+      'clip-rule': 'evenodd',
+      'fill-rule': 'evenodd',
+      'image-rendering': 'optimizeQuality',
+      'shape-rendering': 'geometricPrecision',
+      'text-rendering': 'geometricPrecision'
+    }}
+    viewBox='0 0 2060.5001 2060.5001'
+    title='dequeue'
+    alt='dequeue'
+    class='icon'
+  >
+    <g
+      transform='translate(-3541.75,-3541.75)'
+    >
+      <path
+        d='m 3568,3692 c -35,-34 -35,-90 0,-124 34,-35 90,-35 124,0 l 880,879 880,-879 c 34,-35 90,-35 124,0 35,34 35,90 0,124 l -879,880 879,880 c 35,34 35,90 0,124 -34,35 -90,35 -124,0 l -880,-879 -880,879 c -34,35 -90,35 -124,0 -35,-34 -35,-90 0,-124 l 879,-880 z'
+      />
+    </g>
+  </svg>
+)
+
 class App extends Component {
   static getInitialProps ({ req, res }) {
     const headers = req ? req.headers : undefined
@@ -590,42 +752,42 @@ class App extends Component {
                   targetIdx: state.queue.upNext.length + 1,
                   go: this.enqueue,
                   txt: 'play last',
-                  icon: <img src='/static/plus.svg' title='play last' alt='play last' />,
+                  icon: enqueueIcon,
                   cdn
                 },
                 playNext: {
                   targetIdx: 1,
                   go: this.playNext,
                   txt: 'play next',
-                  icon: <img src='/static/next.svg' title='play next' alt='play next' />,
+                  icon: nextIcon,
                   cdn
                 },
                 play: {
                   targetIdx: 0,
                   go: this.play,
                   txt: 'play now',
-                  icon: <img src='/static/play.svg' title='play now' alt='play now' />,
+                  icon: playNowIcon,
                   cdn
                 },
                 jumpBackTo: {
                   targetIdx: 0,
                   go: this.jumpBackTo,
                   txt: 'jump back to this track',
-                  icon: <img src='/static/play.svg' title='jump back to' alt='jump back to' />,
+                  icon: jumpBackToIcon,
                   cdn: cdnNeg
                 },
                 jumpTo: {
                   targetIdx: 0,
                   go: this.jumpTo,
                   txt: 'jump to this track',
-                  icon: <img src='/static/play.svg' title='jump to' alt='jump to' />,
+                  icon: jumpToIcon,
                   cdn: cdnPos
                 },
                 remove: {
                   targetIdx: null,
                   go: this.dequeue,
                   txt: 'remove',
-                  icon: <img src='/static/x.svg' title='remove' alt='remove' />,
+                  icon: dequeueIcon,
                   cdn: cdnQueued
                 }
               }
@@ -717,7 +879,7 @@ class App extends Component {
                       targetIdx: 0,
                       go: this.jumpBackTo,
                       txt: 'jump back to this track',
-                      icon: <img src='/static/play.svg' title='jump back to' alt='jump back to' />
+                      icon: jumpBackToIcon
                     }
                   }
                   // remember: this.remember,
@@ -760,13 +922,13 @@ class App extends Component {
                       targetIdx: 0,
                       go: this.jumpTo,
                       txt: 'jump to this track',
-                      icon: <img src='/static/play.svg' title='jump to' alt='jump to' />
+                      icon: jumpToIcon
                     },
                     remove: {
                       targetIdx: null,
                       go: this.dequeue,
                       txt: 'remove',
-                      icon: <img src='/static/x.svg' title='remove' alt='remove' />
+                      icon: dequeueIcon
                     }
                     // more: {
                     //   targetIdx: null,

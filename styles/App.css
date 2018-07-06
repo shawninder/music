@@ -4,7 +4,13 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+}
+
 body {
+  height: 100%;
+  margin: 0;
   /* Approximate system fonts
     -apple-system, BlinkMacSystemFont, // Safari Mac/iOS, Chrome
     "Segoe UI", Roboto, Oxygen, // Windows, Android, KDE
@@ -12,7 +18,14 @@ body {
     "Droid Sans", "Helvetica Neue", sans-serif; // Old Android
   */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-  background-color: #14152b;
+  background-color: #1555d1;
+  /* background-image:
+    linear-gradient(127deg, rgba(0,0,255,.8), rgba(0,0,255,0) 70%),
+    linear-gradient(217deg, rgb(224,164,29,.9), rgba(218,185,29,0) 71%),
+    linear-gradient(336deg, rgba(0,0,255,.5), rgba(0,0,255,0) 71%),
+    linear-gradient(33deg, rgba(0,0,0,.9), rgba(0,0,0,0) 71%);
+  background-repeat: no-repeat;
+  background-attachment: fixed; */
 }
 
 input[type=text].disabled {
@@ -20,7 +33,7 @@ input[type=text].disabled {
 }
 
 svg {
-  fill: currentColor;
+  fill: currentColor; /* For SVGs, see https://css-tricks.com/cascading-svg-fill-color/ */
 }
 
 button:enabled {
@@ -30,16 +43,6 @@ button:enabled {
 button.invisibutton {
   border: 0;
   background: transparent;
-}
-
-.list > ol > li:nth-child(odd) {
-  color: black;
-  background: #eeeeee;
-}
-
-.list > ol > li:nth-child(even) {
-  color: black;
-  background: whitesmoke;
 }
 
 .App {
@@ -56,6 +59,7 @@ button.invisibutton {
 }
 
 .bar-menu {
+  color: whitesmoke;
   position: fixed;
   top: 5px;
   left: 5px;
@@ -74,16 +78,17 @@ button.invisibutton {
   width: 100%;
   font-size: large;
   font-weight: bold;
-  box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.25);
   padding: 5px 80px 5px 60px;
   z-index: 4;
-  color: dimgrey;
-  background: whitesmoke;
   border: 0;
+  color: whitesmoke;
+  background: #333333;
+  border-radius: 0;
+  box-shadow: 0px 5px 5px 0px rgb(0,0,0,0.25);
 }
 
 .bar-field::placeholder {
-  color: darkgrey;
+  color: #aaaaaa;
 }
 
 .bar-dismiss {
@@ -93,9 +98,10 @@ button.invisibutton {
   font-size: large;
   z-index: 4;
   padding: 13px 7px;
+  color: whitesmoke;
 }
 
-.bar-dismiss .icon {
+.bar-dismiss svg {
   width: 15px;
 }
 
@@ -115,10 +121,21 @@ button.invisibutton {
   box-shadow: 0px 12px 15px 0px rgb(0,0,0,0.25);
   transition-property: opacity, box-shadow;
   transition-duration: 0.5s;
+  background: #333333;
+  color: black;
+}
+
+.bar-list.list > ol > li:nth-child(odd) {
+  background: whitesmoke;
+}
+
+.bar-list.list > ol > li:nth-child(even) {
+  background: ghostwhite;
 }
 
 .App.dragging .bar-list {
   box-shadow: 0px 12px 15px 0px rgb(0,0,0,0.0);
+  background: rgba(50, 50, 50, .05);
 }
 
 .App .bar-list li {
@@ -182,7 +199,6 @@ button.invisibutton {
 
 .youtube-result .toggle .idx {
   display: inline;
-  color: #666666;
 }
 .youtube-result .art {
   grid-area: left;
@@ -194,20 +210,21 @@ button.invisibutton {
   border-radius: 5px;
 }
 
-.queue .youtube-result .toggle .art {
-  border: 1px solid #a1b2e6;
-  background-color: #b6d2f0;
-  box-shadow: inset -3px 0px 5px -3px rgba(0,0,0,0.75);
+.bar-list .toggle .idx {
+  color: dimgrey;
+}
+.bar-list .youtube-result .toggle .art {
+  box-shadow: inset -3px 0px 15px -3px rgba(0,0,0,0.75);
 }
 
-.youtube-result .toggle.toggled .art {
+.bar-list .youtube-result .toggle.toggled .art {
   box-shadow: inset 3px 0px 15px -3px rgba(0,0,0,0.75);
 }
 
-.youtube-result .toggle .art-img {
+.bar-list .youtube-result .toggle .art-img {
   box-shadow: 3px 0 5px 0 rgba(0, 0, 0, 0.75);
 }
-.youtube-result .toggle.toggled .art-img {
+.bar-list .youtube-result .toggle.toggled .art-img {
   box-shadow: -3px 0 5px 0 rgba(0, 0, 0, 0.75);
 }
 
@@ -270,11 +287,12 @@ button.invisibutton {
 
 .actions {
   grid-area: actions;
-  width: 100%;
+  width: 90%;
   position: absolute;
+  color: dimgrey;
   background: whitesmoke;
   z-index: 5;
-  border-radius: 0 0 5px 5px;
+  border-radius: 5px 0 5px 5px;
   box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.5);
 }
 
@@ -307,7 +325,7 @@ li:nth-child(odd) .actions {
   grid-area: action-idx;
   font-size: x-small;
   text-align: right;
-  width: 30px;
+  width: 35px;
 }
 
 .action-label {
@@ -321,30 +339,16 @@ li:nth-child(odd) .actions {
   padding-right: 7px;
 }
 
-.action-icon img {
-  width: 1em;
-  height: 1em;
+.action-icon svg.icon {
+  color: dimgrey;
 }
 
 .upNext>h3, .history>h3 {
   cursor: pointer;
 }
 
-.upNext>h3, .history>h3, .playingNow>h3 {
-  text-align: center;
-}
-
 .upNext.not-collapsed>h3, .history.not-collapsed>h3, .playingNow>h3 {
-  color: darkgrey;
-  background-color: whitesmoke;
-}
-
-.upNext.collapsed h3:hover, .history.collapsed h3:hover {
-  background-color: rgba(255, 255, 255, 0.25);
-}
-
-.upNext.not-collapsed h3:hover, .history.not-collapsed h3:hover {
-  background-color: #e8e8e8;
+  color: whitesmoke;
 }
 
 .collapsed>ol {
@@ -361,7 +365,6 @@ li:nth-child(odd) .actions {
 
 .upNext ol, .history ol, .playingNow ol {
   width: 100%;
-  background: beige;
   min-height: 45px;
 }
 
@@ -372,9 +375,8 @@ li:nth-child(odd) .actions {
   left: 0;
   width: 100%;
   font-size: medium;
-  padding: 5px 0;
-  background: whitesmoke;
-  box-shadow: 0px -2px 5px 0px rgba(0,0,0,0.25);
+  /* background: whitesmoke; */
+  /* box-shadow: 0px -2px 5px 0px rgba(0,0,0,0.25); */
 }
 
 .controls-buttons {
@@ -382,31 +384,29 @@ li:nth-child(odd) .actions {
   grid-template-columns: 50px minmax(50px, 1fr) 50px;
   grid-template-areas:
     "prev togglePlaying next";
-  background: whitesmoke;
+  background: #333333;
 }
 
 .controls button {
   padding: 10px 0;
   border: 0;
-  color: dimgrey;
-  fill: currentColor;
+  color: whitesmoke;
   background: transparent;
   font-weight: bold;
 }
 
-.controls-buttons button img {
+.controls-buttons button svg {
   width: 20px;
 }
 
 .playingNow {
   font-size: small;
-  /* background: whitesmoke; */
 }
 
 .seek-bar {
   grid-area: seekBar;
-  border: 1px solid #f8f8f8;
-  background: dimgrey;
+  border: 1px solid #000000;
+  background: whitesmoke;
 }
 
 .seek-bar--played {
@@ -432,6 +432,10 @@ li:nth-child(odd) .actions {
 .queue h3 {
   font-size: large;
   padding: 10px;
+}
+
+.queue .icon {
+  color: whitesmoke;
 }
 
 .inCollection {
@@ -485,6 +489,10 @@ li:nth-child(odd) .actions {
   top: 50px;
   right: 0;
   z-index: 1;
+  border-radius: 0 0 10px 10px;
+  width: 33%;
+  transition-property: width;
+  transition-duration: 0.5s;
 }
 
 .autoparty.not-collapsed {
@@ -557,4 +565,10 @@ li:nth-child(odd) .actions {
 
 .fuzz--match {
   font-weight: bold;
+}
+
+@media screen and (max-width: 640px) {
+  .autoparty {
+    width: 100%;
+  }
 }
