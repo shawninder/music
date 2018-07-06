@@ -557,17 +557,25 @@ class App extends Component {
 
   dequeue (data, idx, queueIndex, event) {
     const state = this.getPartyState()
-    const newUpNext = cloneDeep(state.queue.upNext)
+
     if (queueIndex > 0) {
+      const newUpNext = cloneDeep(state.queue.upNext)
       pullAt(newUpNext, queueIndex - 1)
       this.dispatch({
         type: 'Queue:dequeue',
         newUpNext
       })
-      setTimeout(this.updateBarItems, 10)
-    } else {
+    } else if (queueIndex < 0) {
+      const newHistory = cloneDeep(state.queue.history)
+      pullAt(newHistory, newHistory.length + queueIndex)
+      this.dispatch({
+        type: 'Queue:dequeue',
+        newHistory
+      })
+    } else if (queueIndex === 0) {
       // TODO
     }
+    setTimeout(this.updateBarItems, 10)
   }
 
   // remember (data) {
@@ -888,6 +896,12 @@ class App extends Component {
                       go: this.jumpBackTo,
                       txt: 'jump back to this track',
                       icon: jumpBackToIcon
+                    },
+                    remove: {
+                      targetIdx: null,
+                      go: this.dequeue,
+                      txt: 'remove',
+                      icon: dequeueIcon
                     }
                   }
                   // remember: this.remember,

@@ -61,7 +61,7 @@ export default function queueReducer (state = {}, action) {
       if (action.newHistory) {
         newState.history = action.newHistory.map((item, idx) => {
           item.inQueue = true
-          item.queueIndex = newState.history.length + idx
+          item.queueIndex = -newState.history.length + idx
           return item
         })
       }
