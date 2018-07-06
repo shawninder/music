@@ -85,6 +85,12 @@ button.invisibutton {
   background: #333333;
   border-radius: 0;
   box-shadow: 0px 5px 5px 0px rgb(0,0,0,0.25);
+  transition-property: background-color;
+  transition-duration: 0.5s;
+}
+
+.App.dragging .bar-field {
+  /* background: bisque; */
 }
 
 .bar-field::placeholder {
@@ -347,8 +353,12 @@ li:nth-child(odd) .actions {
   cursor: pointer;
 }
 
-.upNext.not-collapsed>h3, .history.not-collapsed>h3, .playingNow>h3 {
-  color: whitesmoke;
+.history.not-collapsed>h3 {
+
+}
+
+.upNext.not-collapsed>h3 {
+  color: chartreuse;
 }
 
 .collapsed>ol {
@@ -363,9 +373,19 @@ li:nth-child(odd) .actions {
   color: whitesmoke;
 }
 
+.playingNow .youtube-result {
+  background: black;
+}
+
 .upNext ol, .history ol, .playingNow ol {
   width: 100%;
   min-height: 45px;
+  transition-property: background-color;
+  transition-duration: .75s
+}
+
+.App.dragging .history ol, .App.dragging .upNext ol {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .controls {
@@ -399,10 +419,6 @@ li:nth-child(odd) .actions {
   width: 20px;
 }
 
-.playingNow {
-  font-size: small;
-}
-
 .seek-bar {
   grid-area: seekBar;
   border: 1px solid #000000;
@@ -411,7 +427,11 @@ li:nth-child(odd) .actions {
 
 .seek-bar--played {
   height: 10px;
-  background: hotpink;
+  background: red;
+}
+
+.playingNow>h3 {
+  color: black;
 }
 
 .controls-prev {
