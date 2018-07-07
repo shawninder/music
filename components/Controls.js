@@ -110,23 +110,81 @@ const nextIcon = (
     </g>
   </svg>
 )
+
+const getSeekTarget = (event) => {
+  const x = event.clientX
+  const el = event.target
+  let width = 1
+  // TODO this is really risky, find better way
+  if (el.className === 'seek-bar') {
+    width = el.offsetWidth
+  } else if (el.className === 'seek-bar--played') {
+    width = el.parentNode.offsetWidth
+  } else if (el.className === 'seek-bar--handle') {
+    width = el.parentNode.offsetWidth
+  } else {
+    let seekbar = global.document.getElementsByClassName('seek-bar')[0]
+    width = seekbar.offsetWidth
+  }
+  return x / width
+}
 class Controls extends Component {
+  constructor (props) {
+    super(props)
+    this.startSeeking = this.startSeeking.bind(this)
+    this.followSeek = this.followSeek.bind(this)
+    this.endSeek = this.endSeek.bind(this)
+    this.state = {
+      seeking: false,
+      seekingTo: props.f
+    }
+  }
+
+  startSeeking (event) {
+    this.setState({
+      seeking: true,
+      seekingTo: getSeekTarget(event)
+    })
+    global.addEventListener('mousemove', this.followSeek, false)
+    global.addEventListener('mouseup', this.endSeek, false)
+  }
+
+  followSeek (event) {
+    // TODO if mouseup happened outside of `global`, detect and end seek
+    this.setState({
+      seeking: true,
+      seekingTo: getSeekTarget(event)
+    })
+  }
+
+  endSeek (event) {
+    global.removeEventListener('mousemove', this.followSeek, false)
+    global.removeEventListener('mouseup', this.endSeek, false)
+    this.props.seekTo(getSeekTarget(event))
+    this.setState({
+      seeking: false
+    })
+  }
+
   render () {
     return (
       <div
         key='controls'
         className='controls'
       >
-        <div key='seek-bar' className='seek-bar'>
+        <div key='seek-bar' className='seek-bar' onMouseUp={(event) => {
+          this.props.seekTo(getSeekTarget(event))
+        }}>
           <div key='seek-bar--played' className='seek-bar--played'
             style={{
-              width: `${this.props.f * 100}%`
+              width: `${(this.state.seeking ? this.state.seekingTo : this.props.f) * 100}%`
             }}
           />
           <div key='seek-bar--handle' className='seek-bar--handle'
             style={{
-              marginLeft: `${this.props.f * 100}%`
+              marginLeft: `${(this.state.seeking ? this.state.seekingTo : this.props.f) * 100}%`
             }}
+            onMouseDown={this.startSeeking}
           />
         </div>
 

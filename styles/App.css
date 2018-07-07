@@ -419,11 +419,22 @@ li:nth-child(odd) .actions {
   grid-area: seekBar;
   border: 1px solid #000000;
   background: whitesmoke;
+  cursor: pointer;
 }
 
 .seek-bar--played {
   height: 10px;
   background: red;
+}
+
+.seek-bar--handle {
+  width: 30px;
+  height: 30px;
+  /* background: rgba(255, 0, 0, 0.4); */
+  border-radius: 5px;
+  position: absolute;
+  top: -10px;
+  left: -15px;
 }
 
 .playingNow>h3 {

@@ -218,6 +218,7 @@ class App extends Component {
     this.gotDispatch = this.gotDispatch.bind(this)
     this.updateBarItems = this.updateBarItems.bind(this)
     this.inspectPartyServer = this.inspectPartyServer.bind(this)
+    this.seekTo = this.seekTo.bind(this)
 
     this.bar = {}
 
@@ -648,6 +649,17 @@ class App extends Component {
     }
   }
 
+  seekTo (value) {
+    if (this.props.party.attending) {
+      this.dispatch({
+        type: 'Queue:seekTo',
+        value
+      })
+    } else if (this.playerEl) {
+      this.playerEl.seekTo(value)
+    }
+  }
+
   onTrackEnd () {
     const state = this.getPartyState()
     const len = state.queue.upNext.length
@@ -983,6 +995,7 @@ class App extends Component {
             collection={this.props.collection}
             toggleShowHistory={this.toggleShowHistory}
             toggleShowUpNext={this.toggleShowUpNext}
+            seekTo={this.seekTo}
           />
         </div>
       </DragDropContext>

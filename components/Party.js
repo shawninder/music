@@ -383,7 +383,9 @@ class Party extends Component {
       classes.push('attending')
     }
     return (
-      <div className={classes.join(' ')}>
+      <div className={classes.join(' ')} onClick={(event) => {
+        event.stopPropagation() // Avoid dismissing dialog when clicking inside it
+      }}>
         {
           // this.props.collapsed
           //   ? (
