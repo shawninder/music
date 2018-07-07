@@ -349,11 +349,16 @@ li:nth-child(odd) .actions {
   cursor: pointer;
 }
 
+.history>h3, .playingNow>h3, .upNext>h3 {
+  transition-property: opacity, height;
+  transition-duration: 0.5s;
+}
+
 .history.not-collapsed>h3 {
 
 }
 
-.upNext.not-collapsed>h3 {
+.upNext>h3 {
   color: chartreuse;
 }
 
@@ -382,6 +387,10 @@ li:nth-child(odd) .actions {
 
 .App.dragging .history ol, .App.dragging .upNext ol {
   background: rgba(255, 255, 255, 0.5);
+}
+
+.App.dragging .playingNow ol {
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .controls {

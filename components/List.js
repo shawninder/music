@@ -22,12 +22,12 @@ class List extends Component {
 
   shouldComponentUpdate (nextProps, nextState) {
     if (!isEqual(this.previousCollapsed, nextState.collapsed) ||
-      !isEqual(this.previousItems, nextProps.items)) {
+      !isEqual(this.previousItems, nextProps.items)
+    ) {
       this.previousItems = nextProps.items
       this.previousCollapsed = nextState.collapsed
       return true
     }
-
     return false
   }
 
@@ -161,7 +161,7 @@ class List extends Component {
 
     const dropZone = this.props.areDraggable
       ? (
-        <Droppable droppableId={`droppable-${this.props.className}`} isDropDisabled={this.props.isDropDisabled}>
+        <Droppable droppableId={`droppable-${classes[0]}`} isDropDisabled={this.props.isDropDisabled}>
           {(droppableProvided, snapshot) => {
             return (
               <ol

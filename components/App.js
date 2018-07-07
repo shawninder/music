@@ -348,6 +348,7 @@ class App extends Component {
         const state = this.getPartyState()
         switch (destination.droppableId) {
           case 'droppable-upNext':
+          case 'droppable-upNext empty':
             switch (source.droppableId) {
               case 'droppable-upNext':
                 this.dispatch({
@@ -391,6 +392,7 @@ class App extends Component {
             }
             break
           case 'droppable-history':
+          case 'droppable-history empty':
             switch (source.droppableId) {
               case 'droppable-upNext':
                 this.dispatch({
@@ -434,6 +436,7 @@ class App extends Component {
             }
             break
           case 'droppable-playingNow':
+          case 'droppable-playingNow empty':
             switch (source.droppableId) {
               case 'droppable-history': {
                 const hist = cloneDeep(state.queue.history)
@@ -446,6 +449,10 @@ class App extends Component {
                 this.dispatch({
                   type: 'Queue:play',
                   data: item
+                })
+                this.dispatch({
+                  type: 'Player:setPlaying',
+                  playing: true
                 })
                 break
               }
@@ -461,6 +468,10 @@ class App extends Component {
                   type: 'Queue:play',
                   data: item
                 })
+                this.dispatch({
+                  type: 'Player:setPlaying',
+                  playing: true
+                })
                 break
               case 'droppable-bar-list':
                 const dragged = state.bar.items[source.index]
@@ -468,6 +479,10 @@ class App extends Component {
                 this.dispatch({
                   type: 'Queue:play',
                   data: dragged
+                })
+                this.dispatch({
+                  type: 'Player:setPlaying',
+                  playing: true
                 })
                 break
               default:
@@ -762,6 +777,10 @@ class App extends Component {
           }}
         </Droppable>
       )
+
+    const historyClasses = ['history']
+    const playingNowClasses = ['playingNow']
+    const upNextClasses = ['upNext']
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
         <div className={appClasses.join(' ')}>
@@ -899,7 +918,7 @@ class App extends Component {
             <div className='queue'>
               <List
                 title={`${this.dict.get('history.title')} (${state.queue.history.length})`}
-                className='history'
+                className={historyClasses.join(' ')}
                 items={state.queue.history}
                 defaultComponent={makeResultComponent({
                   actions: {
@@ -926,7 +945,7 @@ class App extends Component {
                 collapsible
                 areDraggable
               />
-              <section className='playingNow'>
+              <section className={playingNowClasses.join(' ')}>
                 <h3>
                   {this.dict.get('queue.playingNow.title')}
                 </h3>
@@ -948,7 +967,7 @@ class App extends Component {
               </section>
               <List
                 title={`${this.dict.get('upnext.title')} (${state.queue.upNext.length})`}
-                className='upNext'
+                className={upNextClasses.join(' ')}
                 items={state.queue.upNext}
                 defaultComponent={makeResultComponent({
                   actions: {
@@ -964,18 +983,7 @@ class App extends Component {
                       txt: 'remove',
                       icon: dequeueIcon
                     }
-                    // more: {
-                    //   targetIdx: null,
-                    //   go: () => {
-                    //     console.log('MORE', 'coming soon')
-                    //   },
-                    //   txt: 'more options',
-                    //   icon: <img src='/static/dots.svg' title='more options' alt='more options' />
-                    // }
                   }
-                  // remember: this.remember,
-
-                  // isInCollection: this.isInCollection
                 })}
                 onItem={{
                 }}
