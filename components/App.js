@@ -5,6 +5,7 @@ import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 import cloneDeep from 'lodash.clonedeep'
 import pullAt from 'lodash.pullat'
+import debounce from 'lodash.debounce'
 
 import Bar from '../components/Bar'
 import Player from '../components/Player'
@@ -219,6 +220,9 @@ class App extends Component {
     this.updateBarItems = this.updateBarItems.bind(this)
     this.inspectPartyServer = this.inspectPartyServer.bind(this)
     this.seekTo = this.seekTo.bind(this)
+
+    this.loadMore = this.loadMore.bind(this)
+    this.debouncedLoadMore = debounce(this.loadMore, 500, { maxWait: 750 }).bind(this) // TODO remove this debounce (possible when "loading" is implemented wherein a subsequent call would cancel, but only if calling with a different query or pageToken)
 
     this.bar = {}
 
@@ -727,7 +731,33 @@ class App extends Component {
     this.props.dispatch({
       type: 'Bar:setItems',
       data,
+      hasMore: this.props.bar.hasMore,
+      nextPageToken: this.props.bar.nextPageToken,
       areCommands: false
+    })
+  }
+
+  loadMore () {
+    this.props.findMusic(this.props.bar.query, this.props.bar.nextPageToken).then(({ items, hasMore, prevPageToken, nextPageToken }) => {
+      if (items.length > 0) {
+        const newItems = items.map((item) => {
+          const id = item.id.videoId
+          const obj = {
+            type: 'YouTubeVideo',
+            key: id,
+            data: item
+          }
+          return this.decorateBarItem(obj)
+        })
+        this.dispatch({
+          type: 'Bar:setItems',
+          data: this.props.bar.items.concat(newItems),
+          hasMore,
+          prevPageToken,
+          nextPageToken,
+          areCommands: false
+        })
+      }
     })
   }
 
@@ -789,6 +819,8 @@ class App extends Component {
             placeholder={this.dict.get('bar.placeholder')}
             query={this.props.bar.query}
             items={this.props.bar.items}
+            hasMore={this.props.bar.hasMore}
+            loadMore={this.debouncedLoadMore}
             areCommands={this.props.bar.areCommands}
             suggest={(query) => {
               return this.props.findMusic(query)

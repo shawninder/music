@@ -10,7 +10,7 @@ class Media {
     return item && item.id && !!item.id.videoId
   }
 
-  search (query) {
+  search (query, nextPageToken) {
     // Look in memory
     // Look in local and session storage
     // Look in network
@@ -18,7 +18,8 @@ class Media {
     console.log('Querying YouTube')
     const start = Date.now()
     return fetch(`${process.env.YOUTUBE_SEARCH_URL}?${qs.stringify({
-      q: query
+      q: query,
+      pageToken: nextPageToken
     })}`)
       .then((results) => {
         return results.json()
@@ -26,18 +27,28 @@ class Media {
       .then((data) => {
         if (data.error) {
           console.error("Can't get YouTube search results", data.error)
-          return []
+          return {
+            items: [],
+            hasMore: false,
+            prevPageToken: null,
+            nextPageToken: null
+          }
         } else {
           console.log(`Got results from YouTube in ${Date.now() - start}ms`)
-          return data.items.reduce((acc, item) => {
-            if (this.isPlayable(item)) {
-              acc.push({
-                type: 'YouTubeVideo',
-                ...item
-              })
-            }
-            return acc
-          }, [])
+          return {
+            items: data.items.reduce((acc, item) => {
+              if (this.isPlayable(item)) {
+                acc.push({
+                  type: 'YouTubeVideo',
+                  ...item
+                })
+              }
+              return acc
+            }, []),
+            hasMore: data.pageInfo.totalResults > data.pageInfo.resultsPerPage,
+            prevPageToken: data.prevPageToken,
+            nextPageToken: data.nextPageToken
+          }
         }
       })
   }

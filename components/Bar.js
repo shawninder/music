@@ -135,7 +135,7 @@ class Bar extends Component {
     this.clear = this.clear.bind(this)
     this.menuClicked = this.menuClicked.bind(this)
     this.query = this.query.bind(this)
-    this.debouncedQuery = debounce(this.query, { maxWait: 500 })
+    this.debouncedQuery = debounce(this.query, 500, { maxWait: 750 })
   }
 
   componentDidMount () {
@@ -219,20 +219,22 @@ class Bar extends Component {
 
   query (query) {
     this.props.suggest(query)
-      .then((results) => {
+      .then(({ items, hasMore, prevPageToken, nextPageToken }) => {
         if (this.props.query === query) {
-          const items = results.map((item) => {
+          const data = items.map((item) => {
             const id = item.id.videoId
             const obj = {
               type: 'YouTubeVideo',
-              key: id,
+              key: `${id}.${Math.random()}`,
               data: item
             }
             return this.props.decorateItem(obj)
           })
           this.props.dispatch({
             type: 'Bar:setItems',
-            data: items,
+            data,
+            hasMore,
+            nextPageToken,
             areCommands: false
           })
         }
@@ -246,7 +248,9 @@ class Bar extends Component {
   dismiss () {
     this.props.dispatch({
       type: 'Bar:setItems',
-      data: []
+      data: [],
+      hasMore: false,
+      nextPageToken: null
     })
   }
 
@@ -327,6 +331,8 @@ class Bar extends Component {
               defaultComponent={this.props.ResultComponent}
               isDropDisabled
               areDraggable={this.props.areCommands !== true}
+              loadMore={this.props.loadMore}
+              hasMore={this.props.hasMore}
             />
           )
           : null
@@ -357,7 +363,9 @@ const props = [
   { name: 'onRef', type: PropTypes.func, val: () => {} },
   { name: 'autoDismiss', type: PropTypes.bool, val: true },
   { name: 'onResult', type: PropTypes.object, val: {} },
-  { name: 'areCommands', type: PropTypes.bool, val: true }
+  { name: 'areCommands', type: PropTypes.bool, val: true },
+  { name: 'hasMore', type: PropTypes.bool, val: false },
+  { name: 'loadMore', type: PropTypes.func, val: () => { console.log('loadMore doing nothing') } }
 ]
 
 Bar.defaultProps = defaultProps(props)

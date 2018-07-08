@@ -45,6 +45,8 @@ const defaultInitialState = {
   bar: {
     query: '',
     items: [],
+    hasMore: false,
+    nextPageToken: null,
     areCommands: false
   },
   player: defaultPlayer,
@@ -132,10 +134,10 @@ const mapDispatchToProps = (dispatch) => {
         pull(middlewares, middleware)
       }
     },
-    findMusic: (query) => {
+    findMusic: (query, nextPageToken) => {
       return (_dispatch, getState) => {
-        console.log(`media.search(${query})`)
-        return media.search(query)
+        console.log(`media.search('${query}')`)
+        return media.search(query, nextPageToken)
       }
     },
     dev: () => {

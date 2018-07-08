@@ -4,8 +4,20 @@ import cloneDeep from 'lodash.clonedeep'
 import isEqual from 'lodash.isequal'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
-
 import { Droppable, Draggable } from 'react-beautiful-dnd'
+
+const isServer = typeof window === 'undefined'
+
+const isElementInViewport = (el) => {
+  var rect = el.getBoundingClientRect()
+
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  )
+}
 
 class List extends Component {
   constructor (props) {
@@ -18,6 +30,50 @@ class List extends Component {
     }
     this.previousItems = {}
     this.previousCollapsed = {}
+    this.checkLoader = this.checkLoader.bind(this)
+    this.loader = null
+  }
+
+  componentDidMount () {
+    if (!isServer) {
+      // see https://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport/7557433#7557433
+      if (global.addEventListener) {
+        global.addEventListener('DOMContentLoaded', this.checkLoader, false)
+        global.addEventListener('load', this.checkLoader, false)
+        global.addEventListener('scroll', this.checkLoader, false)
+        global.addEventListener('resize', this.checkLoader, false)
+      } else if (global.attachEvent) {
+        global.attachEvent('onDOMContentLoaded', this.checkLoader)
+        global.attachEvent('onload', this.checkLoader)
+        global.attachEvent('onscroll', this.checkLoader)
+        global.attachEvent('onresize', this.checkLoader)
+      }
+    }
+  }
+
+  componentWillUnmount () {
+    if (!isServer) {
+      // see https://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport/7557433#7557433
+      if (global.removeEventListener) {
+        global.removeEventListener('DOMContentLoaded', this.checkLoader, false)
+        global.removeEventListener('load', this.checkLoader, false)
+        global.removeEventListener('scroll', this.checkLoader, false)
+        global.removeEventListener('resize', this.checkLoader, false)
+      } else if (global.detachEvent) {
+        global.detachEvent('onDOMContentLoaded', this.checkLoader)
+        global.detachEvent('onload', this.checkLoader)
+        global.detachEvent('onscroll', this.checkLoader)
+        global.detachEvent('onresize', this.checkLoader)
+      }
+    }
+  }
+
+  checkLoader (event) {
+    if (this.loader) {
+      if (this.props.items.length < this.props.maxResults && isElementInViewport(this.loader)) {
+        this.props.loadMore()
+      }
+    }
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -155,6 +211,7 @@ class List extends Component {
         )
       }
     })
+    const loader = <li className='loader' ref={(el) => { this.loader = el }} />
     const classes = this.props.className.split(' ')
     classes.push('list')
     classes.push(this.state.collapsed ? 'collapsed' : 'not-collapsed')
@@ -166,6 +223,7 @@ class List extends Component {
             return (
               <ol
                 onKeyDown={this.keyDown(this.props.items)}
+                onScroll={this.checkLoader}
                 ref={(el) => {
                   this.el = el
                   this.props.onRef(el)
@@ -173,6 +231,7 @@ class List extends Component {
                 }}
               >
                 {items}
+                {items.length > 0 ? loader : null}
                 {droppableProvided.placeholder}
               </ol>
             )
@@ -188,6 +247,7 @@ class List extends Component {
           }}
         >
           {items}
+          {items.length > 0 ? loader : null}
         </ol>
       )
     return (
@@ -223,7 +283,10 @@ const props = [
   },
   { name: 'collapsible', type: PropTypes.bool, val: false },
   { name: 'isDropDisabled', type: PropTypes.bool, val: false },
-  { name: 'areDraggable', type: PropTypes.bool, val: false }
+  { name: 'areDraggable', type: PropTypes.bool, val: false },
+  { name: 'hasMore', type: PropTypes.bool, val: false },
+  { name: 'loadMore', type: PropTypes.func, val: () => {} },
+  { name: 'maxResults', type: PropTypes.number, val: 200 }
 ]
 
 List.defaultProps = defaultProps(props)

@@ -127,6 +127,16 @@ button.invisibutton {
   color: black;
 }
 
+
+.bar-list .loader {
+  height: 1px;
+}
+
+.bar-list > ol {
+  max-height: 100vh;
+  overflow: auto;
+}
+
 .bar-list.list > ol > li:nth-child(odd) {
   background: whitesmoke;
 }
