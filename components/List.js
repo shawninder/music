@@ -213,6 +213,9 @@ class List extends Component {
     })
     const loader = <li className='loader' ref={(el) => { this.loader = el }} />
     const classes = this.props.className.split(' ')
+    if (this.props.items.length === 0) {
+      classes.push('empty')
+    }
     classes.push('list')
     classes.push(this.state.collapsed ? 'collapsed' : 'not-collapsed')
 

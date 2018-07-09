@@ -352,7 +352,7 @@ class App extends Component {
         const state = this.getPartyState()
         switch (destination.droppableId) {
           case 'droppable-upNext':
-          case 'droppable-upNext empty':
+          // case 'droppable-upNext empty':
             switch (source.droppableId) {
               case 'droppable-upNext':
                 this.dispatch({
@@ -396,7 +396,7 @@ class App extends Component {
             }
             break
           case 'droppable-history':
-          case 'droppable-history empty':
+          // case 'droppable-history empty':
             switch (source.droppableId) {
               case 'droppable-upNext':
                 this.dispatch({
@@ -440,7 +440,7 @@ class App extends Component {
             }
             break
           case 'droppable-playingNow':
-          case 'droppable-playingNow empty':
+          // case 'droppable-playingNow empty':
             switch (source.droppableId) {
               case 'droppable-history': {
                 const hist = cloneDeep(state.queue.history)
@@ -809,6 +809,9 @@ class App extends Component {
 
     const historyClasses = ['history']
     const playingNowClasses = ['playingNow']
+    if (!state.queue.now.key) {
+      playingNowClasses.push('empty')
+    }
     const upNextClasses = ['upNext']
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>

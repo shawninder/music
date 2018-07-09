@@ -362,6 +362,15 @@ li:nth-child(odd) .actions {
 .history>h3, .playingNow>h3, .upNext>h3 {
   transition-property: opacity, height;
   transition-duration: 0.5s;
+  opacity: 1;
+}
+
+.history.empty>h3, .playingNow.empty>h3, .upNext.empty>h3 {
+  /* opacity: 0; */
+}
+
+.App.dragging .history>h3, .App.dragging .playingNow>h3, .App.dragging .upNext>h3 {
+  opacity: 1;
 }
 
 .history.not-collapsed>h3 {
