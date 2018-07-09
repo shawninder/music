@@ -9,20 +9,20 @@
 >
   <defs>
     <linearGradient id="toBlueNW" gradientTransform="rotate(45)">
-      <stop offset="0%" stop-color="rgb(21, 85, 209)" stop-opacity="0.7" />
-      <stop offset="100%" stop-color="rgb(21, 85, 209)" stop-opacity="0.3" />
+      <stop offset="0%" stop-color="rgb(21, 85, 255)" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="rgb(21, 85, 255)" stop-opacity="0.3" />
     </linearGradient>
     <linearGradient id="toBlueS" gradientTransform="rotate(90)">
-      <stop offset="0%" stop-color="rgb(21, 85, 209)" stop-opacity="0.3" />
-      <stop offset="100%" stop-color="rgb(21, 85, 209)" stop-opacity="0.7" />
+      <stop offset="0%" stop-color="rgb(21, 85, 255)" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="rgb(21, 85, 255)" stop-opacity="0.7" />
     </linearGradient>
-    <linearGradient id="toBlack" gradientTransform="rotate(135)">
-      <stop offset="0%" stop-color="rgb(0, 0, 0)" stop-opacity="0.3" />
-      <stop offset="100%" stop-color="rgb(0, 0, 0)" stop-opacity="0.7" />
+    <linearGradient id="toBlack" gradientTransform="rotate(125)">
+      <stop offset="0%" stop-color="rgb(0, 0, 0)" stop-opacity="0" />
+      <stop offset="100%" stop-color="rgb(0, 0, 0)" stop-opacity="1" />
     </linearGradient>
-    <linearGradient id="toBrown" gradientTransform="rotate(-45)">
+    <linearGradient id="toBrown" gradientTransform="rotate(-35)">
       <stop offset="0%" stop-color="rgb(218, 185, 29)" stop-opacity="0.1" />
-      <stop offset="100%" stop-color="rgb(224, 164, 29)" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="rgb(224, 164, 29)" stop-opacity="0.7" />
     </linearGradient>
   </defs>
 
