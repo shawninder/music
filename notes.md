@@ -1,5 +1,9 @@
 # Notes
 
+Plan something against bots!
+
+Stats (this guest contributes songs averaging x.y appreciation level or whatever) as incentive and gamification
+
 When using the Chrome iPhone "simulator", youtube videos stop playing if you change tabs (put the app in the background!).
 
 Is the converse possible?
@@ -45,3 +49,5 @@ Idea: Host party where guests can only submit contributions to UpNext, and only 
 The name Speaker would nicely transition a music player to a social app...
 
 Remove need for dispatch from Party, should be re-usable "live queue session" module
+
+Fastly (content delivery, load balancing, cloud security, streaming)

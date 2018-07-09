@@ -225,7 +225,7 @@ class Bar extends Component {
             const id = item.id.videoId
             const obj = {
               type: 'YouTubeVideo',
-              key: `${id}.${Math.random()}`,
+              key: `${id}`,
               data: item
             }
             return this.props.decorateItem(obj)

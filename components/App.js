@@ -479,7 +479,6 @@ class App extends Component {
                 break
               case 'droppable-bar-list':
                 const dragged = state.bar.items[source.index]
-                console.log('dragged.key', dragged.key)
                 this.dispatch({
                   type: 'Queue:play',
                   data: dragged
@@ -697,7 +696,7 @@ class App extends Component {
   decorateBarItem (item) {
     const state = this.getPartyState()
     const decorated = cloneDeep(item)
-    const id = decorated.key
+    const id = decorated.data.id.videoId
     let queueIndex = null
     const history = state.queue.history
     if (history.length > 0) {
@@ -870,9 +869,6 @@ class App extends Component {
                   cdn: cdnQueued
                 }
               }
-
-              // remember: this.remember,
-              // isInCollection: this.isInCollection
             })}
             onResult={{
               'space': this.enqueue,
@@ -899,22 +895,6 @@ class App extends Component {
               // playlist: this.props.collection.playlists
               //
             }}
-            // getComponent={(item, idx) => {
-            //   switch (item.type) {
-            //     case 'YouTubeVideo':
-            //       return actionable(ResultComponent, [play(), dismiss()], [
-            //         playNext(), enqueue(), remember(this.props.collection)
-            //       ])
-            //     case 'command':
-            //       const Component = commandComponents[item.label]
-            //       if (!Component) {
-            //         throw new Error(`Unrecognized command ${item.label}`)
-            //       }
-            //       return Component
-            //     default:
-            //       throw new Error(`Unrecognized item type ${item.type}`)
-            //   }
-            // }}
             onRef={(ref) => {
               this.bar = ref
             }}
