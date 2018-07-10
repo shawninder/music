@@ -23,6 +23,7 @@ class Party extends Component {
     this.hydrate = this.hydrate.bind(this)
     this.checkPartyName = this.checkPartyName.bind(this)
     this.onGlobalFocus = this.onGlobalFocus.bind(this)
+    this.button = null
   }
 
   componentDidMount () {
@@ -82,7 +83,11 @@ class Party extends Component {
   onKeyDown (event) {
     if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
       event.preventDefault()
-      this.party(event)
+      this.onSubmit(event)
+    }
+    if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
+      event.preventDefault()
+      this.props.dispatch({ type: 'App:collapseParty' })
     }
   }
 
@@ -292,6 +297,9 @@ class Party extends Component {
         type: 'Party:started',
         res
       })
+      if (this.button) {
+        this.button.focus()
+      }
     }
     this.socketRequest(emitting, onResponse)
   }
@@ -310,6 +318,9 @@ class Party extends Component {
       this.props.dispatch({
         type: 'Party:scrambleSocketKey'
       })
+      if (this.field) {
+        this.field.focus()
+      }
     }
     this.socketRequest(emitting, onResponse)
   }
@@ -415,11 +426,21 @@ class Party extends Component {
                     if (ref) {
                       ref.value = this.props.name
                     }
+                    this.field = ref
+                    this.props.onFieldRef(ref)
                   }}
                 />
-                <button disabled={!isServer && (this.props.checking || this.props.name === '')} onClick={this.onSubmit}>{
-                  this.props.dict.get(`party.${label}`)
-                }</button>
+                <button disabled={!isServer && (this.props.checking || this.props.name === '')}
+                  onClick={this.onSubmit}
+                  ref={(el) => {
+                    this.button = el
+                    this.props.onButtonRef(el)
+                  }}
+                >
+                  {
+                    this.props.dict.get(`party.${label}`)
+                  }
+                </button>
               </form>
             )
         }
@@ -442,7 +463,9 @@ const props = [
   { name: 'unregisterMiddleware', type: PropTypes.func.isRequired },
   { name: 'dispatch', type: PropTypes.func.isRequired },
   { name: 'socketKey', type: PropTypes.number.isRequired },
-  { name: 'collapsed', type: PropTypes.bool.isRequired }
+  { name: 'collapsed', type: PropTypes.bool.isRequired },
+  { name: 'onFieldRef', type: PropTypes.func, val: () => {} },
+  { name: 'onButtonRef', type: PropTypes.func, val: () => {} }
 ]
 
 Party.defaultProps = defaultProps(props)
