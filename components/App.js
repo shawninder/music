@@ -500,6 +500,15 @@ class App extends Component {
 
   figureClicked (event) {
     event.stopPropagation()
+    if (this.props.app.partyCollapsed) {
+      this.dispatch({
+        type: 'Bar:setItems',
+        data: [],
+        hasMore: false,
+        nextPageToken: null,
+        areCommands: true
+      })
+    }
     this.dispatch({
       type: 'App:toggleParty'
     })
