@@ -1,5 +1,6 @@
 # Notes
 
+Actions for Playing Now: restart, skip
 Plan something against bots!
 
 Stats (this guest contributes songs averaging x.y appreciation level or whatever) as incentive and gamification

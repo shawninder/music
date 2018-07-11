@@ -198,24 +198,24 @@ button.invisibutton {
   font-weight: bold;
 }
 
-.youtube-result .toggle {
-  width: 100%;
-}
-.youtube-result .toggle.toggled {
-  text-align: right;
-}
-
 .youtube-result .toggle.toggled img {
   margin-left: 5px;
 }
 
 .youtube-result .toggle .idx {
-  display: inline;
+  display: inline-block;
+  text-align: right;
+  width: 0;
+  transition-property: width;
+  transition-duration: 2s;
+}
+
+.youtube-result .toggle.toggled .idx {
+  width: 25px;
 }
 .youtube-result .art {
   grid-area: left;
   border-radius: 5px;
-  position: relative;
 }
 
 .youtube-result .art img {

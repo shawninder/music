@@ -175,6 +175,7 @@ function makeResultComponent (opts) {
           onToggle={this.onToggle}
           className={classes.join(' ')}
           dragHandleProps={this.props.dragHandleProps}
+          key={`${classes[0]}-YouTubeVideo-${this.props.data.data.id.videoId}`}
         >
           {corner}
           {

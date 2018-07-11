@@ -190,6 +190,7 @@ class List extends Component {
                     idx={idx}
                     queueIndex={itemClone.queueIndex}
                     dragHandleProps={draggableProvided.dragHandleProps}
+                    key={`${this.props.className.split(' ')[0]}-Component-${itemClone.data.id.videoId}`}
                   />
                 </li>
               )
