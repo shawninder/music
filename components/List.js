@@ -178,7 +178,7 @@ class List extends Component {
             {(draggableProvided, snapshot) => {
               return (
                 <li
-                  key={itemClone.key}
+                  key={`${classes[0]}-list-draggable-${itemClone.key}`}
                   tabIndex='0'
                   ref={draggableProvided.innerRef}
                   className={snapshot.isDragging ? 'dragging' : ''}
@@ -200,7 +200,7 @@ class List extends Component {
       } else {
         return (
           <li
-            key={itemClone.key}
+            key={`${classes[0]}-list-nodrag-${itemClone.key}`}
             tabIndex='0'
           >
             <Component
@@ -230,6 +230,7 @@ class List extends Component {
                   this.props.onRef(el)
                   return droppableProvided.innerRef(el)
                 }}
+                key={`${classes[0]}-list-droppable`}
               >
                 {items}
                 {items.length > 0 ? loader : null}
@@ -246,6 +247,7 @@ class List extends Component {
             this.el = el
             this.props.onRef(el)
           }}
+          key={`${classes[0]}-list-nodrop`}
         >
           {items}
           {items.length > 0 ? loader : null}

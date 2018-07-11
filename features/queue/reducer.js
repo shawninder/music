@@ -26,12 +26,18 @@ function toHistory (state, action) {
     items = [items]
   }
   const now = Date.now()
-  newState.history = newState.history.concat(items.map((item, idx) => {
-    item.key += `:${now}_${idx}`
-    item.inQueue = true
-    item.queueIndex = newState.history.length + idx
-    return item
-  }))
+  newState.history = newState.history
+    .map((item, idx) => {
+      item.inQueue = true
+      item.queueIndex = -idx - 1 - items.length
+      return item
+    })
+    .concat(items.map((item, idx) => {
+      item.key += `:${now}_${idx}`
+      item.inQueue = true
+      item.queueIndex = -idx - 1
+      return item
+    }))
   return newState
 }
 

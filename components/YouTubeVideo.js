@@ -25,6 +25,7 @@ class YouTubeVideo extends Component {
       <div
         className={classes.join(' ')}
         onClick={this.props.onClick}
+        key={`${classes[0]}-YouTUbeVideo-div-${this.props.data.data.id.videoId}`}
       >
         <div className={toggleClasses.join(' ')} onClick={this.props.onToggle}>
           <div
