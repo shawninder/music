@@ -1,4 +1,31 @@
 # Name ideas
+
+## Elements
+
+### Collaboration
+- group
+- crowd
+- together
+- our
+- we
+- us
+
+### Play Queue
+- playlist
+- music
+- play queue
+- list
+- dj set
+- up next
+- playing next
+- next
+
+### Context
+- party
+- event
+- set
+
+## Ideas
 - Crowd Play
 - Crowd's Play
 - Mass Play
@@ -19,7 +46,22 @@
 - Speaker
 - Juke
 - Jukebox
-
+- TurnitApp
+- PlayBliss
+- Playliss
+- Plylist
+- Playlister
+- Playlistogether
+- ourplaylist
+- weplaylist
+- playlistus
+- Togetherlist
+- welist
+- grouplist
+- specialrequest
+- upnext
+- nextup
+- Nexup
 
 ## Interesting domain names
 - .app

@@ -9,6 +9,7 @@ html {
 }
 
 body {
+  width: 100%;
   height: 100%;
   margin: 0;
   /* Approximate system fonts
@@ -19,9 +20,6 @@ body {
   */
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   background-color: #333333;
-  background-image: url('/static/bg.svg');
-  background-repeat: no-repeat;
-  background-attachment: fixed;
 }
 
 input[type=text].disabled {
@@ -42,8 +40,32 @@ button.invisibutton {
 }
 
 .App {
+  width: 100%;
+  height: 100%;
   min-width: 250px;
   position: relative;
+  background-color: #e0a41d;
+  background-image: url('/static/bg.svg');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+}
+
+.App.connected, .App.connected .figure, .App.connected .autoparty {
+  background-color: aqua;
+}
+
+.App.attending, .App.attending .figure, .App.attending .autoparty {
+  background-color: green;
+}
+
+.App.hosting, .App.hosting .figure, .App.hosting .autoparty {
+  background-color: #e0a41d;
+}
+
+.App.disconnected, .App.disconnected .figure, .App.disconnected .autoparty {
+  background-color: darkred;
 }
 
 .bar {
@@ -515,6 +537,8 @@ li:nth-child(odd) .actions {
   background-position: top 10px right 10px;
   background-origin: content-box;
   background-size: 30px 30px;
+  transition-property: background-color;
+  transition-duration: 0.5s;
 }
 
 .figure.disconnected {
@@ -546,7 +570,7 @@ li:nth-child(odd) .actions {
   z-index: 1;
   border-radius: 0 0 10px 10px;
   width: 33%;
-  transition-property: width;
+  transition-property: background-color, width;
   transition-duration: 0.5s;
 }
 

@@ -789,6 +789,17 @@ class App extends Component {
       return !!queueIndex
     }
     const appClasses = ['App']
+    if (this.props.socket && this.props.socket.connected) {
+      appClasses.push('connected')
+    } else {
+      appClasses.push('disconnected')
+    }
+    if (this.props.party.attending) {
+      appClasses.push('attending')
+    }
+    if (this.props.party.hosting) {
+      appClasses.push('hosting')
+    }
     if (this.props.app.dragging) {
       appClasses.push('dragging')
     }
