@@ -197,7 +197,7 @@ class App extends Component {
     this.onDragUpdate = this.onDragUpdate.bind(this)
     this.onDragEnd = this.onDragEnd.bind(this)
     this.figureClicked = this.figureClicked.bind(this)
-    this.onFocus = this.onFocus.bind(this)
+    this.figureKeyDown = this.figureKeyDown.bind(this)
     this.play = this.play.bind(this)
     this.togglePlaying = this.togglePlaying.bind(this)
     this.playNext = this.playNext.bind(this)
@@ -504,35 +504,40 @@ class App extends Component {
 
   figureClicked (event) {
     event.stopPropagation() // Avoid from letting the global click listeners from collapsing the party
-    // if (this.props.app.partyCollapsed) {
-    //   this.dispatch({
-    //     type: 'Bar:setItems',
-    //     data: [],
-    //     hasMore: false,
-    //     nextPageToken: null,
-    //     areCommands: true
-    //   })
-    //   this.dispatch({
-    //     type: 'App:showParty'
-    //   })
-    // } else {
-    //   this.dispatch({
-    //     type: 'App:collapseParty'
-    //   })
-    // }
+    if (this.props.app.partyCollapsed) {
+      this.dispatch({
+        type: 'Bar:setItems',
+        data: [],
+        hasMore: false,
+        nextPageToken: null,
+        areCommands: true
+      })
+      this.dispatch({
+        type: 'App:showParty'
+      })
+    } else {
+      this.dispatch({
+        type: 'App:collapseParty'
+      })
+    }
   }
 
-  onFocus (event) {
-    this.dispatch({
-      type: 'Bar:setItems',
-      data: [],
-      hasMore: false,
-      nextPageToken: null,
-      areCommands: true
-    })
-    this.dispatch({
-      type: 'App:showParty'
-    })
+  figureKeyDown (event) {
+    if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
+      this.dispatch({
+        type: 'App:collapseParty'
+      })
+    }
+    if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
+      this.dispatch({
+        type: 'App:toggleParty'
+      })
+    }
+    if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
+      this.dispatch({
+        type: 'App:showParty'
+      })
+    }
   }
 
   play (data) {
@@ -942,7 +947,7 @@ class App extends Component {
           <div
             className={figureClasses.join(' ')}
             onClick={this.figureClicked}
-            onFocus={this.onFocus}
+            onKeyDown={this.figureKeyDown}
             tabIndex='0'
           >
             {/* <img src='/static/party-hosting.svg' alt='hosting' title='hosting' /> */}
