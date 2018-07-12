@@ -52,19 +52,19 @@ html, body, #__next, .App {
   transition-duration: 1s;
 }
 
-.App.connected, .App.connected .figure {
+.App.connected, .App.connected .figure, .App.connected .autoparty {
   background-color: aqua;
 }
 
-.App.attending, .App.attending .figure {
+.App.attending, .App.attending .figure, .App.attending .autoparty {
   background-color: green;
 }
 
-.App.hosting, .App.hosting .figure {
+.App.hosting, .App.hosting .figure, .App.hosting .autoparty {
   background-color: #e0b01d;
 }
 
-.App.disconnected, .App.disconnected .figure {
+.App.disconnected, .App.disconnected .figure, .App.disconnected .autoparty {
   background-color: #333333;
 }
 
@@ -594,7 +594,6 @@ li:nth-child(even) .actions {
   border-radius: 0 0 10px 10px;
   width: 33%;
   padding: 15px;
-  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .autoparty.collapsed {
