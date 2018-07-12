@@ -34,6 +34,7 @@ button.invisibutton {
 
 html, body, #__next, .App {
   height: 100%;
+  width: 100%;
 }
 
 .App {
@@ -50,6 +51,7 @@ html, body, #__next, .App {
   background-size: 100% 100% !important;
   transition-property: background-color;
   transition-duration: 1s;
+  overflow: scroll;
 }
 
 .App.connected, .App.connected .figure, .App.connected .autoparty {
@@ -65,7 +67,7 @@ html, body, #__next, .App {
 }
 
 .App.disconnected, .App.disconnected .figure, .App.disconnected .autoparty {
-  background-color: #333333;
+  background-color: #666666;
 }
 
 .bar {
@@ -152,10 +154,9 @@ html, body, #__next, .App {
   color: black;
 }
 
-
 .bar-list .loader {
-  height: 1px;
-  background-color: #333333 !important;
+  text-align: center;
+  cursor: text;
 }
 
 .bar-list > ol {
@@ -569,16 +570,16 @@ li:nth-child(even) .actions {
   background-image: url('/static/party-connected.svg');
 }
 .figure.hosting.disconnected {
-  background-image: url('/static/party-hosting-disconnected.svg');
+  background-image: url('/static/guilty.svg');
 }
 .figure.hosting.connected {
-  background-image: url('/static/party-hosting.svg');
+  background-image: url('/static/happy.svg');
 }
 .figure.attending.disconnected {
-  background-image: url('/static/party-attending-disconnected.svg')
+  background-image: url('/static/sad.svg')
 }
 .figure.attending.connected {
-  background-image: url('/static/party-attending.svg')
+  background-image: url('/static/glad.svg')
 }
 .figure.attending.host-disconnected {
   background-image: url('/static/party-attending-host-disconnected.svg')
@@ -651,7 +652,7 @@ li:nth-child(even) .actions {
   padding: 5px 10px;
 }
 
-.command {
+.command, .loader {
   padding: 12px;
   line-height: 150%;
   cursor: pointer;

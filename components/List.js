@@ -96,7 +96,7 @@ class List extends Component {
           !event.metaKey &&
           !event.ctrlKey &&
           !event.shiftKey
-        ) {
+        ) { // enter
           if (this.props.onItem['enter']) {
             event.preventDefault()
             this.props.onItem['enter'](item, idx, event)
@@ -156,6 +156,11 @@ class List extends Component {
         const nextSibling = event.target.nextSibling
         if (nextSibling) {
           nextSibling.focus()
+          const isLoader = !nextSibling.nextSibling
+          if (isLoader) {
+            event.target.focus()
+            // We don't want to prevent focusing the loader because we want to make sure the browser will scroll it in view, but once that is done, we want the focus immediately back on the last real item of the list. Keeping the focus on the loader would bring focus and the bottom of the list under the new results, out of view.
+          }
         }
       }
     }
@@ -215,7 +220,8 @@ class List extends Component {
         )
       }
     })
-    const loader = <li className='loader' ref={(el) => { this.loader = el }} />
+    const loaderContents = this.props.items.length < this.props.maxResults ? 'Loading...' : 'Please refine your search'
+    const loader = <li className='loader' tabIndex='0' ref={(el) => { this.loader = el }}>{loaderContents}</li>
 
     const dropZone = this.props.areDraggable
       ? (
@@ -233,7 +239,7 @@ class List extends Component {
                 key={`${classes[0]}-list-droppable`}
               >
                 {items}
-                {items.length > 0 ? loader : null}
+                {(this.props.hasMore && items.length > 0) ? loader : null}
                 {droppableProvided.placeholder}
               </ol>
             )
@@ -243,6 +249,7 @@ class List extends Component {
       : (
         <ol
           onKeyDown={this.keyDown(this.props.items)}
+          onScroll={this.checkLoader}
           ref={(el) => {
             this.el = el
             this.props.onRef(el)
@@ -250,7 +257,7 @@ class List extends Component {
           key={`${classes[0]}-list-nodrop`}
         >
           {items}
-          {items.length > 0 ? loader : null}
+          {(this.props.hasMore && items.length > 0) ? loader : null}
         </ol>
       )
     return (
@@ -289,7 +296,7 @@ const props = [
   { name: 'areDraggable', type: PropTypes.bool, val: false },
   { name: 'hasMore', type: PropTypes.bool, val: false },
   { name: 'loadMore', type: PropTypes.func, val: () => {} },
-  { name: 'maxResults', type: PropTypes.number, val: 200 }
+  { name: 'maxResults', type: PropTypes.number, val: 500 }
 ]
 
 List.defaultProps = defaultProps(props)
