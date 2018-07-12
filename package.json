@@ -1,6 +1,6 @@
 {
   "name": "Crowd's Play",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "private": true,
   "dependencies": {
     "@zeit/next-css": "0.2.0",
