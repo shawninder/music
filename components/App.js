@@ -918,7 +918,11 @@ class App extends Component {
             autoFocus
             decorateItem={this.decorateBarItem}
           />
-          <div className={figureClasses.join(' ')} onClick={this.figureClicked}>
+          <div
+            className={figureClasses.join(' ')}
+            onClick={this.figureClicked}
+            tabIndex='0'
+          >
             {/* <img src='/static/party-hosting.svg' alt='hosting' title='hosting' /> */}
           </div>
           <div className='main'>

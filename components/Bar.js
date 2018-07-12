@@ -242,6 +242,10 @@ class Bar extends Component {
   }
 
   clear () {
+    this.props.dispatch({
+      type: 'Bar:setQuery',
+      data: ''
+    })
     this.field.value = ''
   }
 

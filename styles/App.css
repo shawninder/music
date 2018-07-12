@@ -4,14 +4,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
   box-sizing: border-box;
 }
 
-html {
-  height: 100%;
-}
-
 body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
   /* Approximate system fonts
     -apple-system, BlinkMacSystemFont, // Safari Mac/iOS, Chrome
     "Segoe UI", Roboto, Oxygen, // Windows, Android, KDE
@@ -39,33 +32,40 @@ button.invisibutton {
   background: transparent;
 }
 
-.App {
-  width: 100%;
+html, body, #__next, .App {
   height: 100%;
-  min-width: 250px;
+}
+
+.App {
+  transition-timing-function:ease-in-out;
+}
+
+.App {
+  padding: 0;
   position: relative;
-  background-color: #e0a41d;
+  background-color: #33333;
   background-image: url('/static/bg.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
+  background-size: 100% 100% !important;
   transition-property: background-color;
-  transition-duration: 0.5s;
+  transition-duration: 1s;
 }
 
-.App.connected, .App.connected .figure, .App.connected .autoparty {
+.App.connected, .App.connected .figure {
   background-color: aqua;
 }
 
-.App.attending, .App.attending .figure, .App.attending .autoparty {
+.App.attending, .App.attending .figure {
   background-color: green;
 }
 
-.App.hosting, .App.hosting .figure, .App.hosting .autoparty {
-  background-color: #e0a41d;
+.App.hosting, .App.hosting .figure {
+  background-color: #e0b01d;
 }
 
-.App.disconnected, .App.disconnected .figure, .App.disconnected .autoparty {
-  background-color: darkred;
+.App.disconnected, .App.disconnected .figure {
+  background-color: #333333;
 }
 
 .bar {
@@ -76,12 +76,16 @@ button.invisibutton {
 }
 
 .bar-menu {
-  color: whitesmoke;
+  color: dimgrey;
   position: fixed;
   top: 5px;
   left: 5px;
   z-index: 5;
   padding: 10px;
+}
+
+.bar-menu:focus {
+  color: whitesmoke;
 }
 
 .bar-menu .icon {
@@ -120,7 +124,7 @@ button.invisibutton {
   right: 50px;
   font-size: large;
   z-index: 4;
-  padding: 13px 7px;
+  padding: 13px 13px;
   color: whitesmoke;
 }
 
@@ -151,6 +155,7 @@ button.invisibutton {
 
 .bar-list .loader {
   height: 1px;
+  background-color: #333333 !important;
 }
 
 .bar-list > ol {
@@ -549,7 +554,6 @@ li:nth-child(even) .actions {
   font-size: large;
   z-index: 4;
   cursor: pointer;
-  background-color: khaki;
   background-repeat: no-repeat;
   background-position: top 10px right 10px;
   background-origin: content-box;
@@ -581,25 +585,20 @@ li:nth-child(even) .actions {
 }
 
 .autoparty {
+  transition-property: background-color, width, top;
+  transition-duration: 0.4s;
   position: fixed;
   top: 50px;
   right: 0;
   z-index: 1;
   border-radius: 0 0 10px 10px;
   width: 33%;
-  transition-property: background-color, width;
-  transition-duration: 0.5s;
-}
-
-.autoparty.not-collapsed {
-  background-color: khaki;
   padding: 15px;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .autoparty.collapsed {
-  background-color: beige;
-  text-align: right;
-  padding: 0;
+  top: -7em;
 }
 
 .autoparty .dismiss-button {
@@ -654,9 +653,11 @@ li:nth-child(even) .actions {
 }
 
 .command {
-  padding: 5px;
+  padding: 12px;
   line-height: 150%;
   cursor: pointer;
+  font-size: large;
+  border: 0;
 }
 
 .fuzz--match {

@@ -6,6 +6,44 @@ import propTypes from '../helpers/propTypes'
 
 const isServer = typeof window === 'undefined'
 
+function Pulser (pulse) {
+  return {
+    delay: 30000,
+    start: function (delay) {
+      this.timestamp = Date.now()
+      this.timeout = global.setTimeout(() => {
+        pulse()
+        this.start(this.delay)
+      }, delay || this.delay)
+    },
+    stop: function () {
+      if (this.timeout) {
+        global.clearTimeout(this.timeout)
+      }
+      if (this.timestamp) {
+        this.timestamp = null
+      }
+    },
+    setDelay: function (newDelay) {
+      if (this.timeout && this.timestamp) {
+        global.clearTimeout(this.timeout)
+        const now = Date.now()
+        const diff = now - this.timestamp
+
+        if (diff > newDelay) {
+          pulse()
+          this.start(newDelay)
+        } else {
+          this.start(newDelay - diff)
+        }
+      } else {
+        this.start(newDelay)
+      }
+      this.delay = newDelay
+    }
+  }
+}
+
 class Party extends Component {
   constructor (props) {
     super(props)
@@ -24,6 +62,12 @@ class Party extends Component {
     this.checkPartyName = this.checkPartyName.bind(this)
     this.onGlobalFocus = this.onGlobalFocus.bind(this)
     this.button = null
+    this.pulse = new Pulser(() => {
+      if (global.document.hasFocus()) {
+        // TODO on hydrate if document didn't have focus at last pulse?
+        this.hydrate()
+      }
+    })
   }
 
   componentDidMount () {
@@ -145,15 +189,6 @@ class Party extends Component {
   //   parties[data.name].guests[guestKey].emit('state', data.state)
   // })
 
-  startPulse () {
-    this.pulse = setInterval(() => {
-      if (document.hasFocus()) {
-        // TODO on hydrate if document didn't have focus at last pulse?
-        this.hydrate()
-      }
-    }, 3000)
-  }
-
   startListening () {
     this.props.registerMiddleware(this.middleware)
 
@@ -161,10 +196,11 @@ class Party extends Component {
       window.addEventListener('focus', this.onGlobalFocus, false)
     }
 
-    this.startPulse()
+    this.pulse.start(30000)
 
     this.props.socket.on('connect', () => {
       console.log('SOCKET connect')
+      this.pulse.setDelay(30000)
       this.props.dispatch({
         type: 'Party:connected',
         value: true
@@ -174,6 +210,7 @@ class Party extends Component {
 
     this.props.socket.on('connect_error', () => {
       console.log('SOCKET connect_error')
+      this.pulse.setDelay(1000)
       this.props.dispatch({
         type: 'Party:connected',
         value: false
@@ -181,6 +218,7 @@ class Party extends Component {
     })
 
     this.props.socket.on('reconnect_failed', () => {
+      this.pulse.setDelay(1000)
       console.log('SOCKET reconnect_failed')
       this.props.dispatch({
         type: 'Party:connected',
@@ -190,6 +228,7 @@ class Party extends Component {
 
     this.props.socket.on('disconnect', () => {
       console.log('SOCKET disconnect')
+      this.pulse.setDelay(1000)
       this.props.dispatch({
         type: 'Party:connected',
         value: false
@@ -230,9 +269,7 @@ class Party extends Component {
       window.removeEventListener('focus', this.onGlobalFocus, false)
     }
 
-    if (this.pulse) {
-      clearInterval(this.pulse)
-    }
+    this.pulse.stop()
 
     // TODO test that this really removes all listeners of all events
     this.props.socket.removeAllListeners()
@@ -404,45 +441,41 @@ class Party extends Component {
           //       {title}
           //     </p>
           //   )
-          this.props.collapsed
-            ? null
-            : (
-              <form onSubmit={this.onSubmit}>
-                <div className='dismiss-button' onClick={this.props.onClickCollapsed}>
-                  <img src='/static/x.svg' title='dismiss' alt='dismiss' />
-                </div>
-                <h3>
-                  {title}
-                </h3>
-                <input
-                  type='text'
-                  placeholder={this.props.placeholder}
-                  autoFocus={this.props.autoFocus}
-                  onChange={this.onChange}
-                  onKeyDown={this.onKeyDown}
-                  disabled={partying}
-                  ref={(ref) => {
-                    // Using this instead of defaultValue since the initial render is done on the server where we don't have this value yet
-                    if (ref) {
-                      ref.value = this.props.name
-                    }
-                    this.field = ref
-                    this.props.onFieldRef(ref)
-                  }}
-                />
-                <button disabled={!isServer && (this.props.checking || this.props.name === '')}
-                  onClick={this.onSubmit}
-                  ref={(el) => {
-                    this.button = el
-                    this.props.onButtonRef(el)
-                  }}
-                >
-                  {
-                    this.props.dict.get(`party.${label}`)
-                  }
-                </button>
-              </form>
-            )
+          <form onSubmit={this.onSubmit}>
+            {/* <div className='dismiss-button' onClick={this.props.onClickCollapsed}>
+              <img src='/static/x.svg' title='dismiss' alt='dismiss' />
+            </div> */}
+            <h3>
+              {title}
+            </h3>
+            <input
+              type='text'
+              placeholder={this.props.placeholder}
+              autoFocus={this.props.autoFocus}
+              onChange={this.onChange}
+              onKeyDown={this.onKeyDown}
+              disabled={partying}
+              ref={(ref) => {
+                // Using this instead of defaultValue since the initial render is done on the server where we don't have this value yet
+                if (ref) {
+                  ref.value = this.props.name
+                }
+                this.field = ref
+                this.props.onFieldRef(ref)
+              }}
+            />
+            <button disabled={!isServer && (this.props.checking || this.props.name === '')}
+              onClick={this.onSubmit}
+              ref={(el) => {
+                this.button = el
+                this.props.onButtonRef(el)
+              }}
+            >
+              {
+                this.props.dict.get(`party.${label}`)
+              }
+            </button>
+          </form>
         }
       </div>
     )

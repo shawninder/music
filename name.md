@@ -9,6 +9,12 @@
 - our
 - we
 - us
+- common
+- fam
+- crew
+- peeps
+- peers
+-
 
 ### Play Queue
 - playlist
@@ -19,6 +25,13 @@
 - up next
 - playing next
 - next
+- waves
+- sound
+- frequency
+- volume
+- treble
+- bass
+- crowd
 
 ### Context
 - party
@@ -51,7 +64,7 @@
 - Playliss
 - Plylist
 - Playlister
-- Playlistogether
+- PlaylisTogether
 - ourplaylist
 - weplaylist
 - playlistus
@@ -62,6 +75,48 @@
 - upnext
 - nextup
 - Nexup
+- Waves
+- SoundWaves
+- ConstructiveInterference
+- CommonWaves
+- CommonRoom
+- Frequency
+- CommonBase
+- BaseTreble
+- MusicBuddies
+- MusicCrew
+- MuzCrew
+- Muzicrew
+- ClefTunes
+- CrewTunes
+- Gezelig
+- Gezelligheid
+- PlayTogether
+- PlayPeers
+- PeerPlay
+- PeerPlaylist
+- ShareATune
+- ShareAListen
+- CrowdBroad
+- CrowdControlled
+- costation
+- boothpass
+- ourqueue
+- myqueue
+- queue
+- boothpass.vip
+- TunesCrew
+- TunesFolk
+- queuepooling
+- tunespooling
+- tunepooling
+- coQing
+- ourQ
+- tunesharing
+- TuneFam
+- TrackFam
+- JoinPlaylist
+-
 
 ## Interesting domain names
 - .app
@@ -81,10 +136,24 @@
 - .life
 
 ## Available urls ($/month)
-- wedj.in       (13) Allow guests to wedge songs into your playlist
-- gimmedj.com   (13) (.org,.net 16, .app 22)
-- playlist.city (14) Name your city and let visitors mess with the playlist
-- massplay.org  (16) Give the masses control of the playlist
-- wedj.it       (17) Special requests? Wedge it in the playlist
-- djus.app      (22) Collaborative DJ App by and for us.
-- massplay.app  (22) Give the masses control of the playlist
+- joinplaylist.tech 5$  Join the playlist and insert your favourite tunes!
+- wedj.in 13$           Allow guests to wedge songs into your playlist
+- gimmedj.com 13$       (.org,.net 16, .app 22)
+- playlist.city 14$     Name your city and let visitors mess with the playlist
+- massplay.org 16$      Give the masses control of the playlist
+- wedj.it 17$           Special requests? Wedge it in the playlist
+- djus.app 22$          Collaborative DJ App by and for us.
+- massplay.app 22$      Give the masses control of the playlist
+- imotepmusic.com 13$
+- imoteplay.com 13$
+- imoteptunes.com 13$
+- imotep.ca 17$
+- imoteptu.es 23$
+- imoteptunes.cloud 9$
+- imotep.cloud 9$
+- tunein.cloud
+- tune-in.cloud
+- crewtunes.org
+- tunesharing.live 27$
+- joinplaylist.tech 5$
+- justcrowdsplay.com 13$

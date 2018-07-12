@@ -168,6 +168,9 @@ class List extends Component {
   }
 
   render () {
+    const classes = this.props.className.split(' ')
+    classes.push('list')
+    classes.push(this.state.collapsed ? 'collapsed' : 'not-collapsed')
     const items = this.props.items.map((item, idx) => {
       const itemClone = cloneDeep(item)
       delete itemClone.Component
@@ -213,9 +216,6 @@ class List extends Component {
       }
     })
     const loader = <li className='loader' ref={(el) => { this.loader = el }} />
-    const classes = this.props.className.split(' ')
-    classes.push('list')
-    classes.push(this.state.collapsed ? 'collapsed' : 'not-collapsed')
 
     const dropZone = this.props.areDraggable
       ? (
