@@ -197,6 +197,7 @@ class App extends Component {
     this.onDragUpdate = this.onDragUpdate.bind(this)
     this.onDragEnd = this.onDragEnd.bind(this)
     this.figureClicked = this.figureClicked.bind(this)
+    this.onFocus = this.onFocus.bind(this)
     this.play = this.play.bind(this)
     this.togglePlaying = this.togglePlaying.bind(this)
     this.playNext = this.playNext.bind(this)
@@ -308,6 +309,9 @@ class App extends Component {
   keyDown (event) {
     if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
       this.bar.focus()
+      this.dispatch({
+        type: 'App:collapseParty'
+      })
     }
     if (event.keyCode === 32 && !event.metaKey && event.ctrlKey && !event.shiftKey) { // ctrl+space
       event.preventDefault()
@@ -499,18 +503,35 @@ class App extends Component {
   }
 
   figureClicked (event) {
-    event.stopPropagation()
-    if (this.props.app.partyCollapsed) {
-      this.dispatch({
-        type: 'Bar:setItems',
-        data: [],
-        hasMore: false,
-        nextPageToken: null,
-        areCommands: true
-      })
-    }
+    event.stopPropagation() // Avoid from letting the global click listeners from collapsing the party
+    // if (this.props.app.partyCollapsed) {
+    //   this.dispatch({
+    //     type: 'Bar:setItems',
+    //     data: [],
+    //     hasMore: false,
+    //     nextPageToken: null,
+    //     areCommands: true
+    //   })
+    //   this.dispatch({
+    //     type: 'App:showParty'
+    //   })
+    // } else {
+    //   this.dispatch({
+    //     type: 'App:collapseParty'
+    //   })
+    // }
+  }
+
+  onFocus (event) {
     this.dispatch({
-      type: 'App:toggleParty'
+      type: 'Bar:setItems',
+      data: [],
+      hasMore: false,
+      nextPageToken: null,
+      areCommands: true
+    })
+    this.dispatch({
+      type: 'App:showParty'
     })
   }
 
@@ -921,6 +942,7 @@ class App extends Component {
           <div
             className={figureClasses.join(' ')}
             onClick={this.figureClicked}
+            onFocus={this.onFocus}
             tabIndex='0'
           >
             {/* <img src='/static/party-hosting.svg' alt='hosting' title='hosting' /> */}
@@ -942,11 +964,6 @@ class App extends Component {
               gotSlice={this.gotSlice}
               gotDispatch={this.gotDispatch}
               collapsed={this.props.app.partyCollapsed}
-              onClickCollapsed={() => {
-                this.dispatch({
-                  type: 'App:toggleParty'
-                })
-              }}
               onFieldRef={(el) => {
                 this.partyField = el
               }}

@@ -435,16 +435,7 @@ class Party extends Component {
         event.stopPropagation() // Avoid dismissing dialog when clicking inside it
       }}>
         {
-          // this.props.collapsed
-          //   ? (
-          //     <p onClick={this.props.onClickCollapsed}>
-          //       {title}
-          //     </p>
-          //   )
           <form onSubmit={this.onSubmit}>
-            {/* <div className='dismiss-button' onClick={this.props.onClickCollapsed}>
-              <img src='/static/x.svg' title='dismiss' alt='dismiss' />
-            </div> */}
             <h3>
               {title}
             </h3>

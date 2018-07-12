@@ -21,6 +21,9 @@ export default function appReducer (state = {}, action) {
     case 'App:collapseParty':
       newState.partyCollapsed = true
       break
+    case 'App:showParty':
+      newState.partyCollapsed = false
+      break
     case 'App:openParty':
       newState.partyCollapsed = false
       break
