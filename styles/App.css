@@ -73,7 +73,6 @@ button.invisibutton {
   z-index: 3;
   height: 50px;
   width: 100%;
-  /* background: whitesmoke; */
 }
 
 .bar-menu {
@@ -169,7 +168,7 @@ button.invisibutton {
 
 .App.dragging .bar-list {
   box-shadow: 0px 12px 15px 0px rgb(0,0,0,0.0);
-  background: rgba(50, 50, 50, .05);
+  background: rgba(50, 50, 50, 0);
 }
 
 .App .bar-list li {
@@ -331,11 +330,11 @@ button.invisibutton {
 }
 
 li:nth-child(odd) .actions {
-  background: #eeeeee;
+  background-color: #eeeeee;
 }
 
-li:nth-child(odd) .actions {
-  background: whitesmoke;
+li:nth-child(even) .actions {
+  background-color: whitesmoke;
 }
 
 .actions li div {
@@ -456,9 +455,15 @@ li:nth-child(odd) .actions {
 .controls button {
   padding: 10px 0;
   border: 0;
-  color: whitesmoke;
   background: transparent;
   font-weight: bold;
+  color: whitesmoke;
+  transition-property: color;
+  transition-duration: 0.5s;
+}
+
+.App.disconnected .controls button {
+  color: dimgrey;
 }
 
 .controls-buttons button svg {
@@ -468,13 +473,25 @@ li:nth-child(odd) .actions {
 .seek-bar {
   grid-area: seekBar;
   border: 1px solid #000000;
-  background: whitesmoke;
   cursor: pointer;
+  background-color: whitesmoke;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+}
+
+.App.disconnected .seek-bar {
+  background-color: dimgrey;
 }
 
 .seek-bar--played {
   height: 10px;
-  background: red;
+  background-color: red;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+}
+
+.App.disconnected .seek-bar--played {
+  background-color: darkred;
 }
 
 .seek-bar--handle {
