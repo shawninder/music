@@ -5,13 +5,13 @@
 ### Collaboration
 - group
 - crowd
+- crew
 - together
 - our
 - we
 - us
 - common
 - fam
-- crew
 - peeps
 - peers
 -
@@ -99,7 +99,7 @@
 - ShareAListen
 - CrowdBroad
 - CrowdControlled
-- costation
+- co-station
 - boothpass
 - ourqueue
 - myqueue
