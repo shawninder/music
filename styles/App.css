@@ -564,10 +564,10 @@ li:nth-child(even) .actions {
 }
 
 .figure.disconnected {
-  background-image: url('/static/party-disconnected.svg');
+  background-image: url('/static/asleep.svg');
 }
 .figure.connected {
-  background-image: url('/static/party-connected.svg');
+  background-image: url('/static/awake.svg');
 }
 .figure.hosting.disconnected {
   background-image: url('/static/guilty.svg');
@@ -582,11 +582,11 @@ li:nth-child(even) .actions {
   background-image: url('/static/glad.svg')
 }
 .figure.attending.host-disconnected {
-  background-image: url('/static/party-attending-host-disconnected.svg')
+  background-image: url('/static/sad.svg')
 }
 
 .autoparty {
-  transition-property: background-color, width, top;
+  transition-property: background-color, width, top, opacity;
   transition-duration: 0.4s;
   position: fixed;
   top: 50px;
@@ -595,10 +595,12 @@ li:nth-child(even) .actions {
   border-radius: 0 0 10px 10px;
   width: 33%;
   padding: 15px;
+  opacity: 1;
 }
 
 .autoparty.collapsed {
   top: -7em;
+  opacity: 0;
 }
 
 .autoparty .dismiss-button {
