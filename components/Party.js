@@ -89,7 +89,6 @@ class Party extends Component {
           name
         }
         const onResponse = (res) => {
-          console.log('check party name response', res)
           if (res.name === name && name === this.props.name) {
             this.props.dispatch({
               type: 'Party:exists',

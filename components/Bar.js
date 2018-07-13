@@ -337,6 +337,8 @@ class Bar extends Component {
               areDraggable={this.props.areCommands !== true}
               loadMore={this.props.loadMore}
               hasMore={this.props.hasMore}
+              loadingTxt={this.props.loadingTxt}
+              maxReachedTxt={this.props.maxReachedTxt}
             />
           )
           : null
@@ -369,7 +371,7 @@ const props = [
   { name: 'onResult', type: PropTypes.object, val: {} },
   { name: 'areCommands', type: PropTypes.bool, val: true },
   { name: 'hasMore', type: PropTypes.bool, val: false },
-  { name: 'loadMore', type: PropTypes.func, val: () => { console.log('loadMore doing nothing') } }
+  { name: 'loadMore', type: PropTypes.func, val: () => {} }
 ]
 
 Bar.defaultProps = defaultProps(props)

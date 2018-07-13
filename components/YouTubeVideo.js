@@ -44,7 +44,7 @@ class YouTubeVideo extends Component {
               }}
               className='art-img'
               src={this.props.data.data.snippet.thumbnails.default.url}
-              alt={`Thumnail for ${this.props.data.data.snippet.title}`}
+              /* TODO alt={} */
               {...this.props.dragHandleProps}
             />
           </div>

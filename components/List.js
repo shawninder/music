@@ -220,7 +220,7 @@ class List extends Component {
         )
       }
     })
-    const loaderContents = this.props.items.length < this.props.maxResults ? 'Loading...' : 'Please refine your search'
+    const loaderContents = this.props.items.length < this.props.maxResults ? this.props.loadingTxt : this.props.maxReachedTxt
     const loader = <li className='loader' tabIndex='0' ref={(el) => { this.loader = el }}>{loaderContents}</li>
 
     const dropZone = this.props.areDraggable
@@ -296,7 +296,9 @@ const props = [
   { name: 'areDraggable', type: PropTypes.bool, val: false },
   { name: 'hasMore', type: PropTypes.bool, val: false },
   { name: 'loadMore', type: PropTypes.func, val: () => {} },
-  { name: 'maxResults', type: PropTypes.number, val: 500 }
+  { name: 'maxResults', type: PropTypes.number, val: 500 },
+  { name: 'loadingTxt', type: PropTypes.string, val: 'Loading...' },
+  { name: 'maxReachedTxt', type: PropTypes.string, val: 'Please refine your search' }
 ]
 
 List.defaultProps = defaultProps(props)
