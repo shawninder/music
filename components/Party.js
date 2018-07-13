@@ -403,7 +403,7 @@ class Party extends Component {
     if (this.props.name !== '') {
       if (partying) {
         if (this.props.hosting) {
-          title = `${this.props.dict.get('party.hosting')} "${this.props.name}"`
+          title = `${this.props.dict.get('party.hosting')}`
           label = 'stop'
         } else {
           title = `${this.props.dict.get('party.attending')} "${this.props.name}"`

@@ -10,7 +10,7 @@ export default class MyDocument extends Document {
     return { html, head, errorHtml, chunks, headers, acceptLanguage }
   }
   render () {
-    const lang = guessLang(['en', 'fr', 'es'], this.props.acceptLanguage, global.navigator)
+    const lang = guessLang(['en', 'fr'], this.props.acceptLanguage, global.navigator)
     return (
       <html lang={lang}>
         <Head>

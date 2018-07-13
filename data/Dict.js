@@ -30,7 +30,7 @@ export function guessLang (avail, acceptLanguage, navigator) {
           guess = avail[0]
         }
       }
-      // guess = 'es'
+      // guess = 'en'
     }
   }
   return guess

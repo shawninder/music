@@ -1,86 +1,67 @@
 {
-  "bar.placeholder": {
-    "en": "Search",
-    "fr": "Recherche",
-    "es": "Buscar"
-  },
-  "party.h1": {
-    "en": "Party Mode",
-    "fr": "Mode Fête",
-    "es": "Modo Fiesta"
-  },
-  "party.p": {
-    "en": "Share control of the play queue!",
-    "fr": "Partagez le contrôle de la liste de lecture!",
-    "es": "¡Comparte el control de la lista de reproducción!"
-  },
-  "party.placeholder": {
-    "en": "Party Name",
-    "fr": "Nom de la Fête",
-    "es": "Nombre de la Fiesta"
-  },
-  "party.default": {
-    "en": "Party!",
-    "fr": "Fêter!",
-    "es": "Fiesta!"
-  },
-  "party.join": {
-    "en": "Join Party",
-    "fr": "Joindre la fête",
-    "es": "Celebrar con ellos"
-  },
-  "party.start": {
-    "en": "Start Party",
-    "fr": "Commencer la fête",
-    "es": "Commencar la Celebration"
-  },
-  "party.leave": {
-    "en": "Leave",
-    "fr": "Quitter",
-    "es": "Salir"
-  },
-  "party.stop": {
-    "en": "End",
-    "fr": "Fini",
-    "es": "Terminado"
-  },
-  "party.checking": {
-    "en": "...",
-    "fr": "...",
-    "es": "..."
-  },
-  "party.attending": {
-    "en": "Attending",
-    "fr": "Vous êtes dans une fête nommée ",
-    "es": "Asistir a una fiesta llamada "
-  },
-  "party.hosting": {
-    "en": "Hosting",
-    "fr": "Hôte"
-  },
-  "queue.enqueue": {
+  "actions.enqueue": {
     "en": "play last",
     "fr": "ajouter"
   },
-  "queue.playNext": {
+  "actions.playNext": {
     "en": "play next",
     "fr": "jouer ci-après"
   },
-  "queue.playNow": {
+  "actions.playNow": {
     "en": "play now",
     "fr": "jouer maintenant"
   },
-  "queue.jumpTo": {
-    "en": "jump to this track",
+  "actions.jumpTo": {
+    "en": "jump here",
     "fr": "sauter ici"
   },
-  "queue.jumpBackTo": {
-    "en": "jump back to this track",
+  "actions.jumpBackTo": {
+    "en": "back to here",
     "fr": "revenir ici"
   },
-  "queue.remove": {
+  "actions.remove": {
     "en": "remove",
     "fr": "retirer"
+  },
+  "bar.placeholder": {
+    "en": "Search",
+    "fr": "Recherche"
+  },
+  "party.placeholder": {
+    "en": "name",
+    "fr": "nom"
+  },
+  "party.default": {
+    "en": "Playlist",
+    "fr": "Liste de lecture"
+  },
+  "party.join": {
+    "en": "Join",
+    "fr": "Joindre"
+  },
+  "party.start": {
+    "en": "Create",
+    "fr": "Créer"
+  },
+  "party.leave": {
+    "en": "Leave",
+    "fr": "Quitter"
+  },
+  "party.stop": {
+    "en": "End",
+    "fr": "Terminer"
+  },
+  "party.checking": {
+    "en": "...",
+    "fr": "..."
+  },
+  "party.attending": {
+    "en": "Playlist (attending)",
+    "fr": "Liste de lecture (invité)"
+  },
+  "party.hosting": {
+    "en": "Playlist (hosting)",
+    "fr": "Liste de lecture (hôte)"
   },
   "queue.playingNow.title": {
     "en": "Playing Now",
@@ -88,12 +69,10 @@
   },
   "history.title": {
     "en": "History",
-    "fr": "Historique",
-    "es": "Historia"
+    "fr": "Historique"
   },
   "upnext.title": {
     "en": "Up Next",
-    "fr": "À venir",
-    "es": "Siguientes"
+    "fr": "À venir"
   }
 }

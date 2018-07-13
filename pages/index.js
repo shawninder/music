@@ -40,7 +40,7 @@ const defaultInitialState = {
   },
   dict: {
     txt,
-    availLangs: ['en', 'fr', 'es']
+    availLangs: ['en', 'fr']
   },
   bar: {
     query: '',

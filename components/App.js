@@ -873,28 +873,28 @@ class App extends Component {
                 enqueue: {
                   targetIdx: state.queue.upNext.length + 1,
                   go: this.enqueue,
-                  txt: this.dict.get('queue.enqueue'),
+                  txt: this.dict.get('actions.enqueue'),
                   icon: enqueueIcon,
                   cdn
                 },
                 playNext: {
                   targetIdx: 1,
                   go: this.playNext,
-                  txt: this.dict.get('queue.playNext'),
+                  txt: this.dict.get('actions.playNext'),
                   icon: nextIcon,
                   cdn
                 },
                 play: {
                   targetIdx: 0,
                   go: this.play,
-                  txt: this.dict.get('queue.playNow'),
+                  txt: this.dict.get('actions.playNow'),
                   icon: playNowIcon,
                   cdn
                 },
                 jumpBackTo: {
                   targetIdx: 0,
                   go: this.jumpBackTo,
-                  txt: this.dict.get('queue.jumpBackTo'),
+                  txt: this.dict.get('actions.jumpBackTo'),
                   icon: jumpBackToIcon,
                   cdn: cdnNeg
                 },
@@ -908,7 +908,7 @@ class App extends Component {
                 remove: {
                   targetIdx: null,
                   go: this.dequeue,
-                  txt: this.dict.get('queue.remove'),
+                  txt: this.dict.get('actions.remove'),
                   icon: dequeueIcon,
                   cdn: cdnQueued
                 }
@@ -987,13 +987,13 @@ class App extends Component {
                     jumpTo: {
                       targetIdx: 0,
                       go: this.jumpBackTo,
-                      txt: this.dict.get('queue.jumpBackTo'),
+                      txt: this.dict.get('actions.jumpBackTo'),
                       icon: jumpBackToIcon
                     },
                     remove: {
                       targetIdx: null,
                       go: this.dequeue,
-                      txt: this.dict.get('queue.remove'),
+                      txt: this.dict.get('actions.remove'),
                       icon: dequeueIcon
                     }
                   }
@@ -1036,13 +1036,13 @@ class App extends Component {
                     jumpTo: {
                       targetIdx: 0,
                       go: this.jumpTo,
-                      txt: this.dict.get('queue.jumpTo'),
+                      txt: this.dict.get('actions.jumpTo'),
                       icon: jumpToIcon
                     },
                     remove: {
                       targetIdx: null,
                       go: this.dequeue,
-                      txt: this.dict.get('queue.remove'),
+                      txt: this.dict.get('actions.remove'),
                       icon: dequeueIcon
                     }
                   }
