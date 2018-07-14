@@ -9,50 +9,56 @@ import youtubeUrl from '../helpers/youtubeUrl.js'
 
 class Player extends Component {
   render () {
+    const classes = ['Player']
+    if (!this.props.show) {
+      classes.push('hidden')
+    }
     return (
-      <ReactPlayer
-        ref={this.props.onRef}
-        className='Player'
-        url={this.props.playingNow && this.props.playingNow.data && this.props.playingNow.data.id && youtubeUrl(this.props.playingNow.data)}
-        controls
-        playing={this.props.playing}
-        onPlay={() => {
-          this.props.dispatch({
-            type: 'Player:setPlaying',
-            playing: true
-          })
-        }}
-        onProgress={(progress) => {
-          this.props.dispatch({
-            type: 'Player:progress',
-            data: progress
-          })
-        }}
-        onPause={() => {
-          this.props.dispatch({
-            type: 'Player:setPlaying',
-            playing: false
-          })
-        }}
-        onDuration={(seconds) => {
-          this.props.dispatch({
-            type: 'Player:duration',
-            seconds
-          })
-        }}
-        onSeek={(seconds) => {
-          this.props.dispatch({
-            type: 'Player:seek',
-            seconds
-          })
-        }}
-        onEnded={this.props.onEnded}
-        config={{
-          youtube: {
-            start: 0
-          }
-        }}
-      />
+      <div>
+        <ReactPlayer
+          ref={this.props.onRef}
+          className={classes.join(' ')}
+          url={this.props.playingNow && this.props.playingNow.data && this.props.playingNow.data.id && youtubeUrl(this.props.playingNow.data)}
+          controls
+          playing={this.props.playing}
+          onPlay={() => {
+            this.props.dispatch({
+              type: 'Player:setPlaying',
+              playing: true
+            })
+          }}
+          onProgress={(progress) => {
+            this.props.dispatch({
+              type: 'Player:progress',
+              data: progress
+            })
+          }}
+          onPause={() => {
+            this.props.dispatch({
+              type: 'Player:setPlaying',
+              playing: false
+            })
+          }}
+          onDuration={(seconds) => {
+            this.props.dispatch({
+              type: 'Player:duration',
+              seconds
+            })
+          }}
+          onSeek={(seconds) => {
+            this.props.dispatch({
+              type: 'Player:seek',
+              seconds
+            })
+          }}
+          onEnded={this.props.onEnded}
+          config={{
+            youtube: {
+              start: 0
+            }
+          }}
+        />
+      </div>
     )
   }
 }

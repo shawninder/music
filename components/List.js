@@ -239,6 +239,7 @@ class List extends Component {
                 key={`${classes[0]}-list-droppable`}
               >
                 {items}
+                {(items.length === 0) ? this.props.empty : null}
                 {(this.props.hasMore && items.length > 0) ? loader : null}
                 {droppableProvided.placeholder}
               </ol>
@@ -257,18 +258,19 @@ class List extends Component {
           key={`${classes[0]}-list-nodrop`}
         >
           {items}
+          {(items.length === 0) ? this.props.empty : null}
           {(this.props.hasMore && items.length > 0) ? loader : null}
         </ol>
       )
     return (
       <div className={classes.join(' ')}>
-        {/* TODO handle `this.props.collapsible && !this.props.title` */}
-        {this.props.title
+        {/* TODO handle `this.props.collapsible && !this.props.showLabel` */}
+        {(this.props.showLabel && this.props.hideLabel)
           ? (
             <h3
               onClick={this.toggleCollapsed}
             >
-              {this.props.title}
+              {this.state.collapsed ? this.props.showLabel : this.props.hideLabel}
             </h3>
           ) : null
         }
@@ -298,7 +300,8 @@ const props = [
   { name: 'loadMore', type: PropTypes.func, val: () => {} },
   { name: 'maxResults', type: PropTypes.number, val: 500 },
   { name: 'loadingTxt', type: PropTypes.string, val: 'Loading...' },
-  { name: 'maxReachedTxt', type: PropTypes.string, val: 'Please refine your search' }
+  { name: 'maxReachedTxt', type: PropTypes.string, val: 'Please refine your search' },
+  { name: 'empty', type: PropTypes.element, val: <li className='emptyPlaceholder' /> }
 ]
 
 List.defaultProps = defaultProps(props)

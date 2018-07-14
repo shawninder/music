@@ -210,6 +210,10 @@ html, body, #__next, .App {
   max-width: 100%;
 }
 
+.Player.hidden {
+  /* display: none; */
+}
+
 .youtube-result {
   display: grid;
   grid-template-columns: 100px auto 50px;
@@ -420,7 +424,12 @@ li:nth-child(even) .actions {
   color: whitesmoke;
 }
 
-.playingNow .youtube-result {
+.emptyDropZone {
+  line-height: 3em;
+  text-align: center;
+}
+
+.playingNow {
   background: black;
 }
 
@@ -526,7 +535,7 @@ li:nth-child(even) .actions {
 }
 
 .queue {
-  margin-bottom: 100px;
+  /* margin-bottom: 100px; */
 }
 
 .queue h3 {

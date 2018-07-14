@@ -560,7 +560,7 @@ class App extends Component {
     setTimeout(this.updateBarItems, 10)
   }
 
-  togglePlaying (data) {
+  togglePlaying () {
     const state = this.getPartyState()
     if (state.queue.now.key) {
       const newPlaying = !state.player.playing
@@ -839,13 +839,16 @@ class App extends Component {
           data: state.queue.now.data,
           inQueue: true,
           queueIndex: 0
-        }} />
+        }} onClick={this.togglePlaying} />
       )
       : (
         <Droppable droppableId={`droppable-playingNow`}>
           {(droppableProvided, snapshot) => {
             return (
-              <ol ref={droppableProvided.innerRef} />
+              <ol ref={droppableProvided.innerRef} key={`playingNow-droppable`}>
+                <li className='emptyDropZone'>{this.dict.get('queue.playingNow.zone')}</li>
+                {droppableProvided.placeholder}
+              </ol>
             )
           }}
         </Droppable>
@@ -944,6 +947,8 @@ class App extends Component {
             }}
             autoFocus
             decorateItem={this.decorateBarItem}
+            loadingTxt={this.dict.get('bar.loading')}
+            maxReachedTxt={this.dict.get('bar.maxReached')}
           />
           <div
             className={figureClasses.join(' ')}
@@ -979,7 +984,8 @@ class App extends Component {
             />
             <div className='queue'>
               <List
-                title={`${this.dict.get('history.title')} (${state.queue.history.length})`}
+                showLabel={`${this.dict.get('queue.history.show')} (${state.queue.history.length})`}
+                hideLabel={`${this.dict.get('queue.history.hide')} (${state.queue.history.length})`}
                 className={historyClasses.join(' ')}
                 items={state.queue.history}
                 defaultComponent={makeResultComponent({
@@ -1008,27 +1014,23 @@ class App extends Component {
                 areDraggable
               />
               <section className={playingNowClasses.join(' ')}>
-                <h3>
+                {/* <h3>
                   {this.dict.get('queue.playingNow.title')}
-                </h3>
+                </h3> */}
                 {playingNowZone}
-                {state.queue.now.key && !this.props.party.attending
-                  ? (
-                    <Player
-                      onRef={(playerEl) => {
-                        this.playerEl = playerEl
-                      }}
-                      playingNow={state.queue.now}
-                      playing={state.player.playing}
-                      dispatch={this.dispatch}
-                      onEnded={this.onTrackEnd}
-                    />
-                  )
-                  : null
-                }
+                <Player
+                  onRef={(playerEl) => {
+                    this.playerEl = playerEl
+                  }}
+                  playingNow={state.queue.now}
+                  playing={state.player.playing}
+                  dispatch={this.dispatch}
+                  onEnded={this.onTrackEnd}
+                  showing={state.queue.now.key && !this.props.party.attending}
+                />
               </section>
               <List
-                title={`${this.dict.get('upnext.title')} (${state.queue.upNext.length})`}
+                // title={`${this.dict.get('upnext.title')} (${state.queue.upNext.length})`}
                 className={upNextClasses.join(' ')}
                 items={state.queue.upNext}
                 defaultComponent={makeResultComponent({
@@ -1051,6 +1053,7 @@ class App extends Component {
                 }}
                 collapsible
                 areDraggable
+                empty={<li key='upNext-emptyDropZone'><div className='emptyDropZone'>{this.dict.get('queue.upNext.zone')}</div></li>}
               />
             </div>
           </div>

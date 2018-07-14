@@ -136,6 +136,8 @@ function makeResultComponent (opts) {
       event.stopPropagation()
       if (!this.props.data.inQueue) {
         options.actions.enqueue.go(this.props.data)
+      } else if (this.props.onClick) {
+        this.props.onClick(event)
       } else {
         this.onClick(event)
       }

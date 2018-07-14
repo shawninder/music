@@ -27,6 +27,14 @@
     "en": "Search",
     "fr": "Recherche"
   },
+  "bar.loading": {
+    "en": "Loading...",
+    "fr": "Chargement..."
+  },
+  "bar.maxReached": {
+    "en": "Refine your search",
+    "fr": "Affinez votre recherche"
+  },
   "party.placeholder": {
     "en": "name",
     "fr": "nom"
@@ -67,9 +75,21 @@
     "en": "Playing Now",
     "fr": "En Cours"
   },
-  "history.title": {
-    "en": "History",
-    "fr": "Historique"
+  "queue.playingNow.zone": {
+    "en": "Drop here to play now",
+    "fr": "Déposer ici pour jouer immédiatement"
+  },
+  "queue.upNext.zone": {
+    "en": "Drop here to add to playlist",
+    "fr": "Déposer ici pour ajouter à la liste"
+  },
+  "queue.history.show": {
+    "en": "view history",
+    "fr": "voir l'historique"
+  },
+  "queue.history.hide": {
+    "en": "hide history",
+    "fr": "cacher l'historique"
   },
   "upnext.title": {
     "en": "Up Next",
