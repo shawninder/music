@@ -1018,16 +1018,18 @@ class App extends Component {
                   {this.dict.get('queue.playingNow.title')}
                 </h3> */}
                 {playingNowZone}
-                <Player
-                  onRef={(playerEl) => {
-                    this.playerEl = playerEl
-                  }}
-                  playingNow={state.queue.now}
-                  playing={state.player.playing}
-                  dispatch={this.dispatch}
-                  onEnded={this.onTrackEnd}
-                  showing={state.queue.now.key && !this.props.party.attending}
-                />
+                {(state.queue.now.key && !this.props.party.attending)
+                  ? (
+                    <Player
+                      onRef={(playerEl) => {
+                        this.playerEl = playerEl
+                      }}
+                      playingNow={state.queue.now}
+                      playing={state.player.playing}
+                      dispatch={this.dispatch}
+                      onEnded={this.onTrackEnd}
+                    />
+                  ) : null}
               </section>
               <List
                 // title={`${this.dict.get('upnext.title')} (${state.queue.upNext.length})`}

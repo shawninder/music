@@ -10,9 +10,6 @@ import youtubeUrl from '../helpers/youtubeUrl.js'
 class Player extends Component {
   render () {
     const classes = ['Player']
-    if (!this.props.show) {
-      classes.push('hidden')
-    }
     return (
       <div>
         <ReactPlayer
@@ -68,7 +65,6 @@ const props = [
   { name: 'playing', type: PropTypes.bool.isRequired },
   { name: 'onRef', type: PropTypes.func.isRequired },
   { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'show', type: PropTypes.bool, val: false },
   { name: 'onEnded', type: PropTypes.func.isRequired }
 ]
 
