@@ -1,3 +1,4 @@
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cloneDeep from 'lodash.clonedeep'
@@ -176,6 +177,9 @@ class List extends Component {
     const classes = this.props.className.split(' ')
     classes.push('list')
     classes.push(this.state.collapsed ? 'collapsed' : 'not-collapsed')
+    if (this.props.hidden) {
+      classes.push('hidden')
+    }
     const items = this.props.items.map((item, idx) => {
       const itemClone = cloneDeep(item)
       delete itemClone.Component
@@ -301,7 +305,8 @@ const props = [
   { name: 'maxResults', type: PropTypes.number, val: 500 },
   { name: 'loadingTxt', type: PropTypes.string, val: 'Loading...' },
   { name: 'maxReachedTxt', type: PropTypes.string, val: 'Please refine your search' },
-  { name: 'empty', type: PropTypes.element, val: <li className='emptyPlaceholder' /> }
+  { name: 'empty', type: PropTypes.element, val: <li className='emptyPlaceholder' /> },
+  { name: 'hidden', type: PropTypes.bool, val: false }
 ]
 
 List.defaultProps = defaultProps(props)

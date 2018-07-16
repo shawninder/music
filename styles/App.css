@@ -396,6 +396,16 @@ li:nth-child(even) .actions {
   opacity: 1;
 }
 
+.history {
+  opacity: 1;
+  transition-property: opacity;
+  transition-duration: 0.5s;
+}
+
+.history.hidden {
+  opacity: 0;
+}
+
 .history.empty>h3, .playingNow.empty>h3, .upNext.empty>h3 {
   /* opacity: 0; */
 }

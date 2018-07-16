@@ -1012,6 +1012,7 @@ class App extends Component {
                 startsCollapsed
                 collapsible
                 areDraggable
+                hidden={state.queue.history.length === 0}
               />
               <section className={playingNowClasses.join(' ')}>
                 {/* <h3>
