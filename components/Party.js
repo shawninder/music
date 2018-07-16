@@ -399,7 +399,7 @@ class Party extends Component {
   render () {
     let title = this.props.dict.get('party.default')
     const partying = (this.props.hosting || this.props.attending) && this.props.socket.connected
-    let label = 'default'
+    let label = 'buttonDefault'
     if (this.props.name !== '') {
       if (partying) {
         if (this.props.hosting) {

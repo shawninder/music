@@ -43,6 +43,10 @@
     "en": "Playlist",
     "fr": "Liste de lecture"
   },
+  "party.buttonDefault": {
+    "en": "Enter name",
+    "fr": "Entrez un nom"
+  },
   "party.join": {
     "en": "Join",
     "fr": "Joindre"
