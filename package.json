@@ -1,6 +1,6 @@
 {
   "name": "crowdsplay",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "private": true,
   "dependencies": {
     "@zeit/next-css": "0.2.0",
