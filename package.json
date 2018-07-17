@@ -38,7 +38,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "predeploy": "npm run build"
+    "predeploy": "npm run build",
+    "deploy": "now --public"
   },
   "devDependencies": {
     "@zeit/next-bundle-analyzer": "0.1.1",
