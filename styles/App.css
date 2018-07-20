@@ -403,7 +403,7 @@ li:nth-child(even) .actions {
 }
 
 .history.hidden {
-  opacity: 0;
+  opacity: 1;
 }
 
 .history.empty>h3, .playingNow.empty>h3, .upNext.empty>h3 {
@@ -544,6 +544,12 @@ li:nth-child(even) .actions {
   grid-area: next;
 }
 
+.partyName {
+  color: whitesmoke;
+  font-size: xx-large;
+  text-align: center;
+}
+
 .queue {
   /* margin-bottom: 100px; */
 }
@@ -634,7 +640,7 @@ li:nth-child(even) .actions {
   padding: 10px 5px 15px;
 }
 
-.autoparty.disconnected button, .autoparty:disabled {
+.autoparty.disconnected .partyBtn, .autoparty:disabled {
   color: grey;
 }
 
@@ -648,11 +654,11 @@ li:nth-child(even) .actions {
 }
 
 
-.autoparty button {
+.autoparty .partyBtn {
   width: 100%;
 }
 
-.autoparty input, .autoparty button {
+.autoparty input, .autoparty button, .autoparty .copyBtn {
   padding: 5px;
   font-size: medium;
   /* border-radius: 0; */
@@ -660,7 +666,25 @@ li:nth-child(even) .actions {
   line-height: 1.5em;
 }
 
-.autoparty.connected button:enabled {
+.autoparty .copyLink {
+  padding: 5px;
+  font-size: medium;
+  line-height: 1.5em;
+  text-align: right;
+  /* font-weight: bold; */
+}
+
+.autoparty .copyLink-url {
+  margin-left: 5px;
+}
+
+.autoparty .copyBtn {
+  cursor: pointer;
+  display: inline-block; /* TODO Consider setting this in the reset styles */
+  transform: translateX(5px); /* Cancels .copyLink padding to align with other inputs */
+}
+
+.autoparty.connected .partyBtn:enabled {
   color: steelblue;
   cursor: pointer;
 }

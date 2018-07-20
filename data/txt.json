@@ -24,8 +24,8 @@
     "fr": "retirer"
   },
   "bar.placeholder": {
-    "en": "Search",
-    "fr": "Recherche"
+    "en": "Find music (YouTube)",
+    "fr": "Rechercher (YouTube)"
   },
   "bar.loading": {
     "en": "Loading...",
@@ -75,17 +75,25 @@
     "en": "Playlist (hosting)",
     "fr": "Liste de lecture (hôte)"
   },
+  "party.copyLinkPrefix": {
+    "en": "Invite link:",
+    "fr": "Lien d'invitation:"
+  },
+  "party.copyBtn": {
+    "en": "copy",
+    "fr": "copier"
+  },
   "queue.playingNow.title": {
     "en": "Playing Now",
     "fr": "En Cours"
   },
-  "queue.playingNow.zone": {
-    "en": "Drop here to play now",
-    "fr": "Déposer ici pour jouer immédiatement"
+  "queue.playingNow.emptyZone": {
+    "en": "empty",
+    "fr": "vide"
   },
-  "queue.upNext.zone": {
-    "en": "Drop here to add to playlist",
-    "fr": "Déposer ici pour ajouter à la liste"
+  "queue.upNext.emptyZone": {
+    "en": "",
+    "fr": ""
   },
   "queue.history.show": {
     "en": "view history",

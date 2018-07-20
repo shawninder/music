@@ -1,3 +1,5 @@
+import url from 'url'
+import qs from 'qs'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
@@ -185,7 +187,8 @@ class App extends Component {
   static getInitialProps ({ req, res }) {
     const headers = req ? req.headers : undefined
     const acceptLanguage = headers ? headers['accept-language'] : ''
-    return { headers, acceptLanguage }
+    const linkedPartyName = qs.parse(url.parse(req.url).query).name
+    return { headers, acceptLanguage, linkedPartyName }
   }
 
   constructor (props) {
@@ -846,7 +849,7 @@ class App extends Component {
           {(droppableProvided, snapshot) => {
             return (
               <ol ref={droppableProvided.innerRef} key={`playingNow-droppable`}>
-                <li className='emptyDropZone'>{this.dict.get('queue.playingNow.zone')}</li>
+                <li className='emptyDropZone'>{this.dict.get('queue.playingNow.emptyZone')}</li>
                 {droppableProvided.placeholder}
               </ol>
             )
@@ -971,6 +974,7 @@ class App extends Component {
               socketKey={this.props.socketKey}
               socket={this.props.socket}
               {...this.props.party} // state
+              linkedPartyName={this.props.linkedPartyName}
               gotState={this.gotState}
               gotSlice={this.gotSlice}
               gotDispatch={this.gotDispatch}
@@ -982,6 +986,7 @@ class App extends Component {
                 this.partyButton = el
               }}
             />
+            <h3 className='partyName'>{this.props.party.name}</h3>
             <div className='queue'>
               <List
                 showLabel={`${this.dict.get('queue.history.show')} (${state.queue.history.length})`}
@@ -1056,7 +1061,7 @@ class App extends Component {
                 }}
                 collapsible
                 areDraggable
-                empty={<li key='upNext-emptyDropZone'><div className='emptyDropZone'>{this.dict.get('queue.upNext.zone')}</div></li>}
+                empty={<li key='upNext-emptyDropZone'><div className='emptyDropZone'>{this.dict.get('queue.upNext.emptyZone')}</div></li>}
               />
             </div>
           </div>

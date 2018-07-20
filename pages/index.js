@@ -1,3 +1,4 @@
+import qs from 'qs'
 import io from 'socket.io-client'
 import { bindActionCreators, createStore, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
@@ -15,6 +16,9 @@ import Media from '../data/Media'
 import '../styles/App.css'
 
 const isServer = typeof window === 'undefined'
+
+// const query = qs.parse(global.location.search)
+// console.log('query', query)
 
 const media = new Media()
 
@@ -53,7 +57,7 @@ const defaultInitialState = {
   queue: defaultQueue,
   socketKey: 0,
   party: {
-    name: '',
+    name: null,
     checking: false,
     exists: false,
     hosting: false,

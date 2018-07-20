@@ -1,3 +1,5 @@
+import qs from 'qs'
+import Clipboard from 'clipboard'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
@@ -73,10 +75,23 @@ class Party extends Component {
   componentDidMount () {
     this.startListening()
     this.hydrate()
+    this.clipboard = new Clipboard(this.copyBtn, {
+      target: () => {
+        return this.copyLink
+      }
+    })
+    this.clipboard.on('success', (event) => {
+      // event.clearSelection() // TODO this.props.notify(dict.get('Link copied to clipboard')) instead
+    })
+    this.clipboard.on('error', (event) => {
+      console.error('Clipboard error', event)
+      // TODO
+    })
   }
 
   componentWillUnmount () {
     this.stopListening()
+    this.clipboard.destroy()
   }
 
   checkPartyName (providedName) {
@@ -112,12 +127,25 @@ class Party extends Component {
     }
   }
 
+  setUrlName (value) {
+    const currentQS = qs.parse(global.location.search.slice(1))
+    currentQS.name = value
+    if (currentQS.name === '') {
+      delete currentQS.name
+    }
+    const str = qs.stringify(currentQS)
+    const search = str === '' ? '' : `?${str}`
+    var newRelativePathQuery = `${global.location.pathname}${search}`
+    global.history.replaceState(null, '', newRelativePathQuery)
+  }
+
   onChange (event) {
     const value = event.target.value
     this.props.dispatch({
       type: 'Party:setName',
       value
     })
+    this.setUrlName(value)
     if (value !== '') {
       this.checkPartyName(value)
     }
@@ -155,6 +183,8 @@ class Party extends Component {
     // TODO replay events missed during loading, if any?
     if (this.props.hosting || this.props.attending) {
       this.reconnect()
+    } else if (this.props.linkedPartyName) {
+      this.join()
     } else {
       this.checkPartyName()
     }
@@ -365,7 +395,7 @@ class Party extends Component {
     const emitting = {
       reqName: 'joinParty',
       socketKey: this.props.socketKey,
-      name: this.props.name
+      name: this.props.name || this.props.linkedPartyName
     }
     const onResponse = (res) => {
       this.props.dispatch({
@@ -429,10 +459,14 @@ class Party extends Component {
     if (this.props.attending) {
       classes.push('attending')
     }
+    const copyLinkClasses = ['copyLink']
     return (
-      <div className={classes.join(' ')} onClick={(event) => {
-        event.stopPropagation() // Avoid dismissing dialog when clicking inside it
-      }}>
+      <div
+        className={classes.join(' ')}
+        onClick={(event) => {
+          event.stopPropagation() // Avoid dismissing dialog when clicking inside it
+        }}
+      >
         {
           <form onSubmit={this.onSubmit}>
             <h3>
@@ -446,25 +480,51 @@ class Party extends Component {
               onKeyDown={this.onKeyDown}
               disabled={partying}
               ref={(ref) => {
-                // Using this instead of defaultValue since the initial render is done on the server where we don't have this value yet
+                // Using `ref.value` instead of `defaultValue=` since the initial render is done on the server where we don't have this value yet
                 if (ref) {
-                  ref.value = this.props.name
+                  if (!this.props.name && this.props.name !== '' && this.props.linkedPartyName) {
+                    ref.value = this.props.linkedPartyName
+                  } else {
+                    ref.value = this.props.name
+                  }
+                  this.setUrlName(ref.value)
                 }
                 this.field = ref
                 this.props.onFieldRef(ref)
               }}
             />
-            <button disabled={!isServer && (this.props.checking || this.props.name === '')}
+            <button className='partyBtn' disabled={!isServer && (this.props.checking || this.props.name === '')}
               onClick={this.onSubmit}
               ref={(el) => {
                 this.button = el
                 this.props.onButtonRef(el)
               }}
+              key='notCopyLinkBtnAtAll'
             >
               {
                 this.props.dict.get(`party.${label}`)
               }
             </button>
+            <p className={copyLinkClasses.join(' ')}>
+              {this.props.dict.get('party.copyLinkPrefix')}
+              <span
+                className='copyLink-url'
+                ref={(el) => {
+                  this.copyLink = el
+                }}
+              >
+                {global.location && global.location.href}
+              </span>
+              <a
+                className='copyBtn'
+                ref={(el) => {
+                  this.copyBtn = el
+                }}
+                key='copyLinkBtnMuthaFucka'
+              >
+                {this.props.dict.get('party.copyBtn')}
+              </a>
+            </p>
           </form>
         }
       </div>
@@ -488,7 +548,8 @@ const props = [
   { name: 'socketKey', type: PropTypes.number.isRequired },
   { name: 'collapsed', type: PropTypes.bool.isRequired },
   { name: 'onFieldRef', type: PropTypes.func, val: () => {} },
-  { name: 'onButtonRef', type: PropTypes.func, val: () => {} }
+  { name: 'onButtonRef', type: PropTypes.func, val: () => {} },
+  { name: 'linkedPartyName', type: PropTypes.string, val: '' }
 ]
 
 Party.defaultProps = defaultProps(props)
