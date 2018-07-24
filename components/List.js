@@ -8,17 +8,6 @@ import { Droppable, Draggable } from 'react-beautiful-dnd'
 
 const isServer = typeof window === 'undefined'
 
-const isElementInViewport = (el) => {
-  var rect = el.getBoundingClientRect()
-
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  )
-}
-
 class List extends Component {
   constructor (props) {
     super(props)
@@ -312,3 +301,14 @@ List.defaultProps = defaultProps(props)
 List.propTypes = propTypes(props)
 
 export default List
+
+function isElementInViewport (el) {
+  var rect = el.getBoundingClientRect()
+
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  )
+}

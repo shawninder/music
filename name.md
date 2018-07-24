@@ -1,63 +1,66 @@
 # Name ideas
 
+tune in
 ## Elements
 
 ### Collaboration
-- group
-- crowd
-- crew
-- together
-- our
-- we
-- us
-- common
-- fam
-- peeps
-- peers
+- group 3
+- crowd 4
+- crew 4
+- together 2
+- our 2
+- we 4
+- us 3
+- common 3
+- fam 1
+- peeps 1
+- peers 3
 -
 
 ### Play Queue
-- playlist
-- music
-- play queue
-- list
-- dj set
-- up next
-- playing next
-- next
-- waves
-- sound
-- frequency
-- volume
-- treble
-- bass
-- crowd
+- playlist 3
+- music 4
+- play queue 1
+- list 3
+- dj set 1
+- up next 4
+- play next 3
+- playing next 3
+- next 3
+- waves 4
+- sound 4
+- frequency 4
+- volume 3
+- treble 3
+- bass 3
 
 ### Context
-- party
-- event
-- set
+- party 2
+- event 2
+- set 3
 
 ## Ideas
-- Crowd Play
-- Crowd's Play
-- Mass Play
-- Sublime Music
-- Crowd Music
-- Crowd List
-- Crowd Playlist
-- Chinanou Music
-- DJapp
-- DJus
-- DJwe
-- weDJ
-- Collabo
-- Partygoer
-- Brr.app
-- Boomb.app
-- Boom Bapp
-- Speaker
+- Crowd Play 3
+- Crowd's Play 3
+- Mass Play 4
+- Sublime Music 1
+- Crowd Music 2
+- Crowd List 3
+- Crowd Playlist 2
+- Chinanou Music 2
+- DJapp 0
+- DJus 0
+- DJwe 0
+- weDJ 1
+- Collabo 2
+- Partygoer 2
+- Brr.app 3
+- Boomb.app 3
+- Boom Bapp 5
+- Speaker 2
 - Juke
+- Jack
+- Juke Jack
 - Jukebox
 - TurnitApp
 - PlayBliss
@@ -104,9 +107,16 @@
 - ourqueue
 - myqueue
 - queue
-- boothpass.vip
+- boothpass.vip 0
 - TunesCrew
 - TunesFolk
+- songpooling
+- trackpool
+- youchoose
+- wechoose
+- wetube
+- songtube
+- 
 - queuepooling
 - tunespooling
 - tunepooling
