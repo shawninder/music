@@ -145,6 +145,7 @@ class List extends Component {
         const nextSibling = event.target.nextSibling
         if (nextSibling) {
           nextSibling.focus()
+          // TODO This breaks lists without loaders, try checking specifically for loader class perhaps
           const isLoader = !nextSibling.nextSibling
           if (isLoader) {
             event.target.focus()

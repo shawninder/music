@@ -70,7 +70,12 @@ function makeResultComponent (opts) {
     onToggle (event) {
       event.stopPropagation()
       if (!this.props.data.inQueue) {
+        // TODO Provide this component with playingNow to decide wether to play now or not
+        // if (!this.props.playingNow) {
+        //   options.actions.play.go(this.props.data)
+        // } else {
         options.actions.enqueue.go(this.props.data)
+        // }
       } else if (this.props.onClick) {
         this.props.onClick(event)
       } else {

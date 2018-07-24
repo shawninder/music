@@ -54,7 +54,9 @@ class App extends Component {
     // this.remember = this.remember.bind(this)
     // this.isInCollection = this.isInCollection.bind(this)
     this.clearHistory = this.clearHistory.bind(this)
+    this.clearPlayingNow = this.clearPlayingNow.bind(this)
     this.clearUpNext = this.clearUpNext.bind(this)
+    this.clearAll = this.clearAll.bind(this)
     this.toggleShowHistory = this.toggleShowHistory.bind(this)
     this.toggleShowUpNext = this.toggleShowUpNext.bind(this)
     this.jumpTo = this.jumpTo.bind(this)
@@ -494,9 +496,21 @@ class App extends Component {
     })
   }
 
+  clearPlayingNow (data) {
+    this.dispatch({
+      type: 'Queue:clearPlayingNow'
+    })
+  }
+
   clearUpNext (data) {
     this.dispatch({
       type: 'Queue:clearUpNext'
+    })
+  }
+
+  clearAll (data) {
+    this.dispatch({
+      type: 'Queue:clearAll'
     })
   }
 
@@ -773,7 +787,9 @@ class App extends Component {
             }}
             commands={{
               clearHistory: this.clearHistory,
+              clearPlayingNow: this.clearPlayingNow,
               clearUpNext: this.clearUpNext,
+              clearAll: this.clearAll,
               toggleShowHistory: this.toggleShowHistory,
               toggleShowUpNext: this.toggleShowUpNext,
               // inspectParty: this.inspectParty,

@@ -141,7 +141,15 @@ export default function queueReducer (state = {}, action) {
     case 'Queue:clearHistory':
       newState.history = []
       break
+    case 'Queue:clearPlayingNow':
+      newState.now = {}
+      break
     case 'Queue:clearUpNext':
+      newState.upNext = []
+      break
+    case 'Queue:clearAll':
+      newState.history = []
+      newState.now = {}
       newState.upNext = []
       break
     case 'Queue:jumpTo': {
