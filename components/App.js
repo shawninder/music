@@ -344,6 +344,19 @@ class App extends Component {
                 break
             }
             break
+          case 'cancelDropZone':
+            console.log('----Dropped on cancel zone')
+            switch (source.droppableId) {
+              case 'droppable-history':
+              case 'droppable-upNext':
+              case 'droppable-bar-list':
+                console.log('Do nothing, cancel drag')
+                break
+              default:
+                console.log(`Unhandled drag source ${source.droppableId} dropped on Playing Now`)
+                break
+            }
+            break
           default:
             console.log(`Unhandled drop zone ${destination.droppableId}`)
             break
@@ -814,6 +827,9 @@ class App extends Component {
             loadingTxt={this.dict.get('bar.loading')}
             maxReachedTxt={this.dict.get('bar.maxReached')}
           />
+          <div className='cancelDropZone'>
+            Drop here to cancel
+          </div>
           <div
             className={figureClasses.join(' ')}
             onClick={this.figureClicked}

@@ -1,5 +1,11 @@
 # TODO
 
+Test new commits before pushing
+
+Investigate Party name is undefine but required
+
+Text drop cancel zone
+
 Field debugging capabilities in the Bar
 
 SVG layout

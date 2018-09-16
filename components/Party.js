@@ -146,7 +146,7 @@ class Party extends Component {
     if (this.props.hosting || this.props.attending) {
       this.reconnect()
     } else if (this.props.linkedPartyName) {
-      this.join()
+      // this.join()
     } else {
       this.checkPartyName()
     }
@@ -285,6 +285,7 @@ class Party extends Component {
       }
     }
     this.props.socket.on('response', fn)
+    console.log('emitting request...')
     this.props.socket.emit('request', request)
     console.log('emitted request', request)
   }
@@ -499,7 +500,7 @@ const props = [
   { name: 'className', type: PropTypes.string, val: '' },
   { name: 'placeholder', type: PropTypes.string, val: '' },
   { name: 'dict', type: PropTypes.object.isRequired },
-  { name: 'name', type: PropTypes.string.isRequired },
+  { name: 'name', type: PropTypes.string, val: '' },
   { name: 'checking', type: PropTypes.bool.isRequired },
   { name: 'exists', type: PropTypes.bool.isRequired },
   { name: 'attending', type: PropTypes.bool.isRequired },

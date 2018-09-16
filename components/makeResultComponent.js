@@ -71,11 +71,11 @@ function makeResultComponent (opts) {
       event.stopPropagation()
       if (!this.props.data.inQueue) {
         // TODO Provide this component with playingNow to decide wether to play now or not
-        // if (!this.props.playingNow) {
-        //   options.actions.play.go(this.props.data)
-        // } else {
-        options.actions.enqueue.go(this.props.data)
-        // }
+        if (!this.props.playingNow) {
+          options.actions.play.go(this.props.data)
+        } else {
+          options.actions.enqueue.go(this.props.data)
+        }
       } else if (this.props.onClick) {
         this.props.onClick(event)
       } else {
@@ -159,7 +159,8 @@ function makeResultComponent (opts) {
     { name: 'query', type: PropTypes.string, val: '' },
     { name: 'data', type: PropTypes.object.isRequired },
     { name: 'idx', type: PropTypes.number, val: -1 },
-    { name: 'dragHandleProps', type: PropTypes.object, val: {} }
+    { name: 'dragHandleProps', type: PropTypes.object, val: {} },
+    { name: 'playingNow', type: PropTypes.object, val: {} }
   ]
 
   ResultComponent.defaultProps = defaultProps(props)

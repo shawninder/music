@@ -112,6 +112,31 @@ html, body, #__next, .App {
   transition-duration: 0.5s;
 }
 
+.cancelDropZone {
+  position: fixed;
+  top: 0;
+  height: 50px;
+  width: 100%;
+  font-size: large;
+  font-weight: bold;
+  padding: 5px 80px 5px 60px;
+  z-index: 1;
+  border: 0;
+  color: whitesmoke;
+  background: rgba(254, 70, 70, 0.8);
+  border-radius: 0;
+  transition-property: background-color;
+  transition-duration: 0.5s;
+  line-height: 2em;
+  text-align: center;
+  opacity: 0;
+}
+
+.App.dragging .cancelDropZone {
+  opacity: 1;
+  z-index: 3;
+}
+
 .App.dragging .bar-field {
   /* background: bisque; */
 }
@@ -319,13 +344,6 @@ html, body, #__next, .App {
 
 .youtube-result button:hover, .controls button:hover {
   color: steelblue;
-}
-
-.youtube-result .grabbed {
-  position: fixed;
-  width: 60px;
-  height: 45px;
-  z-index: 5;
 }
 
 .actions {

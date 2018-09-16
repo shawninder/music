@@ -21,11 +21,18 @@ class YouTubeVideo extends Component {
     if (this.props.data.inQueue) {
       toggleClasses.push('toggled')
     }
+    let idxFontSize = '100%'
+    const abs = this.props.data.queueIndex > 0
+      ? this.props.data.queueIndex
+      : -this.props.data.queueIndex
+    if (abs < 5) {
+      idxFontSize = `${100 + (20 * (5 - abs))}%`
+    }
     return (
       <div
         className={classes.join(' ')}
         onClick={this.props.onClick}
-        key={`${classes[0]}-YouTUbeVideo-div-${this.props.data.data.id.videoId}`}
+        key={`${classes[0]}-YouTubeVideo-div-${this.props.data.data.id.videoId}`}
       >
         <div className={toggleClasses.join(' ')} onClick={this.props.onToggle}>
           <div
@@ -35,8 +42,11 @@ class YouTubeVideo extends Component {
           >
             <div
               className='idx'
+              style={{
+                fontSize: idxFontSize
+              }}
             >
-              {this.props.data.queueIndex}
+              {this.props.data.queueIndex === 0 ? '' : this.props.data.queueIndex}
             </div>
             <img
               ref={(el) => {

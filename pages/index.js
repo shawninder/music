@@ -1,4 +1,4 @@
-import qs from 'qs'
+// import qs from 'qs'
 import io from 'socket.io-client'
 import { bindActionCreators, createStore, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'

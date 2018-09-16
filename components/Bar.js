@@ -184,7 +184,9 @@ class Bar extends Component {
   }
 
   menuClicked () {
-    console.log('menu clicked')
+    this.props.dispatch({
+      type: 'App:MenuClicked'
+    })
   }
 
   render () {

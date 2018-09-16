@@ -15,7 +15,9 @@ tune in
 - fam 1
 - peeps 1
 - peers 3
--
+- shared
+- hub
+- collective
 
 ### Play Queue
 - playlist 3
@@ -27,12 +29,18 @@ tune in
 - play next 3
 - playing next 3
 - next 3
+- narrative
+
+### Music
 - waves 4
 - sound 4
 - frequency 4
 - volume 3
 - treble 3
 - bass 3
+- boom
+- melodies
+- conductor
 
 ### Context
 - party 2
@@ -86,6 +94,7 @@ tune in
 - Frequency
 - CommonBase
 - BaseTreble
+- Communitunes
 - MusicBuddies
 - MusicCrew
 - MuzCrew
@@ -116,7 +125,7 @@ tune in
 - wechoose
 - wetube
 - songtube
-- 
+- sharedpresentation
 - queuepooling
 - tunespooling
 - tunepooling
