@@ -2,7 +2,7 @@ import { bindActionCreators, createStore } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension/developmentOnly'
 import withRedux from 'next-redux-wrapper'
 import reducer from '../reducer'
-import Icons from '../views/Icons.js'
+import Status from '../views/Status.js'
 
 // const isServer = typeof window === 'undefined'
 
@@ -25,4 +25,4 @@ const mapDispatchToProps = (dispatch) => {
   }, dispatch)
 }
 
-export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(Icons)
+export default withRedux(initStore, mapStateToProps, mapDispatchToProps)(Status)
