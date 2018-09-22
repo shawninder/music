@@ -18,7 +18,6 @@ You'll need to start the following services for all features to work
 You may also want to set the following environment variables
 
 - API_URL
-- FEEDBACK_URL
 - NODE_ENV
 - PUBLIC_URL
 - BUNDLE_ANALYZE

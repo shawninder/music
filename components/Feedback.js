@@ -21,7 +21,7 @@ class Feedback extends Component {
     this.props.dispatch({
       type: 'Feedback:submitting'
     })
-    fetch(process.env.FEEDBACK_URL, {
+    fetch(`${process.env.API_URL}/feedback`, {
       method: 'post',
       body: JSON.stringify(this.state)
     }).then((response) => {
