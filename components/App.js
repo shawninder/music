@@ -14,6 +14,7 @@ import Player from '../components/Player'
 import Controls from '../components/Controls'
 import List from '../components/List'
 import Party from '../components/Party'
+import Feedback from '../components/Feedback'
 
 import makeResultComponent from '../components/makeResultComponent'
 
@@ -941,6 +942,9 @@ class App extends Component {
                 empty={<li key='upNext-emptyDropZone'><div className='emptyDropZone'>{this.dict.get('queue.upNext.emptyZone')}</div></li>}
               />
             </div>
+            <Feedback
+              dispatch={this.dispatch}
+            />
           </div>
           <Controls
             f={state.player.f}

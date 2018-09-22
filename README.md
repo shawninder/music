@@ -15,6 +15,14 @@ You'll need to start the following services for all features to work
 - [Party server](https://github.com/shawninder/party-server)
 - [YouTube search server](https://github.com/shawninder/youtube-search)
 
+You may also want to set the following environment variables
+
+- ZEIT_API_URL
+- YOUTUBE_SEARCH_URL
+- FEEDBACK_URL
+- NODE_ENV
+- PUBLIC_URL
+- BUNDLE_ANALYZE
 
 ## Understanding and navigating the source code
 
