@@ -12,7 +12,7 @@ import '../styles/status.css'
 
 class Status extends Component {
   static async getInitialProps ({ req, res }) {
-    const url = `${process.env.ZEIT_API_URL}`
+    const url = `${process.env.API_URL}/deployments`
     const response = await fetch(url)
     const json = await response.json()
     const deployments = json.deployments

@@ -12,7 +12,7 @@ class Deployment extends Component {
 
   deleteDeployment (deploymentUid) {
     return function (event) {
-      fetch(`${process.env.ZEIT_API_URL}?delete=${deploymentUid}`)
+      fetch(`${process.env.API_URL}?delete=${deploymentUid}`)
         .then((response) => {
           console.log('response', response)
           return response.json()

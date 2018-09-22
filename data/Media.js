@@ -17,7 +17,7 @@ class Media {
     // Look online
     console.log('Querying YouTube')
     const start = Date.now()
-    return fetch(`${process.env.YOUTUBE_SEARCH_URL}?${qs.stringify({
+    return fetch(`${process.env.API_URL}?${qs.stringify({
       q: query,
       pageToken: nextPageToken
     })}`)
