@@ -51,7 +51,6 @@ class Party extends Component {
     })
     if (this.props.linkedPartyName) {
       this.props.dispatch({ type: 'App:showParty' })
-      this.checkPartyName()
     }
   }
 
@@ -61,7 +60,7 @@ class Party extends Component {
   }
 
   checkPartyName (providedName) {
-    const name = providedName || this.props.name
+    const name = providedName || this.props.name || this.props.linkedPartyName
     if (name !== '') {
       if (this.props.socket.connected && !this.props.checking) {
         const emitting = {
@@ -70,7 +69,7 @@ class Party extends Component {
           name
         }
         const onResponse = (res) => {
-          if (res.name === name && name === this.props.name) {
+          if (res.name === name && (name === this.props.name || name === this.props.linkedPartyName)) {
             this.props.dispatch({
               type: 'Party:exists',
               value: res.exists
