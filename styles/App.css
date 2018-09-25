@@ -742,9 +742,6 @@ li:nth-child(even) .actions {
 .Feedback h2 {
   font-size: x-large;
 }
-.Feedback .feedback-type {
-  float: right;
-}
 .Feedback p {
   margin: 10px;
 }
@@ -761,6 +758,12 @@ li:nth-child(even) .actions {
 .Feedback [type=submit] {
   float: right;
 }
+.Feedback .submitting [type=submit], .Feedback .submitted [type=submit] {
+  color: linen;
+  background: rgba(200, 200, 200, 20%);
+  border-color: rgba(200, 200, 200, 20%);
+}
+
 @media screen and (max-width: 640px) {
   .autoparty {
     width: 100%;
