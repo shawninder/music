@@ -88,8 +88,8 @@
     "fr": "En Cours"
   },
   "queue.playingNow.emptyZone": {
-    "en": "empty",
-    "fr": "vide"
+    "en": "drop here to play",
+    "fr": "glisser ici pour jouer"
   },
   "queue.upNext.emptyZone": {
     "en": "",

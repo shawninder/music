@@ -733,6 +733,11 @@ class App extends Component {
     const historyClasses = ['history']
     const playingNowClasses = ['playingNow']
     const upNextClasses = ['upNext']
+
+    let partyName = this.props.name
+    if (!this.props.name && this.props.name !== '' && this.props.linkedPartyName) {
+      partyName = this.props.linkedPartyName
+    }
     return (
       <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
         <div className={appClasses.join(' ')}>
@@ -841,7 +846,7 @@ class App extends Component {
           </div>
           <div className='main'>
             <Party
-              className={`autoparty ${this.props.app.partyCollapsed ? 'collapsed' : 'not-collapsed'}`}
+              className={'autoparty'}
               placeholder={this.dict.get('party.placeholder')}
               dict={this.dict}
               registerMiddleware={this.props.registerMiddleware}
@@ -864,7 +869,7 @@ class App extends Component {
                 this.partyButton = el
               }}
             />
-            <h3 className='partyName'>{this.props.party.name}</h3>
+            <h3 className='partyName'>{partyName}</h3>
             <div className='queue'>
               <List
                 showLabel={`${this.dict.get('queue.history.show')} (${state.queue.history.length})`}

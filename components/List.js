@@ -258,7 +258,7 @@ class List extends Component {
     return (
       <div className={classes.join(' ')}>
         {/* TODO handle `this.props.collapsible && !this.props.showLabel` */}
-        {(this.props.showLabel && this.props.hideLabel)
+        {(this.props.showLabel && this.props.hideLabel && this.props.items.length > 0)
           ? (
             <h3
               onClick={this.toggleCollapsed}

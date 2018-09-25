@@ -49,6 +49,10 @@ class Party extends Component {
       console.error('Clipboard error', event)
       // TODO
     })
+    if (this.props.linkedPartyName) {
+      this.props.dispatch({ type: 'App:showParty' })
+      this.checkPartyName()
+    }
   }
 
   componentWillUnmount () {
@@ -145,9 +149,7 @@ class Party extends Component {
     // TODO replay events missed during loading, if any?
     if (this.props.hosting || this.props.attending) {
       this.reconnect()
-    } else if (this.props.linkedPartyName) {
-      // this.join()
-    } else {
+    } else if (!this.props.linkedPartyName) {
       this.checkPartyName()
     }
   }
@@ -415,6 +417,11 @@ class Party extends Component {
       }
     }
     const classes = this.props.className.split(' ')
+    if (this.props.collapsed) {
+      classes.push('collapsed')
+    } else {
+      classes.push('not-collapsed')
+    }
     classes.push(this.props.socket.connected ? 'connected' : 'disconnected')
     if (this.props.hosting) {
       classes.push('hosting')
