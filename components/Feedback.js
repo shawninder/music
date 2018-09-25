@@ -44,25 +44,25 @@ class Feedback extends Component {
   }
   render () {
     let classNames = []
-    let buttonTxt = 'Send'
+    let buttonTxt = this.props.dict.get('feedback.submit')
     if (this.state.submitting) {
       classNames.push('submitting')
-      buttonTxt = 'Sending'
+      buttonTxt = this.props.dict.get('feedback.submitting')
     }
     if (this.state.submitted) {
       classNames.push('submitted')
-      buttonTxt = 'Sent'
+      buttonTxt = this.props.dict.get('feedback.submitted')
     }
     return (
       <div className='Feedback'>
         <form onSubmit={this.onSubmit} className={classNames.join(' ')}>
           <h2>
-            {this.props.caption}
+            {this.props.dict.get('feedback.caption')}
           </h2>
           <textarea onChange={(event) => {
             this.setState({ body: event.target.value, submitted: false })
           }} />
-          <label>Your e-mail (optional)</label>
+          <label>{this.props.dict.get('feedback.emailLabel')}</label>
           <input type='email' placeholder='♫@♭mail♩com' onChange={(event) => {
             this.setState({ email: event.target.value, submitted: false })
           }} />
@@ -74,7 +74,8 @@ class Feedback extends Component {
 }
 
 const props = [
-  { name: 'caption', type: PropTypes.string, val: 'Feedback' }
+  { name: 'dispatch', type: PropTypes.func.isRequired },
+  { name: 'dict', type: PropTypes.object.isRequired }
 ]
 
 Feedback.defaultProps = defaultProps(props)

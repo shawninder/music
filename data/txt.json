@@ -106,5 +106,26 @@
   "upnext.title": {
     "en": "Up Next",
     "fr": "À venir"
+  },
+  "feedback.submit": {
+    "en": "Send",
+    "fr": "Envoyer"
+  },
+  "feedback.submitting": {
+    "en": "Sending",
+    "fr": "En route"
+  },
+  "feedback.submitted": {
+    "en": "Sent",
+    "fr": "Envoyé"
+  },
+  "feedback.emailLabel": {
+    "en": "Your e-mail (optional)",
+    "fr": "Votre courriel (optionnel)"
+  },
+  "feedback.caption": {
+    "en": "Feedback, questions...",
+    "fr": "Commentaires, questions..."
   }
+
 }

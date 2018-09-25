@@ -949,6 +949,7 @@ class App extends Component {
             </div>
             <Feedback
               dispatch={this.dispatch}
+              dict={this.dict}
             />
           </div>
           <Controls
