@@ -174,7 +174,7 @@ export default function queueReducer (state = {}, action) {
         if (newState.history.length > 0) {
           skipped = (
             (idx === -1)
-              ? skipped
+              ? []
               : newState.history.slice(idx + 1)
           ).concat(skipped)
           newState.history = newState.history.slice(0, idx)
@@ -184,6 +184,7 @@ export default function queueReducer (state = {}, action) {
         }
       }
       newState.now = data
+      // Reset queueIndex and inQueue
       const hLen = newState.history.length
       newState.history = newState.history.map((item, idx) => {
         item.queueIndex = -hLen + idx
