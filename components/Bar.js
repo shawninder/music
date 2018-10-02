@@ -230,6 +230,7 @@ class Bar extends Component {
               defaultComponent={this.props.ResultComponent}
               isDropDisabled
               areDraggable={this.props.areCommands !== true}
+              loadsMore={this.props.areCommands !== true}
               loadMore={this.props.loadMore}
               hasMore={this.props.hasMore}
               loadingTxt={this.props.loadingTxt}

@@ -145,8 +145,9 @@ class List extends Component {
         const nextSibling = event.target.nextSibling
         if (nextSibling) {
           nextSibling.focus()
-          // TODO This breaks lists without loaders, try checking specifically for loader class perhaps
-          const isLoader = !nextSibling.nextSibling
+          const classStr = event.target.parentNode.getAttribute('class')
+          const listClasses = classStr ? classStr.split(' ') : []
+          const isLoader = listClasses.includes('loadsMore') && !nextSibling.nextSibling
           if (isLoader) {
             event.target.focus()
             // We don't want to prevent focusing the loader because we want to make sure the browser will scroll it in view, but once that is done, we want the focus immediately back on the last real item of the list. Keeping the focus on the loader would bring focus and the bottom of the list under the new results, out of view.
@@ -230,6 +231,7 @@ class List extends Component {
                   return droppableProvided.innerRef(el)
                 }}
                 key={`${classes[0]}-list-droppable`}
+                className={this.props.loadsMore ? 'loadsMore' : ''}
               >
                 {items}
                 {(items.length === 0) ? this.props.empty : null}
@@ -295,7 +297,8 @@ const props = [
   { name: 'loadingTxt', type: PropTypes.string, val: 'Loading...' },
   { name: 'maxReachedTxt', type: PropTypes.string, val: 'Please refine your search' },
   { name: 'empty', type: PropTypes.element, val: <li className='emptyPlaceholder' /> },
-  { name: 'hidden', type: PropTypes.bool, val: false }
+  { name: 'hidden', type: PropTypes.bool, val: false },
+  { name: 'loadsMore', type: PropTypes.bool, val: false }
 ]
 
 List.defaultProps = defaultProps(props)
