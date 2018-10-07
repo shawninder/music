@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import appReducer from './features/app/reducer'
+import authReducer from './features/auth/reducer'
 import collectionReducer from './features/collection/reducer'
 import queueReducer from './features/queue/reducer'
 import barReducer from './features/bar/reducer'
@@ -13,6 +14,7 @@ const logReducer = (state = {}, action) => {
 }
 
 export default combineReducers({
+  auth: authReducer,
   log: logReducer,
   app: appReducer,
   collection: collectionReducer,

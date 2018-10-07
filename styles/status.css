@@ -30,12 +30,21 @@ body {
   color: whitesmoke;
 }
 
+.deployment-scale-btn {
+  border: 1px solid cornflowerblue;
+  background: whitesmoke;
+}
+
 .deployment-delete {
   border: 1px solid firebrick;
   background: darkred;
   color: whitesmoke;
 }
 
-.deployment-link, .deployment-created {
+.deployment-link, .deployment-created, .deployment-scale {
   float: right;
+}
+
+.deployment-may-scale, .deployment-may-sleep, .deployment-may-scale {
+  background: chocolate;
 }

@@ -8,6 +8,7 @@ import propTypes from '../helpers/propTypes'
 class Deployment extends Component {
   constructor (props) {
     super(props)
+    this.scaleDeployment = this.scaleDeployment.bind(this)
     this.deleteDeployment = this.deleteDeployment.bind(this)
     this.state = {
       msg: '',
@@ -15,25 +16,32 @@ class Deployment extends Component {
     }
   }
 
-  deleteDeployment (deploymentUid) {
+  scaleDeployment (deploymentUid) {
     return (event) => {
+      console.log('Coming Soon')
       const token = btoa(`${this.props.adminUsername}:${this.props.adminPassword}`)
       fetch(`${process.env.API_URL}/deployments/${deploymentUid}`, {
-        method: 'DELETE',
+        method: 'POST',
         headers: {
           Authorization: `Basic ${token}`
-        }
+        },
+        body: JSON.stringify({
+          scale: {
+            min: 1,
+            max: 1
+          }
+        })
       })
         .then((response) => {
           if (response.ok) {
-            console.log('SUCCESSFUL DELETE')
+            console.log('SUCCESSFUL SCALE')
             return response.json()
               .then((json) => {
                 console.log('json', json)
               })
           } else {
             this.setState({
-              msg: 'Error deleting deployment',
+              msg: 'Error scaling deployment',
               att: JSON.stringify({
                 headers: response.headers,
                 ok: response.ok,
@@ -49,6 +57,34 @@ class Deployment extends Component {
     }
   }
 
+  deleteDeployment (deploymentUid) {
+    return (event) => {
+      this.props.deleteDeployment(deploymentUid)
+        .then((ok) => {
+          this.setState({
+            msg: 'Successfully deleted deployment',
+            att: JSON.stringify({
+              uid: deploymentUid
+            })
+          })
+        })
+        .catch((reason) => {
+          this.setState({
+            msg: 'Error deleting deployment',
+            att: JSON.stringify({
+              headers: reason.headers,
+              ok: reason.ok,
+              redirected: reason.redirected,
+              status: reason.status,
+              statusText: reason.statusText,
+              type: reason.type,
+              url: reason.url
+            }, null, 2)
+          })
+        })
+    }
+  }
+
   render () {
     // console.log('this.props.data', this.props.data)
     const classes = this.props.className.split(' ')
@@ -57,16 +93,27 @@ class Deployment extends Component {
     const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`
     const msg = (this.state.msg ? <p>{this.state.msg}</p> : null)
     const att = (this.state.att ? <pre>{this.state.att.toString()}</pre> : null)
+    if (this.props.data.scale.current === 0) {
+      classes.push('deployment-is-sleeping')
+    }
+    if (this.props.data.scale.min === 0) {
+      classes.push('deployment-may-sleep')
+    }
+    if (this.props.data.scale.max > 1) {
+      classes.push('deployment-may-scale')
+    }
     return (
       <div
         className={classes.join(' ')}
       >
         <h3>
           {this.props.data.name} ({this.props.data.state})
-          <a className='deployment-link' href={`https://${this.props.data.url}`} target='_blank' title='Visit this deployment'>{this.props.data.url}</a>
+          <a className='deployment-link' href={`https://${this.props.data.url}/_src`} target='_blank' title='Visit this deployment'>{this.props.data.url}/_src</a>
         </h3>
         <small className='deployment-created'>Created: {dateStr}</small>
+        <small className='deployment-scale'>Scale: {this.props.data.scale.current}[{this.props.data.scale.min}-{this.props.data.scale.max}]</small>
         <div className='deployment-buttons'>
+          <button className='deployment-scale-btn' onClick={this.scaleDeployment(this.props.data.key)}>Scale to 1-1</button>
           <button className='deployment-delete' onClick={this.deleteDeployment(this.props.data.key)}>Delete</button>
           {msg}
           {att}
@@ -81,9 +128,7 @@ class Deployment extends Component {
 
 const props = [
   { name: 'className', type: PropTypes.string, val: '' },
-  { name: 'data', type: PropTypes.object.isRequired },
-  { name: 'adminUsername', type: PropTypes.string.isRequired },
-  { name: 'adminPassword', type: PropTypes.string.isRequired }
+  { name: 'data', type: PropTypes.object.isRequired }
 ]
 
 Deployment.defaultProps = defaultProps(props)

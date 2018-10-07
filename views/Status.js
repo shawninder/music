@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import fetch from 'isomorphic-unfetch'
 import orderBy from 'lodash.orderby'
 import defaultProps from '../helpers/defaultProps'
@@ -15,10 +15,6 @@ class Status extends Component {
     super(props)
     this.usernameChanged = this.usernameChanged.bind(this)
     this.passwordChanged = this.passwordChanged.bind(this)
-    this.state = {
-      username: '',
-      password: ''
-    }
   }
   static async getInitialProps ({ req, res }) {
     const url = `${process.env.API_URL}/deployments`
@@ -33,14 +29,18 @@ class Status extends Component {
   }
 
   usernameChanged (event) {
-    this.setState({
-      username: event.target.value
-    })
+    const action = {
+      type: 'Auth:setUsername',
+      value: event.target.value
+    }
+    console.log('action1', action)
+    this.props.dispatch(action)
   }
 
   passwordChanged (event) {
-    this.setState({
-      password: event.target.value
+    this.props.dispatch({
+      type: 'Auth:setPassword',
+      value: event.target.value
     })
   }
 
@@ -59,8 +59,7 @@ class Status extends Component {
           className='deploymentList'
           defaultComponent={Deployment}
           componentProps={{
-            adminUsername: this.state.username,
-            adminPassword: this.state.password
+            deleteDeployment: this.props.deleteDeployment
           }}
           items={!Array.isArray(this.props.deployments) // TODO Fix this mess
             ? []
@@ -85,7 +84,10 @@ class Status extends Component {
   }
 }
 
-const props = []
+const props = [
+  { name: 'dispatch', type: PropTypes.func.isRequired },
+  { name: 'deleteDeployment', type: PropTypes.func.isRequired }
+]
 
 Status.defaultProps = defaultProps(props)
 Status.propTypes = propTypes(props)
