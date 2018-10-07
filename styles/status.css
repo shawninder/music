@@ -11,8 +11,31 @@ body {
   font-size: 300%;
 }
 
+.authForm {
+  float: right;
+}
+
+.authForm label {
+  margin-left: 10px;
+}
+
 .deployment {
+  color: black;
   background: whitesmoke;
   margin-bottom: 15px;
-  padding: 15px;
+  padding: 5px 15px;
+}
+
+.deploymentList li {
+  color: whitesmoke;
+}
+
+.deployment-delete {
+  border: 1px solid firebrick;
+  background: darkred;
+  color: whitesmoke;
+}
+
+.deployment-link, .deployment-created {
+  float: right;
 }

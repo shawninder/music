@@ -193,6 +193,7 @@ class List extends Component {
                     queueIndex={itemClone.queueIndex}
                     dragHandleProps={draggableProvided.dragHandleProps}
                     key={`${this.props.className.split(' ')[0]}-Component-${itemClone.data.id.videoId}`}
+                    {...this.props.componentProps}
                   />
                 </li>
               )
@@ -209,6 +210,7 @@ class List extends Component {
               data={itemClone}
               query={this.props.query}
               idx={idx}
+              {...this.props.componentProps}
             />
           </li>
         )
@@ -298,7 +300,8 @@ const props = [
   { name: 'maxReachedTxt', type: PropTypes.string, val: 'Please refine your search' },
   { name: 'empty', type: PropTypes.element, val: <li className='emptyPlaceholder' /> },
   { name: 'hidden', type: PropTypes.bool, val: false },
-  { name: 'loadsMore', type: PropTypes.bool, val: false }
+  { name: 'loadsMore', type: PropTypes.bool, val: false },
+  { name: 'componentProps', type: PropTypes.object, val: {} }
 ]
 
 List.defaultProps = defaultProps(props)

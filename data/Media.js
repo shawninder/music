@@ -15,16 +15,25 @@ class Media {
     // Look in local and session storage
     // Look in network
     // Look online
-    console.log('Querying YouTube')
     const start = Date.now()
-    return fetch(`${process.env.API_URL}?${qs.stringify({
+    console.log('GET', `${process.env.API_URL}/media?${qs.stringify({
+      q: query,
+      pageToken: nextPageToken
+    })}`)
+    return fetch(`${process.env.API_URL}/media?${qs.stringify({
       q: query,
       pageToken: nextPageToken
     })}`)
       .then((results) => {
-        return results.json()
+        console.log('results', results)
+        if (results.status === 204) {
+          return { error: 'No Results!?' }
+        } else {
+          return results.json()
+        }
       })
       .then((data) => {
+        console.log('data', typeof data, data)
         if (data.error) {
           console.error("Can't get YouTube search results", data.error)
           return {
