@@ -70,6 +70,14 @@ html, body, #__next, .App {
   background-color: #666666;
 }
 
+.authForm {
+  float: right;
+}
+
+.authForm label {
+  margin-left: 10px;
+}
+
 .bar {
   position: relative;
   z-index: 3;
@@ -159,7 +167,7 @@ html, body, #__next, .App {
   width: 15px;
 }
 
-.bar-list {
+.App .bar-list {
   max-width: 640px;
   max-height: 100vh;
   overflow-y: scroll;
@@ -167,6 +175,13 @@ html, body, #__next, .App {
   top: 0;
   left: 0;
   z-index: 2;
+}
+
+.logsPage {
+  max-width: 100vw;
+}
+
+.bar-list {
   display: grid;
   grid-template-rows: 50px 1fr;
   grid-template-areas:

@@ -33,7 +33,6 @@ class Status extends Component {
       type: 'Auth:setUsername',
       value: event.target.value
     }
-    console.log('action1', action)
     this.props.dispatch(action)
   }
 
@@ -64,7 +63,6 @@ class Status extends Component {
           items={!Array.isArray(this.props.deployments) // TODO Fix this mess
             ? []
             : orderBy(this.props.deployments.map((item) => {
-              console.log('item', item)
               const data = {
                 key: item.uid,
                 name: item.name,
@@ -75,7 +73,6 @@ class Status extends Component {
                 creator: item.creator,
                 scale: item.scale
               }
-              console.log('data', data)
               return data
             }), 'created', 'desc')}
         />

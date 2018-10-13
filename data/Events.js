@@ -1,26 +1,18 @@
 const fetch = require('isomorphic-unfetch')
 const qs = require('querystring')
 
-class Media {
-  live (query) {
-    return Promise.resolve([])
-  }
-
-  isPlayable (item) {
-    return item && item.id && !!item.id.videoId
-  }
-
+class Events {
   search (query, nextPageToken) {
     // Look in memory
     // Look in local and session storage
     // Look in network
     // Look online
     const start = Date.now()
-    console.log('GET', `${process.env.API_URL}/media?${qs.stringify({
+    console.log('GET', `${process.env.API_URL}/logs?${qs.stringify({
       q: query,
       pageToken: nextPageToken
     })}`)
-    return fetch(`${process.env.API_URL}/media?${qs.stringify({
+    return fetch(`${process.env.API_URL}/logs?${qs.stringify({
       q: query,
       pageToken: nextPageToken
     })}`)
@@ -33,7 +25,7 @@ class Media {
       })
       .then((data) => {
         if (data.error) {
-          console.error("Can't get YouTube search results", data.error)
+          console.error("Can't get Logs", data.error)
           return {
             items: [],
             hasMore: false,
@@ -41,19 +33,17 @@ class Media {
             nextPageToken: null
           }
         } else {
-          console.log(`Got results from YouTube in ${Date.now() - start}ms`)
+          console.log(`Got logs in ${Date.now() - start}ms`)
           return {
-            items: data.items.reduce((acc, item) => {
-              if (this.isPlayable(item)) {
-                acc.push({
-                  type: 'YouTubeVideo',
-                  key: item.id.videoId,
-                  ...item
-                })
+            items: data.map((item) => {
+              return {
+                type: 'LogEntry',
+                key: item._id,
+                ...item
               }
-              return acc
-            }, []),
-            hasMore: data.pageInfo.totalResults > data.pageInfo.resultsPerPage,
+            }),
+            // hasMore: data.pageInfo.totalResults > data.pageInfo.resultsPerPage,
+            hasMore: false,
             prevPageToken: data.prevPageToken,
             nextPageToken: data.nextPageToken
           }
@@ -62,4 +52,4 @@ class Media {
   }
 }
 
-module.exports = Media
+module.exports = Events

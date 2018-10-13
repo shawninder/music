@@ -1,4 +1,4 @@
-import qs from 'qs'
+import qs from 'querystring'
 import Clipboard from 'clipboard'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'

@@ -1,5 +1,5 @@
 import url from 'url'
-import qs from 'qs'
+import qs from 'querystring'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'

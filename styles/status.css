@@ -1,22 +1,19 @@
-body {
+.statusPage {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  position: relative;
   background-color: #33333;
   background-image: url('/static/bg.svg');
   background-repeat: no-repeat;
   background-attachment: fixed;
   background-size: 100% 100% !important;
+  overflow: scroll;
 }
 
 .statusPage h2 {
   margin: 15px;
   font-size: 300%;
-}
-
-.authForm {
-  float: right;
-}
-
-.authForm label {
-  margin-left: 10px;
 }
 
 .deployment {

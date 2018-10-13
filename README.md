@@ -12,7 +12,7 @@ This project is in a very early stage and isn't looking for contributions yet. I
 
 You'll need to start the following services for all features to work
 
-- [Party server](https://github.com/shawninder/party-server)
+- [Party server](https://github.com/shawninder/hub)
 - [YouTube search server](https://github.com/shawninder/youtube-search)
 
 You may also want to set the following environment variables

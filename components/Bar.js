@@ -115,10 +115,8 @@ class Bar extends Component {
       .then(({ items, hasMore, prevPageToken, nextPageToken }) => {
         if (this.props.query === query) {
           const data = items.map((item) => {
-            const id = item.id.videoId
             const obj = {
-              type: 'YouTubeVideo',
-              key: `${id}`,
+              key: item.key,
               data: item
             }
             return this.props.decorateItem(obj)
@@ -267,7 +265,8 @@ const props = [
   { name: 'onResult', type: PropTypes.object, val: {} },
   { name: 'areCommands', type: PropTypes.bool, val: true },
   { name: 'hasMore', type: PropTypes.bool, val: false },
-  { name: 'loadMore', type: PropTypes.func, val: () => {} }
+  { name: 'loadMore', type: PropTypes.func, val: () => {} },
+  { name: 'decorateItem', type: PropTypes.func, val: (item) => item }
 ]
 
 Bar.defaultProps = defaultProps(props)
