@@ -2,6 +2,7 @@ import qs from 'querystring'
 import Clipboard from 'clipboard'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import debounce from 'lodash.debounce'
 
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
@@ -25,6 +26,8 @@ class Party extends Component {
     this.hydrate = this.hydrate.bind(this)
     this.checkPartyName = this.checkPartyName.bind(this)
     this.onGlobalFocus = this.onGlobalFocus.bind(this)
+    this.setUrlName = this.setUrlName.bind(this)
+    this.debouncedSetUrlName = debounce(this.setUrlName, 1000, { maxWait: 2000 }).bind(this)
     this.button = null
     this.pulse = new Pulser(() => {
       if (global.document.hasFocus()) {
@@ -100,8 +103,10 @@ class Party extends Component {
     }
     const str = qs.stringify(currentQS)
     const search = str === '' ? '' : `?${str}`
-    var newRelativePathQuery = `${global.location.pathname}${search}`
-    global.history.replaceState(null, '', newRelativePathQuery)
+    if (search !== global.location.search) {
+      const newRelativePathQuery = `${global.location.pathname}${search}`
+      global.history.replaceState(null, '', newRelativePathQuery)
+    }
   }
 
   onChange (event) {
@@ -110,7 +115,7 @@ class Party extends Component {
       type: 'Party:setName',
       value
     })
-    this.setUrlName(value)
+    this.debouncedSetUrlName(value) // We need to avoid hitting the 100 calls per 30 seconds placed on history.replaceState() by at least Safari on mobile
     if (value !== '') {
       this.checkPartyName(value)
     }
@@ -456,7 +461,7 @@ class Party extends Component {
                   } else {
                     ref.value = this.props.name
                   }
-                  this.setUrlName(ref.value)
+                  this.debouncedSetUrlName(ref.value)
                 }
                 this.field = ref
                 this.props.onFieldRef(ref)
