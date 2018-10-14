@@ -37,6 +37,11 @@ html, body, #__next, .App {
   width: 100%;
 }
 
+#__next-error {
+  position: fixed;
+  z-index: 1000;
+}
+
 .App {
   transition-timing-function:ease-in-out;
 }
