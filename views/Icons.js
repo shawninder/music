@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+// import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
+import Head from '../components/Head'
 import cancelIcon from '../components/cancelIcon'
 import clearIcon from '../components/clearIcon'
 import dequeueIcon from '../components/dequeueIcon'
@@ -17,14 +19,50 @@ import playNowIcon from '../components/playNowIcon'
 import prevIcon from '../components/prevIcon'
 import searchIcon from '../components/searchIcon'
 
-import '../styles/icons.css'
-
 // const isServer = typeof window === 'undefined'
 
 class Icons extends Component {
   render () {
     return (
       <div className='iconPage'>
+        <Head title="Crowd's Play | Icons" />
+        <style jsx global>{`
+          body {
+            background-color: #33333;
+            background-image: url('/static/bg.svg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100% !important;
+          }
+          .iconPage ul {
+            list-style: none;
+            clear: both;
+          }
+          .iconPage li {
+            color: whitesmoke;
+            margin: 10px;
+            width: 150px;
+            float: left;
+          }
+          .iconPage .label {
+            display: block;
+          }
+          .iconPage li svg, .iconPage img {
+            vertical-align: middle;
+          }
+          .iconPage svg {
+            color: whitesmoke;
+            width: 48px;
+            height: 48px;
+            fill: currentColor;
+          }
+
+          .iconPage img {
+            background: whitesmoke;
+            width: 100px;
+            height: 100px;
+          }
+        `}</style>
         <ul>
           <li>{searchIcon}<span className='label'>search</span></li>
           <li>{prevIcon}<span className='label'>prev</span></li>
@@ -61,4 +99,4 @@ const props = []
 Icons.defaultProps = defaultProps(props)
 Icons.propTypes = propTypes(props)
 
-export default Icons
+export default connect()(Icons)

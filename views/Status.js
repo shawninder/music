@@ -1,12 +1,15 @@
 import React, { Component } from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import fetch from 'isomorphic-unfetch'
 import orderBy from 'lodash.orderby'
+import btoa from 'btoa'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
+import Head from '../components/Head'
 import List from '../components/List'
 import Deployment from '../components/Deployment.js'
-import '../styles/status.css'
 
 // const isServer = typeof window === 'undefined'
 
@@ -47,6 +50,56 @@ class Status extends Component {
     // console.log('this.props.deployments', this.props.deployments)
     return (
       <div className='statusPage'>
+        <Head title="Crowd's Play | Status" />
+        <style jsx global>{`
+          .statusPage {
+            height: 100%;
+            width: 100%;
+            padding: 0;
+            position: relative;
+            background-color: #33333;
+            background-image: url('/static/bg.svg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100% !important;
+            overflow: scroll;
+          }
+
+          .statusPage h2 {
+            margin: 15px;
+            font-size: 300%;
+          }
+
+          .deployment {
+            color: black;
+            background: whitesmoke;
+            margin-bottom: 15px;
+            padding: 5px 15px;
+          }
+
+          .deploymentList li {
+            color: whitesmoke;
+          }
+
+          .deployment-scale-btn {
+            border: 1px solid cornflowerblue;
+            background: whitesmoke;
+          }
+
+          .deployment-delete {
+            border: 1px solid firebrick;
+            background: darkred;
+            color: whitesmoke;
+          }
+
+          .deployment-link, .deployment-created, .deployment-scale {
+            float: right;
+          }
+
+          .deployment-may-scale, .deployment-may-sleep, .deployment-may-scale {
+            background: chocolate;
+          }
+        `}</style>
         <form className='authForm'>
           <label>Username: </label>
           <input type='text' onChange={this.usernameChanged} />
@@ -89,4 +142,39 @@ const props = [
 Status.defaultProps = defaultProps(props)
 Status.propTypes = propTypes(props)
 
-export default Status
+const mapStateToProps = (state) => {
+  const { auth } = state
+  return { auth }
+}
+
+// TODO clean up nested `_dispatch`s
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators({
+    dispatch: (action) => {
+      return (_dispatch) => {
+        _dispatch(action)
+      }
+    },
+    deleteDeployment: (deploymentUid) => {
+      return (_dispatch, getState) => {
+        const state = getState()
+        const token = btoa(`${state.auth.username}:${state.auth.password}`)
+        return fetch(`${process.env.API_URL}/deployments/${deploymentUid}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Basic ${token}`
+          }
+        })
+          .then((response) => {
+            if (response.ok) {
+              return true
+            } else {
+              throw response
+            }
+          })
+      }
+    }
+  }, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Status)
