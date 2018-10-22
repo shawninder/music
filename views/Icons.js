@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 // import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
@@ -99,4 +98,4 @@ const props = []
 Icons.defaultProps = defaultProps(props)
 Icons.propTypes = propTypes(props)
 
-export default connect()(Icons)
+export default Icons

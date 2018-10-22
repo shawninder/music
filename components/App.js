@@ -1,8 +1,7 @@
 import url from 'url'
 import qs from 'querystring'
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
+
 import PropTypes from 'prop-types'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import defaultProps from '../helpers/defaultProps'
@@ -10,7 +9,6 @@ import propTypes from '../helpers/propTypes'
 import cloneDeep from 'lodash.clonedeep'
 import pullAt from 'lodash.pullat'
 import debounce from 'lodash.debounce'
-import pull from 'lodash.pull'
 
 import Head from '../components/Head'
 import Bar from '../components/Bar'
@@ -23,7 +21,6 @@ import Feedback from '../components/Feedback'
 import makeResultComponent from '../components/makeResultComponent'
 
 import Dict from '../data/Dict.js'
-import Media from '../data/Media'
 
 import playNowIcon from './playNowIcon'
 import jumpToIcon from './jumpToIcon'
@@ -33,8 +30,6 @@ import nextIcon from './nextIcon'
 import dequeueIcon from './dequeueIcon'
 
 const isServer = typeof window === 'undefined'
-
-const media = new Media()
 
 class App extends Component {
   static getInitialProps ({ req, res }) {
@@ -1793,54 +1788,4 @@ const props = [
 App.defaultProps = defaultProps(props)
 App.propTypes = propTypes(props)
 
-const mapStateToProps = (state) => {
-  const { app, bar, dict, player, queue, socketKey, party } = state
-  return { app, bar, dict, player, queue, socketKey, party }
-}
-
-const middlewares = []
-// TODO clean up nested `_dispatch`s
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    dispatch: (action) => {
-      return (_dispatch) => {
-        let stopPropagation = false
-        middlewares.forEach((mw) => {
-          if (mw(action)) {
-            stopPropagation = true
-          }
-        })
-        if (stopPropagation) {
-          console.log('Intercepted and stopped propagation of', action)
-        } else {
-          _dispatch(action)
-        }
-      }
-    },
-    registerMiddleware: (middleware) => {
-      return (_dispatch, getState) => {
-        console.log('REGISTERING DISPATCH MIDDLEWARE')
-        middlewares.push(middleware)
-      }
-    },
-    unregisterMiddleware: (middleware) => {
-      return (_dispatch, getState) => {
-        console.warn('UNREGISTERING DISPATCH MIDDLEWARE')
-        pull(middlewares, middleware)
-      }
-    },
-    findMusic: (query, nextPageToken) => {
-      return (_dispatch, getState) => {
-        console.log(`media.search('${query}')`)
-        return media.search(query, nextPageToken)
-      }
-    },
-    dev: () => {
-      return (_dispatch, getState) => {
-        return { _dispatch, getState }
-      }
-    }
-  }, dispatch)
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default App

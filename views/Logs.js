@@ -1,17 +1,12 @@
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 // import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
 
-import Events from '../data/Events'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 import Head from '../components/Head'
 import Bar from '../components/Bar'
 import Log from '../components/Log'
-
-const events = new Events()
 
 // const isServer = typeof window === 'undefined'
 
@@ -928,26 +923,4 @@ const props = [
 Logs.defaultProps = defaultProps(props)
 Logs.propTypes = propTypes(props)
 
-function mapStateToProps (state) {
-  const { bar } = state
-  return { bar }
-}
-
-// TODO clean up nested `_dispatch`s
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    dispatch: (action) => {
-      return (_dispatch) => {
-        _dispatch(action)
-      }
-    },
-    findLogs: (query, nextPageToken) => {
-      return (_dispatch, getState) => {
-        console.log(`events.search('${query}')`)
-        return events.search(query, nextPageToken)
-      }
-    }
-  }, dispatch)
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Logs)
+export default Logs
