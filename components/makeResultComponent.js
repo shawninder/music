@@ -108,6 +108,12 @@ function makeResultComponent (opts) {
           )
         }
       }
+      let busy = false
+      const trackId = this.props.data.data.id.videoId
+      const list = this.props.pending[trackId]
+      if (list) {
+        busy = true
+      }
       return (
         <YouTubeVideo
           data={this.props.data}
@@ -117,6 +123,7 @@ function makeResultComponent (opts) {
           className={classes.join(' ')}
           dragHandleProps={this.props.dragHandleProps}
           key={`${classes[0]}-YouTubeVideo-${this.props.data.data.id.videoId}`}
+          busy={busy}
         >
           {corner}
           {
@@ -159,7 +166,8 @@ function makeResultComponent (opts) {
     { name: 'data', type: PropTypes.object.isRequired },
     { name: 'idx', type: PropTypes.number, val: -1 },
     { name: 'dragHandleProps', type: PropTypes.object, val: {} },
-    { name: 'playingNow', type: PropTypes.object, val: {} }
+    { name: 'playingNow', type: PropTypes.object, val: {} },
+    { name: 'pending', type: PropTypes.object, val: {} }
   ]
 
   ResultComponent.defaultProps = defaultProps(props)

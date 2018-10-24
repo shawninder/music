@@ -233,6 +233,7 @@ class Bar extends Component {
               hasMore={this.props.hasMore}
               loadingTxt={this.props.loadingTxt}
               maxReachedTxt={this.props.maxReachedTxt}
+              componentProps={this.props.componentProps}
             />
           )
           : null
@@ -266,7 +267,8 @@ const props = [
   { name: 'areCommands', type: PropTypes.bool, val: true },
   { name: 'hasMore', type: PropTypes.bool, val: false },
   { name: 'loadMore', type: PropTypes.func, val: () => {} },
-  { name: 'decorateItem', type: PropTypes.func, val: (item) => item }
+  { name: 'decorateItem', type: PropTypes.func, val: (item) => item },
+  { name: 'componentProps', type: PropTypes.object, val: {} }
 ]
 
 Bar.defaultProps = defaultProps(props)

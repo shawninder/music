@@ -25,11 +25,16 @@ const defaultQueue = {
 }
 
 const exampleInitialState = {
+  ack: {
+    pending: {},
+    origin: null
+  },
   app: {
     showHistory: false,
     showUpNext: true,
     partyCollapsed: true,
-    dragging: false
+    dragging: false,
+    pending: {}
   },
   auth: {
     username: '',
@@ -48,7 +53,7 @@ const exampleInitialState = {
   },
   player: defaultPlayer,
   queue: defaultQueue,
-  socketKey: 0,
+  socketKey: '',
   party: {
     name: null,
     checking: false,
@@ -77,6 +82,7 @@ if (!isServer) {
     'socketKey'
   ]))
   composed.push(syncState([
+    'ack',
     'queue',
     'player'
   ], {
@@ -88,7 +94,7 @@ export { socket }
 export function initializeStore (initialState = exampleInitialState) {
   // TODO The following conditional doesn't apply to all pages
   if (!isServer && !initialState.socketKey) {
-    initialState.socketKey = Math.random()
+    initialState.socketKey = Math.random().toString().slice(2)
     console.log('Generated socketKey', initialState.socketKey)
   }
   return createStore(reducer, initialState, enhancer)

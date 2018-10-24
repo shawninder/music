@@ -8,8 +8,8 @@ import Media from '../data/Media'
 const media = new Media()
 
 const mapStateToProps = (state) => {
-  const { app, bar, dict, player, queue, socketKey, party } = state
-  return { app, bar, dict, player, queue, socketKey, party }
+  const { ack, app, bar, dict, player, queue, socketKey, party } = state
+  return { ack, app, bar, dict, player, queue, socketKey, party }
 }
 
 const middlewares = []

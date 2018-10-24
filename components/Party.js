@@ -233,7 +233,19 @@ class Party extends Component {
     })
 
     this.props.socket.on('err', (errData) => {
-      console.error('SOCKET ERROR', errData)
+      console.error('SOCKET ERROR', errData, this.props.pending)
+      const trackId = errData.data.data.data.id.videoId
+      const origin = errData.data.origin
+      const pendings = this.props.pending[trackId]
+      if (pendings) {
+        if (pendings[origin]) {
+          this.props.dispatch({
+            type: 'Ack:removePending',
+            data: errData.data.data,
+            origin: errData.data.origin
+          })
+        }
+      }
     })
 
     this.props.socket.on('state', (state) => {
@@ -275,7 +287,7 @@ class Party extends Component {
   }
 
   socketRequest (request, onRes) {
-    const reqId = Math.random()
+    const reqId = Math.random().toString().slice(2)
     request.reqId = reqId
     const fn = ({ req, res, err }) => {
       if (req.reqId === reqId) {
@@ -519,7 +531,7 @@ const props = [
   { name: 'registerMiddleware', type: PropTypes.func.isRequired },
   { name: 'unregisterMiddleware', type: PropTypes.func.isRequired },
   { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'socketKey', type: PropTypes.number.isRequired },
+  { name: 'socketKey', type: PropTypes.string.isRequired },
   { name: 'collapsed', type: PropTypes.bool.isRequired },
   { name: 'onFieldRef', type: PropTypes.func, val: () => {} },
   { name: 'onButtonRef', type: PropTypes.func, val: () => {} },

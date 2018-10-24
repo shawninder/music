@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import ackReducer from './features/ack/reducer'
 import appReducer from './features/app/reducer'
 import authReducer from './features/auth/reducer'
 import collectionReducer from './features/collection/reducer'
@@ -14,6 +15,7 @@ const logReducer = (state = {}, action) => {
 }
 
 export default combineReducers({
+  ack: ackReducer,
   auth: authReducer,
   log: logReducer,
   app: appReducer,

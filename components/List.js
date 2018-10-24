@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import cloneDeep from 'lodash.clonedeep'
 import isEqual from 'lodash.isequal'
+import deepEqual from 'deep-equal'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
@@ -19,6 +20,7 @@ class List extends Component {
     }
     this.previousItems = {}
     this.previousCollapsed = {}
+    this.previousPending = {}
     this.checkLoader = this.checkLoader.bind(this)
     this.loader = null
   }
@@ -67,10 +69,12 @@ class List extends Component {
 
   shouldComponentUpdate (nextProps, nextState) {
     if (!isEqual(this.previousCollapsed, nextState.collapsed) ||
-      !isEqual(this.previousItems, nextProps.items)
+      !isEqual(this.previousItems, nextProps.items) ||
+      !deepEqual(this.previousComponentProps, nextProps.componentProps)
     ) {
       this.previousItems = nextProps.items
       this.previousCollapsed = nextState.collapsed
+      this.previousComponentProps = nextProps.componentProps
       return true
     }
     return false

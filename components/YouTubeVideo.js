@@ -21,6 +21,9 @@ class YouTubeVideo extends Component {
     if (this.props.data.inQueue) {
       toggleClasses.push('toggled')
     }
+    if (this.props.busy) {
+      toggleClasses.push('busy')
+    }
     let idxFontSize = '100%'
     const abs = this.props.data.queueIndex > 0
       ? this.props.data.queueIndex
@@ -75,7 +78,8 @@ const props = [
   { name: 'data', type: PropTypes.object.isRequired },
   { name: 'onClick', type: PropTypes.func, val: () => {} },
   { name: 'onToggle', type: PropTypes.func, val: () => {} },
-  { name: 'dragHandleProps', type: PropTypes.object, val: {} }
+  { name: 'dragHandleProps', type: PropTypes.object, val: {} },
+  { name: 'busy', type: PropTypes.bool, val: false }
 ]
 
 YouTubeVideo.defaultProps = defaultProps(props)

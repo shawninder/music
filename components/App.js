@@ -140,6 +140,12 @@ class App extends Component {
 
   gotDispatch (action) {
     this.props.dispatch(action)
+    if (action.origin) {
+      this.props.dispatch({
+        type: 'Ack:ack',
+        origin: action.origin
+      })
+    }
     setTimeout(this.updateBarItems, 10)
   }
 
@@ -463,11 +469,31 @@ class App extends Component {
       this.play(data)
     } else {
       const newData = cloneDeep(data)
+      const origin = Math.random().toString().slice(2)
       newData.key = `${data.key || data.data.id.videoId}:${Date.now()}`
       this.dispatch({
-        type: 'Queue:enqueue',
-        data: newData
+        type: 'Ack:addPending',
+        dispatching: 'Queue:enqueue',
+        data: newData,
+        origin
       })
+      this.dispatch({
+        type: 'Queue:enqueue',
+        data: newData,
+        origin
+      })
+      const confirm = (obj) => {
+        if (obj.ack && obj.ack.origin === origin) {
+          this.props.socket.off('slice', confirm)
+          this.dispatch({
+            type: 'Ack:removePending',
+            dispatching: 'Queue:enqueue',
+            data: newData,
+            origin
+          })
+        }
+      }
+      this.props.socket.on('slice', confirm)
       setTimeout(this.updateBarItems, 10)
     }
   }
@@ -717,7 +743,7 @@ class App extends Component {
           data: state.queue.now.data,
           inQueue: true,
           queueIndex: 0
-        }} onClick={this.togglePlaying} />
+        }} onClick={this.togglePlaying} pending={this.props.ack.pending} />
       )
       : (
         <Droppable droppableId={`droppable-playingNow`}>
@@ -1032,9 +1058,13 @@ class App extends Component {
           .youtube-result .toggle .idx {
             display: inline-block;
             text-align: right;
-            width: 0;
+            width: 0.01px;
             transition-property: width;
             transition-duration: 2s;
+          }
+
+          .youtube-result .toggle.busy .idx {
+            width: 12px;
           }
 
           .youtube-result .toggle.toggled .idx {
@@ -1555,6 +1585,9 @@ class App extends Component {
             suggest={(query) => {
               return this.props.findMusic(query)
             }}
+            componentProps={{
+              pending: this.props.ack.pending
+            }}
             ResultComponent={makeResultComponent({
               actions: {
                 enqueue: {
@@ -1614,7 +1647,6 @@ class App extends Component {
               clearAll: this.clearAll,
               toggleShowHistory: this.toggleShowHistory,
               toggleShowUpNext: this.toggleShowUpNext,
-              // inspectParty: this.inspectParty,
               inspectPartyServer: this.inspectPartyServer
             }}
             filters={{
@@ -1644,9 +1676,7 @@ class App extends Component {
             onClick={this.figureClicked}
             onKeyDown={this.figureKeyDown}
             tabIndex='0'
-          >
-            {/* <img src='/static/party-hosting.svg' alt='hosting' title='hosting' /> */}
-          </div>
+          />
           <div className='main'>
             <Party
               className={'autoparty'}
@@ -1671,6 +1701,7 @@ class App extends Component {
               onButtonRef={(el) => {
                 this.partyButton = el
               }}
+              pending={this.props.ack.pending}
             />
             <h3 className='partyName'>{partyName}</h3>
             <div className='queue'>
@@ -1679,6 +1710,9 @@ class App extends Component {
                 hideLabel={`${this.dict.get('queue.history.hide')} (${state.queue.history.length})`}
                 className={historyClasses.join(' ')}
                 items={state.queue.history}
+                componentProps={{
+                  pending: this.props.ack.pending
+                }}
                 defaultComponent={makeResultComponent({
                   actions: {
                     jumpTo: {
@@ -1694,8 +1728,6 @@ class App extends Component {
                       icon: dequeueIcon
                     }
                   }
-                  // remember: this.remember,
-                  // isInCollection: this.isInCollection
                 })}
                 onItem={{
                   space: this.jumpBackTo
@@ -1706,9 +1738,6 @@ class App extends Component {
                 hidden={state.queue.history.length === 0}
               />
               <section className={playingNowClasses.join(' ')}>
-                {/* <h3>
-                  {this.dict.get('queue.playingNow.title')}
-                </h3> */}
                 {playingNowZone}
                 {(state.queue.now.key && !this.props.party.attending)
                   ? (
@@ -1724,9 +1753,11 @@ class App extends Component {
                   ) : null}
               </section>
               <List
-                // title={`${this.dict.get('upnext.title')} (${state.queue.upNext.length})`}
                 className={upNextClasses.join(' ')}
                 items={state.queue.upNext}
+                componentProps={{
+                  pending: this.props.ack.pending
+                }}
                 defaultComponent={makeResultComponent({
                   actions: {
                     jumpTo: {
@@ -1782,7 +1813,7 @@ const props = [
   { name: 'player', type: PropTypes.object.isRequired },
   { name: 'queue', type: PropTypes.object.isRequired },
   { name: 'party', type: PropTypes.object.isRequired },
-  { name: 'socketKey', type: PropTypes.number.isRequired }
+  { name: 'socketKey', type: PropTypes.string.isRequired }
 ]
 
 App.defaultProps = defaultProps(props)
