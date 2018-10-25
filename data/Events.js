@@ -1,8 +1,9 @@
+const btoa = require('btoa')
 const fetch = require('isomorphic-unfetch')
 const qs = require('querystring')
 
 class Events {
-  search (query, nextPageToken) {
+  search (query, nextPageToken, adminUsername, adminPassword) {
     // Look in memory
     // Look in local and session storage
     // Look in network
@@ -12,15 +13,24 @@ class Events {
       q: query,
       pageToken: nextPageToken
     })}`)
+    const token = btoa(`${adminUsername}:${adminPassword}`)
     return fetch(`${process.env.API_URL}/logs?${qs.stringify({
       q: query,
       pageToken: nextPageToken
-    })}`)
+    })}`, {
+      headers: {
+        Authorization: `Basic ${token}`
+      }
+    })
       .then((results) => {
         if (results.status === 204) {
           return { error: 'No Results!?' }
-        } else {
+        } else if (results.ok) {
           return results.json()
+        } else {
+          return {
+            error: 'Not OK'
+          }
         }
       })
       .then((data) => {

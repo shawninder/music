@@ -13,9 +13,25 @@ import Log from '../components/Log'
 class Logs extends Component {
   constructor (props) {
     super(props)
+    this.usernameChanged = this.usernameChanged.bind(this)
+    this.passwordChanged = this.passwordChanged.bind(this)
     this.dispatch = this.dispatch.bind(this)
     this.loadMore = this.loadMore.bind(this)
     this.debouncedLoadMore = debounce(this.loadMore, 500, { maxWait: 750 }).bind(this) // TODO remove this debounce (possible when "loading" is implemented wherein a subsequent call would cancel, but only if calling with a different query or pageToken)
+  }
+  usernameChanged (event) {
+    const action = {
+      type: 'Auth:setUsername',
+      value: event.target.value
+    }
+    this.props.dispatch(action)
+  }
+
+  passwordChanged (event) {
+    this.props.dispatch({
+      type: 'Auth:setPassword',
+      value: event.target.value
+    })
   }
   dispatch (action) {
     this.props.dispatch(action)
@@ -886,9 +902,9 @@ class Logs extends Component {
         `}</style>
         <form className='authForm'>
           <label>Username: </label>
-          <input type='text' />
+          <input type='text' onChange={this.usernameChanged} />
           <label>Password: </label>
-          <input type='password' />
+          <input type='password' onChange={this.passwordChanged} />
         </form>
         <h2>Logs</h2>
         <div className='logsContainer'>

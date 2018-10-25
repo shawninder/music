@@ -6,8 +6,8 @@ import Logs from '../views/Logs.js'
 const events = new Events()
 
 function mapStateToProps (state) {
-  const { bar } = state
-  return { bar }
+  const { auth, bar } = state
+  return { auth, bar }
 }
 
 // TODO clean up nested `_dispatch`s
@@ -20,8 +20,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     findLogs: (query, nextPageToken) => {
       return (_dispatch, getState) => {
+        const state = getState()
         console.log(`events.search('${query}')`)
-        return events.search(query, nextPageToken)
+        return events.search(query, nextPageToken, state.auth.username, state.auth.password)
       }
     }
   }, dispatch)
