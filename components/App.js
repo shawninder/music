@@ -469,31 +469,33 @@ class App extends Component {
       this.play(data)
     } else {
       const newData = cloneDeep(data)
-      const origin = Math.random().toString().slice(2)
       newData.key = `${data.key || data.data.id.videoId}:${Date.now()}`
-      this.dispatch({
-        type: 'Ack:addPending',
-        dispatching: 'Queue:enqueue',
-        data: newData,
-        origin
-      })
+      const origin = Math.random().toString().slice(2)
+      if (this.props.party.attending) {
+        this.dispatch({
+          type: 'Ack:addPending',
+          dispatching: 'Queue:enqueue',
+          data: newData,
+          origin
+        })
+        const confirm = (obj) => {
+          if (obj.ack && obj.ack.origin === origin) {
+            this.props.socket.off('slice', confirm)
+            this.dispatch({
+              type: 'Ack:removePending',
+              dispatching: 'Queue:enqueue',
+              data: newData,
+              origin
+            })
+          }
+        }
+        this.props.socket.on('slice', confirm)
+      }
       this.dispatch({
         type: 'Queue:enqueue',
         data: newData,
         origin
       })
-      const confirm = (obj) => {
-        if (obj.ack && obj.ack.origin === origin) {
-          this.props.socket.off('slice', confirm)
-          this.dispatch({
-            type: 'Ack:removePending',
-            dispatching: 'Queue:enqueue',
-            data: newData,
-            origin
-          })
-        }
-      }
-      this.props.socket.on('slice', confirm)
       setTimeout(this.updateBarItems, 10)
     }
   }
@@ -1051,6 +1053,12 @@ class App extends Component {
             font-weight: bold;
           }
 
+          .youtube-result .toggle img {
+            margin-left: 0;
+            transition-property: margin-left;
+            transition-duration: 2s;
+          }
+
           .youtube-result .toggle.toggled img {
             margin-left: 5px;
           }
@@ -1058,18 +1066,19 @@ class App extends Component {
           .youtube-result .toggle .idx {
             display: inline-block;
             text-align: right;
-            width: 0.01px;
+            width: 0;
             transition-property: width;
             transition-duration: 2s;
+          }
+
+          .youtube-result .toggle.toggled .idx {
+            width: 25px;
           }
 
           .youtube-result .toggle.busy .idx {
             width: 12px;
           }
 
-          .youtube-result .toggle.toggled .idx {
-            width: 25px;
-          }
           .youtube-result .art {
             grid-area: left;
             border-radius: 5px;
