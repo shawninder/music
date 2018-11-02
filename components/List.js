@@ -29,11 +29,13 @@ class List extends Component {
     if (!isServer) {
       // see https://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport/7557433#7557433
       if (global.addEventListener) {
+        global.addEventListener('load', this.checkLoader, false)
         global.addEventListener('DOMContentLoaded', this.checkLoader, false)
         global.addEventListener('load', this.checkLoader, false)
         global.addEventListener('scroll', this.checkLoader, false)
         global.addEventListener('resize', this.checkLoader, false)
       } else if (global.attachEvent) {
+        global.attachEvent('load', this.checkLoader)
         global.attachEvent('onDOMContentLoaded', this.checkLoader)
         global.attachEvent('onload', this.checkLoader)
         global.attachEvent('onscroll', this.checkLoader)
@@ -46,11 +48,13 @@ class List extends Component {
     if (!isServer) {
       // see https://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport/7557433#7557433
       if (global.removeEventListener) {
+        global.removeEventListener('load', this.checkLoader, false)
         global.removeEventListener('DOMContentLoaded', this.checkLoader, false)
         global.removeEventListener('load', this.checkLoader, false)
         global.removeEventListener('scroll', this.checkLoader, false)
         global.removeEventListener('resize', this.checkLoader, false)
       } else if (global.detachEvent) {
+        global.detachEvent('load', this.checkLoader)
         global.detachEvent('onDOMContentLoaded', this.checkLoader)
         global.detachEvent('onload', this.checkLoader)
         global.detachEvent('onscroll', this.checkLoader)
@@ -221,7 +225,7 @@ class List extends Component {
       }
     })
     const loaderContents = this.props.items.length < this.props.maxResults ? this.props.loadingTxt : this.props.maxReachedTxt
-    const loader = <li className='loader' tabIndex='0' ref={(el) => { this.loader = el }}>{loaderContents}</li>
+    const loader = <li className='loader' tabIndex='0' ref={(el) => { this.loader = el; this.checkLoader() }}>{loaderContents}</li>
 
     const dropZone = this.props.areDraggable
       ? (
