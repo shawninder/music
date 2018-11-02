@@ -1,6 +1,10 @@
 # Name ideas
 
-tune in
+## Best yet
+crowds-play.com
+- Voiced: Crowds Dash Play (Crowds that play)
+- Taglined: "Get the crowd involved in your playlist"
+
 ## Elements
 
 ### Collaboration
@@ -158,6 +162,7 @@ tune in
 - .life
 
 ## Available urls ($/month)
+- crowds-play.com  13$  Get the Crowd involved in your playlist!
 - joinplaylist.tech 5$  Join the playlist and insert your favourite tunes!
 - wedj.in 13$           Allow guests to wedge songs into your playlist
 - gimmedj.com 13$       (.org,.net 16, .app 22)
