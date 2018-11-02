@@ -60,7 +60,6 @@ class Logs extends Component {
     })
   }
   render () {
-    console.log('this.props', this.props)
     return (
       <div className='logsPage'>
         <Head title="Crowd's Play | Logs" />
