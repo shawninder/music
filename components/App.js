@@ -826,7 +826,7 @@ class App extends Component {
             padding: 0;
             position: relative;
             background-color: #33333;
-            background-image: url('/static/bg.svg');
+            background-image: url('static/bg.svg');
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-size: 100% 100% !important;
@@ -1418,25 +1418,25 @@ class App extends Component {
           }
 
           .figure.disconnected {
-            background-image: url('/static/asleep.svg');
+            background-image: url('static/asleep.svg');
           }
           .figure.connected {
-            background-image: url('/static/awake.svg');
+            background-image: url('static/awake.svg');
           }
           .figure.hosting.disconnected {
-            background-image: url('/static/guilty.svg');
+            background-image: url('static/guilty.svg');
           }
           .figure.hosting.connected {
-            background-image: url('/static/happy.svg');
+            background-image: url('static/happy.svg');
           }
           .figure.attending.disconnected {
-            background-image: url('/static/sad.svg')
+            background-image: url('static/sad.svg')
           }
           .figure.attending.connected {
-            background-image: url('/static/glad.svg')
+            background-image: url('static/glad.svg')
           }
           .figure.attending.host-disconnected {
-            background-image: url('/static/sad.svg')
+            background-image: url('static/sad.svg')
           }
 
           .autoparty {
