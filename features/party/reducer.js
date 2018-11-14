@@ -48,11 +48,9 @@ export default function partyReducer (state = {}, action) {
       break
     }
     case 'Party:gotState':
-      console.log('gotState', action)
       newState.state = action.state
       break
     case 'Party:gotSlice':
-      console.log('gotSlice', action)
       Object.assign(newState.state, action.slice)
       break
     case 'Party:dispatch': {
