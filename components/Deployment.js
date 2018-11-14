@@ -86,7 +86,6 @@ class Deployment extends Component {
   }
 
   render () {
-    // console.log('this.props.data', this.props.data)
     const classes = this.props.className.split(' ')
     classes.push('deployment')
     const date = new Date(this.props.data.created)
