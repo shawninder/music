@@ -40,8 +40,8 @@
     "fr": "nom"
   },
   "party.default": {
-    "en": "Playlist",
-    "fr": "Liste de lecture"
+    "en": "Party",
+    "fr": "Fête"
   },
   "party.buttonDefault": {
     "en": "Enter name",
@@ -68,12 +68,12 @@
     "fr": "..."
   },
   "party.attending": {
-    "en": "Playlist (attending)",
-    "fr": "Liste de lecture (invité)"
+    "en": "Guest",
+    "fr": "Invité"
   },
   "party.hosting": {
-    "en": "Playlist (hosting)",
-    "fr": "Liste de lecture (hôte)"
+    "en": "Host",
+    "fr": "Hôte"
   },
   "party.copyLinkPrefix": {
     "en": "Invite link:",
@@ -82,6 +82,10 @@
   "party.copyBtn": {
     "en": "copy",
     "fr": "copier"
+  },
+  "party.linkCopied": {
+    "en": "Copied to your clipboard",
+    "fr": "Copié dans votre presse-papier"
   },
   "queue.playingNow.title": {
     "en": "Playing Now",
