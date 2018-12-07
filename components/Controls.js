@@ -11,6 +11,7 @@ import pauseIcon from './icons/pause'
 import nextIcon from './icons/next'
 import volumeIcon from './icons/volumeHigh'
 
+import tfns from '../styles/timing-functions'
 // import controlsCss from '../styles/controls'
 
 class Controls extends Component {
@@ -71,7 +72,7 @@ class Controls extends Component {
             opacity: 0;
             transition-property: opacity, background-color;
             transition-duration: 0.2s;
-            transition-timing-function: var(--ease-in-out-quint);
+            transition-timing-function: ${tfns.easeInOutQuint};
           }
           .controls-toggleFiles.showingFiles {
             border-top-color: #666666;

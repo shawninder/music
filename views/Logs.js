@@ -8,6 +8,8 @@ import Head from '../components/Head'
 import Bar from '../components/Bar'
 import Log from '../components/Log'
 
+import tfns from '../styles/timing-functions'
+
 // const isServer = typeof window === 'undefined'
 
 class Logs extends Component {
@@ -111,7 +113,7 @@ class Logs extends Component {
 
 
           .App {
-            transition-timing-function: var(--ease-in-out-quint);
+            transition-timing-function: ${tfns.easeInOutQuint};
           }
 
           .App {

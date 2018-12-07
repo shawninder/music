@@ -1,8 +1,14 @@
 import cloneDeep from 'lodash.clonedeep'
 
 function dedupe (items) {
-  console.log('items', items)
-  return items
+  const keys = {}
+  return items.filter((item) => {
+    if (keys[item.key]) {
+      return false
+    }
+    keys[item.key] = true
+    return true
+  })
 }
 
 export default function barReducer (state = {}, action) {

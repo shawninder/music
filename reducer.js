@@ -16,8 +16,6 @@ import fileInputReducer from './features/fileInput/reducer'
 //   return state
 // }
 
-import cloneDeep from 'lodash.clonedeep'
-
 export default combineReducers({
   ack: ackReducer,
   auth: authReducer,

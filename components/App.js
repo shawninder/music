@@ -33,6 +33,9 @@ import enqueueIcon from './icons/enqueue'
 import nextIcon from './icons/next'
 import dequeueIcon from './icons/dequeue'
 
+import colors from '../styles/colors'
+import tfns from '../styles/timing-functions'
+
 const isServer = typeof window === 'undefined'
 const CHUNK_SIZE = 100000
 const visibleFiles = {}
@@ -158,7 +161,7 @@ class App extends Component {
       global.removeEventListener('keydown', this.keyDown, false)
       global.removeEventListener('click', this.globalClick, false)
 
-      console.log('CLOSING IndexedDB')
+      console.log('Closing IndexedDB')
       if (this.db) {
         this.db.close()
       }
@@ -1523,11 +1526,11 @@ class App extends Component {
               "Droid Sans", "Helvetica Neue", sans-serif; // Old Android
             */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-            background-color: #333333;
+            background-color: ${colors.black};
           }
 
           input[type=text].disabled {
-            background: beige;
+            background: ${colors.beige};
           }
 
           svg {
@@ -1539,13 +1542,13 @@ class App extends Component {
           }
 
           .App {
-            transition-timing-function: var(--ease-in-out-quint);
+            transition-timing-function: ${tfns.easeInOutQuint};
           }
 
           .App {
             padding: 0;
             position: relative;
-            background-color: #33333;
+            background-color: ${colors.black};
             background-image: url('static/bg.svg');
             background-repeat: no-repeat;
             background-attachment: fixed;
@@ -1556,19 +1559,19 @@ class App extends Component {
           }
 
           .App.connected, .App.connected .figure, .App.connected .autoparty {
-            background-color: aqua;
+            background-color: ${colors.aqua};
           }
 
           .App.attending, .App.attending .figure, .App.attending .autoparty {
-            background-color: green;
+            background-color: ${colors.green};
           }
 
           .App.hosting, .App.hosting .figure, .App.hosting .autoparty {
-            background-color: #e0b01d;
+            background-color: ${colors.orange};
           }
 
           .App.disconnected, .App.disconnected .figure, .App.disconnected .autoparty {
-            background-color: #666666;
+            background-color: ${colors.six};
           }
 
           .authForm {
@@ -1587,7 +1590,7 @@ class App extends Component {
           }
 
           .bar-menu {
-            color: dimgrey;
+            color: ${colors.dimgrey};
             position: fixed;
             top: 5px;
             left: 5px;
@@ -1596,7 +1599,7 @@ class App extends Component {
           }
 
           .bar-menu:focus {
-            color: whitesmoke;
+            color: ${colors.whitesmoke};
           }
 
           .bar-menu .icon {
@@ -1613,8 +1616,8 @@ class App extends Component {
             padding: 5px 80px 5px 60px;
             z-index: 4;
             border: 0;
-            color: whitesmoke;
-            background: #333333;
+            color: ${colors.whitesmoke};
+            background: ${colors.black};
             border-radius: 0;
             box-shadow: 0px 5px 5px 0px rgb(0,0,0,0.25);
             transition-property: background-color;
@@ -1631,7 +1634,7 @@ class App extends Component {
             padding: 5px 80px 5px 60px;
             z-index: 1;
             border: 0;
-            color: whitesmoke;
+            color: ${colors.whitesmoke};
             background: rgba(254, 70, 70, 0.8);
             border-radius: 0;
             transition-property: background-color;
@@ -1651,7 +1654,7 @@ class App extends Component {
           }
 
           .bar-field::placeholder {
-            color: #aaaaaa;
+            color: ${colors.lightgrey};
           }
 
           .bar-dismiss {
@@ -1661,7 +1664,7 @@ class App extends Component {
             font-size: large;
             z-index: 4;
             padding: 13px 13px;
-            color: whitesmoke;
+            color: ${colors.whitesmoke};
           }
 
           .bar-dismiss svg {
@@ -1695,7 +1698,7 @@ class App extends Component {
           }
 
           .App .bar-list {
-            background: #333333;
+            background: ${colors.black};
           }
 
           .bar-list .loader {
@@ -1709,15 +1712,15 @@ class App extends Component {
           }
 
           .App .bar-list.list > ol > li:nth-child(odd) {
-            background: whitesmoke;
+            background: ${colors.whitesmoke};
           }
 
           .App .bar-list.list > ol > li:nth-child(even) {
-            background: ghostwhite;
+            background: ${colors.ghostwhite};
           }
 
           .filesDialog ol > li:nth-child(even) {
-            background: #444444;
+            background: ${colors.four};
           }
 
           .App.dragging .bar-list {
@@ -1763,16 +1766,16 @@ class App extends Component {
           }
 
           .bar-list .toggle .idx {
-            color: dimgrey;
+            color: ${colors.dimgrey};
           }
           .bar-list .track .toggle .art {
             transition-duration: 0.1s;
-            transition-timing-function: var(--ease-in-out-quint);
+            transition-timing-function: ${tfns.easeInOutQuint};
           }
 
           .bar-list .track .toggle .art-img {
             transition-duration: 0.1s;
-            transition-timing-function: var(--ease-in-out-quint);
+            transition-timing-function: ${tfns.easeInOutQuint};
           }
 
           .track .icon {
@@ -1780,11 +1783,11 @@ class App extends Component {
           }
 
           li:nth-child(odd) .actions {
-            background-color: #eeeeee;
+            background-color: ${colors.eee};
           }
 
           li:nth-child(even) .actions {
-            background-color: whitesmoke;
+            background-color: ${colors.whitesmoke};
           }
 
           .upNext>h3, .history>h3 {
@@ -1819,10 +1822,6 @@ class App extends Component {
 
           }
 
-          .upNext>h3 {
-            color: chartreuse;
-          }
-
           .collapsed>ol {
             display: none;
           }
@@ -1832,7 +1831,7 @@ class App extends Component {
             margin: 0 auto;
             width: 100%;
             max-width: 640px;
-            color: whitesmoke;
+            color: ${colors.whitesmoke};
           }
 
           .emptyDropZone {
@@ -1860,11 +1859,11 @@ class App extends Component {
           }
 
           .App.disconnected.attending .controls button, .App.disconnected.attending .controls input, .App.disconnected.attending .controls label {
-            color: dimgrey;
+            color: ${colors.dimgrey};
           }
 
           .App.disconnected .seek-bar--current {
-            background-color: darkred;
+            background-color: ${colors.darkred};
           }
 
           .playingNow>h3 {
@@ -1872,7 +1871,7 @@ class App extends Component {
           }
 
           .partyName {
-            color: whitesmoke;
+            color: ${colors.whitesmoke};
             font-size: xx-large;
             text-align: center;
             margin-bottom: 10px;
@@ -1888,11 +1887,11 @@ class App extends Component {
           }
 
           .queue .icon {
-            color: whitesmoke;
+            color: ${colors.whitesmoke};
           }
 
           .inCollection {
-            color: green;
+            color: ${colors.green};
           }
 
           .notInCollection {
@@ -1969,7 +1968,7 @@ class App extends Component {
           }
 
           .autoparty.disconnected .partyBtn, .autoparty:disabled {
-            color: grey;
+            color: ${colors.grey};
           }
 
           .autoparty h3 {
@@ -1990,7 +1989,7 @@ class App extends Component {
             padding: 5px;
             font-size: medium;
             /* border-radius: 0; */
-            background: whitesmoke;
+            background: ${colors.whitesmoke};
             line-height: 1.5em;
           }
 
@@ -2013,7 +2012,7 @@ class App extends Component {
           }
 
           .autoparty.connected .partyBtn:enabled {
-            color: steelblue;
+            color: ${colors.steelblue};
             cursor: pointer;
           }
 
@@ -2047,7 +2046,7 @@ class App extends Component {
             margin: 0 auto;
             text-align: left;
             line-height: 1.5em;
-            color: whitesmoke;
+            color: ${colors.whitesmoke};
           }
           .Feedback h2 {
             font-size: x-large;
@@ -2069,7 +2068,7 @@ class App extends Component {
             float: right;
           }
           .Feedback .submitting [type=submit], .Feedback .submitted [type=submit] {
-            color: linen;
+            color: ${colors.linen};
             background: rgba(200, 200, 200, 20%);
             border-color: rgba(200, 200, 200, 20%);
           }

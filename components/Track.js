@@ -8,6 +8,8 @@ import moreIcon from './icons/more'
 
 import ActionList from './ActionList'
 
+import tfns from '../styles/timing-functions'
+
 const isServer = typeof window === 'undefined'
 
 class Track extends Component {
@@ -192,7 +194,7 @@ class Track extends Component {
             width: 0;
             transition-property: width;
             transition-duration: 0.1s;
-            transition-timing-function: var(--ease-in-out-quint);
+            transition-timing-function: ${tfns.easeInOutQuint};
           }
 
           .toggle.toggled .idx {

@@ -5,6 +5,8 @@ import propTypes from '../helpers/propTypes'
 
 import AudioFile from './AudioFile'
 
+import tfns from '../styles/timing-functions'
+
 const isServer = typeof window === 'undefined'
 
 class AudioFileInput extends Component {
@@ -82,7 +84,7 @@ class AudioFileInput extends Component {
             padding: 15px;
             transition-property: opacity;
             transition-duration: 0.2s;
-            transition-timing-function: var(--ease-in-out-quint);
+            transition-timing-function: ${tfns.easeInOutQuint};
             opacity: 1;
           }
           input.hidden {

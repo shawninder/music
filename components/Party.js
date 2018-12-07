@@ -320,7 +320,6 @@ class Party extends Component {
       }
     }
     this.props.socket.on('response', fn)
-    console.log('emitting request...')
     this.props.socket.emit('request', request)
     console.log('emitted request', request)
   }
