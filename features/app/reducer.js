@@ -15,6 +15,9 @@ export default function appReducer (state = {}, action) {
     case 'App:toggleShowUpNext':
       newState.showUpNext = !state.showUpNext
       break
+    case 'App:toggleShowFiles':
+      newState.showFiles = !state.showFiles
+      break
     case 'App:toggleParty':
       newState.partyCollapsed = !state.partyCollapsed
       break

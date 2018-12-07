@@ -6,11 +6,12 @@ function playNext (state, action) {
   if (!Array.isArray(items)) {
     items = [items]
   }
-  const now = Date.now()
   items = items.map((item, idx) => {
-    item.key += `:${now}`
     item.inQueue = true
     item.queueIndex = 1 + idx
+    if (action.origin) {
+      item.origin = action.origin
+    }
     return item
   })
   newState.upNext = items.concat(newState.upNext.map((upcoming, idx) => {
@@ -25,7 +26,6 @@ function toHistory (state, action) {
   if (!Array.isArray(items)) {
     items = [items]
   }
-  const now = Date.now()
   newState.history = newState.history
     .map((item, idx) => {
       item.inQueue = true
@@ -33,9 +33,11 @@ function toHistory (state, action) {
       return item
     })
     .concat(items.map((item, idx) => {
-      item.key += `:${now}_${idx}`
       item.inQueue = true
       item.queueIndex = -idx - 1
+      if (action.origin) {
+        item.origin = action.origin
+      }
       return item
     }))
   return newState
@@ -45,7 +47,7 @@ export default function queueReducer (state = {}, action) {
   let newState = cloneDeep(state)
   switch (action.type) {
     case 'Queue:play':
-      newState.now = cloneDeep(action.data)
+      newState.now = { ...cloneDeep(action.data), origin: action.origin }
       newState.now.inQueue = true
       newState.now.queueIndex = 0
       break
@@ -57,12 +59,13 @@ export default function queueReducer (state = {}, action) {
       newState = playNext(newState, action)
       break
     }
-    case 'Queue:enqueue':
+    case 'Queue:enqueue': {
       const newItem = cloneDeep(action.data)
       newItem.inQueue = true
       newItem.queueIndex = newState.upNext.length + 1
       newState.upNext = newState.upNext.concat([newItem])
       break
+    }
     case 'Queue:dequeue':
       if (action.newHistory) {
         newState.history = action.newHistory.map((item, idx) => {
@@ -85,7 +88,6 @@ export default function queueReducer (state = {}, action) {
         const now = newState.now
         let upNext = newState.upNext
         const previous = cloneDeep(history.pop())
-        previous.key = `${previous.key.slice(0, previous.key.lastIndexOf(':'))}${Date.now()}`
         previous.queueIndex = 0
         if (now && now.key) {
           now.queueIndex = 1
@@ -110,7 +112,6 @@ export default function queueReducer (state = {}, action) {
         // Put playing now in history
         if (now && now.key) {
           const item = cloneDeep(now)
-          item.key += `:${Date.now()}`
           item.queueIndex = -1
           delete item.Component
           history = history.map((i) => {
@@ -158,8 +159,7 @@ export default function queueReducer (state = {}, action) {
       let skipped = []
       if (newState.now && newState.now.key) {
         const now = cloneDeep(newState.now)
-        now.key += `:${Date.now()}`
-        skipped.push(newState.now)
+        skipped.push(now)
       }
       if (idx >= 0) {
         if (newState.upNext.length > 0) {
@@ -228,21 +228,20 @@ export default function queueReducer (state = {}, action) {
       break
     }
     case 'Queue:insert': {
-      const item = action.data
-      item.key += `:${Date.now()}`
+      const item = { ...action.data, origin: action.origin }
       newState[action.at.name].splice(action.at.idx, 0, item)
       if (action.at.name === 'history') {
         const hLen = newState.history.length
-        newState.history = newState.history.map((item, idx) => {
-          item.queueIndex = -hLen + idx
-          item.inQueue = true
-          return item
+        newState.history = newState.history.map((historyItem, idx) => {
+          historyItem.queueIndex = -hLen + idx
+          historyItem.inQueue = true
+          return historyItem
         })
       } else if (action.at.name === 'upNext') {
-        newState.upNext = newState.upNext.map((item, idx) => {
-          item.queueIndex = 1 + idx
-          item.inQueue = true
-          return item
+        newState.upNext = newState.upNext.map((upNextItem, idx) => {
+          upNextItem.queueIndex = 1 + idx
+          upNextItem.inQueue = true
+          return upNextItem
         })
       }
       // newState.now.queueIndex = 0

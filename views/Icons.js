@@ -4,20 +4,21 @@ import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
 import Head from '../components/Head'
-import cancelIcon from '../components/cancelIcon'
-import clearIcon from '../components/clearIcon'
-import dequeueIcon from '../components/dequeueIcon'
-import enqueueIcon from '../components/enqueueIcon'
-import jumpBackToIcon from '../components/jumpBackToIcon'
-import jumpToIcon from '../components/jumpToIcon'
-import moreIcon from '../components/moreIcon'
-import nextIcon from '../components/nextIcon'
-import pauseIcon from '../components/pauseIcon'
-import playIcon from '../components/playIcon'
-import playNowIcon from '../components/playNowIcon'
-import prevIcon from '../components/prevIcon'
-import searchIcon from '../components/searchIcon'
-
+import cancelIcon from '../components/icons/cancel'
+import clearIcon from '../components/icons/clear'
+import dequeueIcon from '../components/icons/dequeue'
+import enqueueIcon from '../components/icons/enqueue'
+import jumpBackToIcon from '../components/icons/jumpBackTo'
+import jumpToIcon from '../components/icons/jumpTo'
+import moreIcon from '../components/icons/more'
+import nextIcon from '../components/icons/next'
+import pauseIcon from '../components/icons/pause'
+import playIcon from '../components/icons/play'
+import playNowIcon from '../components/icons/playNow'
+import prevIcon from '../components/icons/prev'
+import searchIcon from '../components/icons/search'
+import volumeHighIcon from '../components/icons/volumeHigh'
+import addIcon from '../components/icons/add'
 // const isServer = typeof window === 'undefined'
 
 class Icons extends Component {
@@ -64,11 +65,13 @@ class Icons extends Component {
         `}</style>
         <ul>
           <li>{searchIcon}<span className='label'>search</span></li>
+          <li>{addIcon}<span className='label'>add</span></li>
           <li>{prevIcon}<span className='label'>prev</span></li>
           <li>{pauseIcon}<span className='label'>pause</span></li>
           <li>{playIcon}<span className='label'>play</span></li>
           <li>{playNowIcon}<span className='label'>playNow</span></li>
           <li>{nextIcon}<span className='label'>next</span></li>
+          <li>{volumeHighIcon}<span className='label'>volume-high</span></li>
         </ul>
         <ul>
           <li>{cancelIcon}<span className='label'>cancel</span></li>
@@ -87,6 +90,8 @@ class Icons extends Component {
           <li><img src='/static/glad.svg' /><span className='label'>glad</span></li>
           <li><img src='/static/sad.svg' /><span className='label'>sad</span></li>
           <li><img src='/static/guilty.svg' /><span className='label'>guilty</span></li>
+          <li><img src='/static/manga-skewed.svg' /><span className='label'>manga-skewed</span></li>
+          <li><img src='/static/manga.svg' /><span className='label'>manga</span></li>
         </ul>
       </div>
     )

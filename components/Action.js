@@ -43,21 +43,68 @@ class Action extends Component {
   }
 
   render () {
+    const classes = this.props.className ? this.props.className.split(' ') : []
+    classes.push('action')
     return (
       <div
-        key={this.props.txt}
-        className={this.props.className}
+        className={classes.join(' ')}
         onClick={this.onClick}
         tabIndex='-1'
         onKeyDown={this.onKeyDown}
       >
-        <span className='action-idx'>{this.props.targetIdx}</span>
+        <span className='idx'>{this.props.targetIdx}</span>
         {this.props.txt
           ? (
-            <span className='action-label'>{this.props.txt}</span>
+            <span className='label'>{this.props.txt}</span>
           )
           : null}
-        <span className='action-icon'>{this.props.icon}</span>
+        <span className='icon'>{this.props.icon}</span>
+        <style jsx>{`
+          span, img {
+            vertical-align: middle;
+          }
+
+          .action:hover {
+            color: steelblue;
+          }
+          .action {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 100px auto 50px;
+            grid-template-areas:
+              "idx label icon"
+          }
+          .action:hover {
+            background: white;
+          }
+
+          .idx, .label, .icon {
+            line-height: 20px;
+            padding: 5px;
+          }
+
+          .idx {
+            grid-area: idx;
+            font-size: x-small;
+            text-align: right;
+            width: 35px;
+          }
+
+          .label {
+            grid-area: label;
+            border-bottom: 1px solid #ccc;
+          }
+
+          .icon {
+            grid-area: icon;
+            text-align: right;
+            padding-right: 7px;
+          }
+
+          .icon svg.icon {
+            color: dimgrey;
+          }
+        `}</style>
       </div>
     )
   }
@@ -69,7 +116,8 @@ const props = [
   { name: 'go', type: PropTypes.func.isRequired },
   { name: 'txt', type: PropTypes.string.isRequired },
   { name: 'icon', type: PropTypes.node, val: null },
-  { name: 'idx', type: PropTypes.number.isRequired }
+  { name: 'idx', type: PropTypes.number, val: -1 },
+  { name: 'queueIndex', type: PropTypes.oneOfType([ PropTypes.number, PropTypes.bool ]), val: false }
 ]
 
 Action.defaultProps = defaultProps(props)

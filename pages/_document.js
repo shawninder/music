@@ -24,7 +24,7 @@ export default class MyDocument extends Document {
           <meta httpEquiv='Content-Language' content={lang} />
           <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0' />
           <meta name='theme-color' content='#333333' />
-          <link rel='manifest' href='static/manifest.json' />
+          <link rel='manifest' href='/static/manifest/manifest.json' />
           <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' />
         </Head>
         <body tabIndex='-1'>
@@ -33,6 +33,7 @@ export default class MyDocument extends Document {
           </noscript>
           <Main />
           <NextScript />
+          <script src='https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.0/jsmediatags.min.js' />
         </body>
       </html>
     )

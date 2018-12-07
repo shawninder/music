@@ -15,7 +15,8 @@ const defaultPlayer = {
   playing: false,
   duration: -1,
   t: 0,
-  f: 0
+  f: 0,
+  v: 0.5
 }
 
 const defaultQueue = {
@@ -32,6 +33,7 @@ const exampleInitialState = {
   app: {
     showHistory: false,
     showUpNext: true,
+    showFiles: false,
     partyCollapsed: true,
     dragging: false,
     pending: {}
@@ -56,7 +58,6 @@ const exampleInitialState = {
   socketKey: '',
   party: {
     name: null,
-    checking: false,
     exists: false,
     hosting: false,
     attending: false,
@@ -64,7 +65,14 @@ const exampleInitialState = {
     state: {
       player: defaultPlayer,
       queue: defaultQueue
-    }
+    },
+    transfers: []
+  },
+  notice: {
+    showing: []
+  },
+  fileInput: {
+    files: []
   }
 }
 
@@ -73,8 +81,6 @@ const composed = [applyMiddleware(thunkMiddleware)]
 let socket = {}
 if (!isServer) {
   socket = io(exampleInitialState.party.socketUrl)
-}
-if (!isServer) {
   composed.push(persistStateSS([
     'app',
     'queue',
@@ -86,7 +92,8 @@ if (!isServer) {
     'queue',
     'player'
   ], {
-    socket
+    socket,
+    indexedDB
   }))
 }
 const enhancer = composeWithDevTools(...composed)

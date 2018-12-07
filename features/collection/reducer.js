@@ -4,7 +4,7 @@ export default function collectionReducer (state = {}, action) {
   let newState = cloneDeep(state)
   switch (action.type) {
     case 'Collection:toggle':
-      const key = action.data.data.id.videoId
+      const key = action.data.key
       const collection = cloneDeep(state.collection)
       if (collection[key]) {
         delete collection[key]

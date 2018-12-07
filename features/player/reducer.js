@@ -22,6 +22,9 @@ export default function playerReducer (state = {}, action) {
         newState.f = action.seconds / newState.duration
       }
       break
+    case 'Player:setVolume':
+      newState.v = action.value
+      break
   }
   return newState
 }

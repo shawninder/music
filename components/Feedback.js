@@ -8,6 +8,7 @@ class Feedback extends Component {
   constructor (props) {
     super(props)
     this.onSubmit = this.onSubmit.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
 
     this.state = {
       body: '',
@@ -31,6 +32,11 @@ class Feedback extends Component {
           submitting: false,
           submitted: true
         })
+        this.props.notify({
+          id: Math.random().toString().slice(2),
+          body: this.props.dict.get('feedback.submitted'),
+          duration: 3000
+        })
       } else {
         this.setState({
           submitting: false,
@@ -42,6 +48,15 @@ class Feedback extends Component {
       console.log('ex', ex)
     })
   }
+  onKeyDown (event) {
+    event.stopPropagation()
+    if (event.keyCode === 13 && event.metaKey && !event.ctrlKey && !event.shiftKey) { // cmd+enter
+      const form = event.target.parentNode
+      const button = form.querySelector('button[type=submit]')
+      button.focus()
+      button.click()
+    }
+  }
   render () {
     let classNames = []
     let buttonTxt = this.props.dict.get('feedback.submit')
@@ -51,7 +66,7 @@ class Feedback extends Component {
     }
     if (this.state.submitted) {
       classNames.push('submitted')
-      buttonTxt = this.props.dict.get('feedback.submitted')
+      buttonTxt = this.props.dict.get('feedback.submittedShort')
     }
     return (
       <div className='Feedback'>
@@ -59,9 +74,12 @@ class Feedback extends Component {
           <h2>
             {this.props.dict.get('feedback.caption')}
           </h2>
-          <textarea onChange={(event) => {
-            this.setState({ body: event.target.value, submitted: false })
-          }} />
+          <textarea
+            onChange={(event) => {
+              this.setState({ body: event.target.value, submitted: false })
+            }}
+            onKeyDown={this.onKeyDown}
+          />
           <label>{this.props.dict.get('feedback.emailLabel')}</label>
           <input type='email' placeholder='♫@♭mail♩com' onChange={(event) => {
             this.setState({ email: event.target.value, submitted: false })

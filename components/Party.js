@@ -3,7 +3,7 @@ import Clipboard from 'clipboard'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
-
+import get from 'lodash.get'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
@@ -35,6 +35,9 @@ class Party extends Component {
         this.hydrate()
       }
     })
+    this.state = {
+      checkingName: false
+    }
   }
 
   componentDidMount () {
@@ -46,7 +49,12 @@ class Party extends Component {
       }
     })
     this.clipboard.on('success', (event) => {
-      // event.clearSelection() // TODO this.props.notify(dict.get('Link copied to clipboard')) instead
+      // event.clearSelection()
+      this.props.notify({
+        id: `party.linkCopied${Math.random()}`,
+        body: this.props.dict.get('party.linkCopied'),
+        duration: 1500
+      })
     })
     this.clipboard.on('error', (event) => {
       console.error('Clipboard error', event)
@@ -65,7 +73,7 @@ class Party extends Component {
   checkPartyName (providedName) {
     const name = providedName || this.props.name || this.props.linkedPartyName
     if (name !== '') {
-      if (this.props.socket.connected && !this.props.checking) {
+      if (this.props.socket.connected && !this.state.checkingName) {
         const emitting = {
           reqName: 'isParty',
           socketKey: this.props.socketKey,
@@ -78,19 +86,17 @@ class Party extends Component {
               value: res.exists
             })
           }
-          // TODO Make sure we're always showing the correct "checking" status
-          this.props.dispatch({
-            type: 'Party:checking',
-            value: false
+          // TODO Make sure we're always showing the correct "checkingName" status
+          this.setState({
+            checkingName: false
           })
         }
-        this.props.dispatch({
-          type: 'Party:checking',
-          value: true
+        this.setState({
+          checkingName: true
         })
         this.socketRequest(emitting, onResponse)
       } else {
-        console.log("Can't check party name: this.props.socket.connected", this.props.socket.connected, 'this.props.checking', this.props.checking)
+        console.log("Can't check party name: this.props.socket.connected", this.props.socket.connected, 'this.state.checkingName', this.state.checkingName)
       }
     }
   }
@@ -134,7 +140,7 @@ class Party extends Component {
 
   onSubmit (event) {
     event.preventDefault()
-    if (this.props.checking) {
+    if (this.state.checkingName) {
       this.busy(event)
     } else {
       if (this.props.hosting) {
@@ -150,10 +156,9 @@ class Party extends Component {
   }
 
   hydrate () {
-    // TODO replay events missed during loading, if any?
-    if (this.props.hosting || this.props.attending) {
-      this.reconnect()
-    } else if (!this.props.linkedPartyName) {
+    // TODO? replay events missed during loading, if any
+    this.reconnect()
+    if (!this.props.hosting && !this.props.attending && !this.props.linkedPartyName) {
       this.checkPartyName()
     }
   }
@@ -167,7 +172,6 @@ class Party extends Component {
         as: 'guest'
       }
       this.props.socket.emit('dispatch', emitting)
-      console.log('emitted', emitting)
       return true
     } else {
       return false
@@ -234,17 +238,24 @@ class Party extends Component {
 
     this.props.socket.on('err', (errData) => {
       console.error('SOCKET ERROR', errData, this.props.pending)
-      const trackId = errData.data.data.data.id.videoId
-      const origin = errData.data.origin
-      const pendings = this.props.pending[trackId]
-      if (pendings) {
-        if (pendings[origin]) {
-          this.props.dispatch({
-            type: 'Ack:removePending',
-            data: errData.data.data,
-            origin: errData.data.origin
-          })
+      const origin = get(errData, 'data.origin', false)
+      if (origin) {
+        const trackId = get(errData, 'data.data.key', false)
+        if (trackId) {
+          const pendings = this.props.pending[trackId]
+          if (pendings) {
+            if (pendings[origin]) {
+              this.props.dispatch({
+                type: 'Ack:removePending',
+                data: errData.data.data,
+                origin: errData.data.origin
+              })
+            }
+          }
         }
+        this.props.notify({ id: origin, body: errData.msg.name, duration: 5000 })
+      } else {
+        this.props.notify({ id: `${errData.msg.name}`, body: errData.msg.name, duration: 5000 })
       }
     })
 
@@ -264,6 +275,12 @@ class Party extends Component {
 
     this.props.socket.on('dispatch', (action) => {
       this.props.gotDispatch(action)
+    })
+
+    this.props.socket.on('file-transfer-chunk', (msg) => {
+      if (this.props.hosting) {
+        this.props.gotFileChunk(msg)
+      }
     })
 
     this.props.socket.on('*', function () {
@@ -421,7 +438,7 @@ class Party extends Component {
           label = 'leave'
         }
       } else {
-        if (this.props.checking) {
+        if (this.state.checkingName) {
           label = 'checking'
         } else {
           if (this.props.exists) {
@@ -432,7 +449,7 @@ class Party extends Component {
         }
       }
     }
-    const classes = this.props.className.split(' ')
+    const classes = this.props.className ? this.props.className.split(' ') : []
     if (this.props.collapsed) {
       classes.push('collapsed')
     } else {
@@ -479,7 +496,7 @@ class Party extends Component {
                 this.props.onFieldRef(ref)
               }}
             />
-            <button className='partyBtn' disabled={!isServer && (this.props.checking || this.props.name === '')}
+            <button className='partyBtn' disabled={!isServer && (this.state.checkingName || this.props.name === '')}
               onClick={this.onSubmit}
               ref={(el) => {
                 this.button = el
@@ -524,7 +541,6 @@ const props = [
   { name: 'placeholder', type: PropTypes.string, val: '' },
   { name: 'dict', type: PropTypes.object.isRequired },
   { name: 'name', type: PropTypes.string, val: '' },
-  { name: 'checking', type: PropTypes.bool.isRequired },
   { name: 'exists', type: PropTypes.bool.isRequired },
   { name: 'attending', type: PropTypes.bool.isRequired },
   { name: 'hosting', type: PropTypes.bool.isRequired },
@@ -535,7 +551,8 @@ const props = [
   { name: 'collapsed', type: PropTypes.bool.isRequired },
   { name: 'onFieldRef', type: PropTypes.func, val: () => {} },
   { name: 'onButtonRef', type: PropTypes.func, val: () => {} },
-  { name: 'linkedPartyName', type: PropTypes.string, val: '' }
+  { name: 'linkedPartyName', type: PropTypes.string, val: '' },
+  { name: 'notice', type: PropTypes.func, val: console.log }
 ]
 
 Party.defaultProps = defaultProps(props)

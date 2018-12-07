@@ -57,6 +57,9 @@ export default function partyReducer (state = {}, action) {
       // Don't modify the state here, it would create an infinite loop, see syncState redux middleware
       break
     }
+    case 'Party:transferStart':
+      newState.transfers.push(action.data)
+      break
   }
   return newState
 }

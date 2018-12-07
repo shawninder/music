@@ -111,7 +111,7 @@ class Logs extends Component {
 
 
           .App {
-            transition-timing-function:ease-in-out;
+            transition-timing-function: var(--ease-in-out-quint);
           }
 
           .App {

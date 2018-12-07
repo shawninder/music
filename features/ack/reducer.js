@@ -8,7 +8,7 @@ export default function ackReducer (state = {}, action) {
       newState.origin = action.origin
       break
     case 'Ack:addPending': {
-      const id = action.data.data.id.videoId
+      const id = action.data.key
       if (!newState.pending[id]) {
         newState.pending[id] = {}
       }
@@ -19,7 +19,7 @@ export default function ackReducer (state = {}, action) {
       break
     }
     case 'Ack:removePending': {
-      const id = action.data.data.id.videoId
+      const id = action.data.key
       if (newState.pending[id]) {
         if (newState.pending[id][action.origin]) {
           delete newState.pending[id][action.origin]

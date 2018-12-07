@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import cloneDeep from 'lodash.clonedeep'
 import isEqual from 'lodash.isequal'
+import cloneDeep from 'lodash.clonedeep'
 import deepEqual from 'deep-equal'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
@@ -21,6 +21,7 @@ class List extends Component {
     this.previousItems = {}
     this.previousCollapsed = {}
     this.previousPending = {}
+    this.previousComponentProps = {}
     this.checkLoader = this.checkLoader.bind(this)
     this.loader = null
   }
@@ -63,14 +64,6 @@ class List extends Component {
     }
   }
 
-  checkLoader (event) {
-    if (this.loader) {
-      if (this.props.items.length < this.props.maxResults && isElementInViewport(this.loader)) {
-        this.props.loadMore()
-      }
-    }
-  }
-
   shouldComponentUpdate (nextProps, nextState) {
     if (!isEqual(this.previousCollapsed, nextState.collapsed) ||
       !isEqual(this.previousItems, nextProps.items) ||
@@ -82,6 +75,14 @@ class List extends Component {
       return true
     }
     return false
+  }
+
+  checkLoader (event) {
+    if (this.loader) {
+      if (this.props.items.length < this.props.maxResults && isElementInViewport(this.loader)) {
+        this.props.loadMore()
+      }
+    }
   }
 
   keyDown (items) {
@@ -172,7 +173,7 @@ class List extends Component {
   }
 
   render () {
-    const classes = this.props.className.split(' ')
+    const classes = this.props.className ? this.props.className.split(' ') : []
     classes.push('list')
     classes.push(this.state.collapsed ? 'collapsed' : 'not-collapsed')
     if (this.props.hidden) {
@@ -180,15 +181,14 @@ class List extends Component {
     }
     const items = this.props.items.map((item, idx) => {
       const itemClone = cloneDeep(item)
-      delete itemClone.Component
-      const Component = item.Component || this.props.defaultComponent
+      const Component = itemClone.Component || this.props.defaultComponent
       if (this.props.areDraggable) {
         return (
-          <Draggable key={`draggable-${itemClone.key}`} draggableId={`draggable-${itemClone.key}`} index={idx}>
+          <Draggable key={`${classes[0]}-list-draggable-${itemClone.key}`} draggableId={`draggable-${itemClone.key}`} index={idx}>
             {(draggableProvided, snapshot) => {
               return (
                 <li
-                  key={`${classes[0]}-list-draggable-${itemClone.key}`}
+                  key={`${classes[0]}-list-draggable-li-${itemClone.key}`}
                   tabIndex='0'
                   ref={draggableProvided.innerRef}
                   className={snapshot.isDragging ? 'dragging' : ''}
@@ -200,7 +200,7 @@ class List extends Component {
                     idx={idx}
                     queueIndex={itemClone.queueIndex}
                     dragHandleProps={draggableProvided.dragHandleProps}
-                    key={`${this.props.className.split(' ')[0]}-Component-${itemClone.data.id.videoId}`}
+                    key={`${classes[0]}-Component-draggable-${itemClone.key}`}
                     {...this.props.componentProps}
                   />
                 </li>
@@ -211,13 +211,15 @@ class List extends Component {
       } else {
         return (
           <li
-            key={`${classes[0]}-list-nodrag-${itemClone.key}`}
+            key={`${classes[0]}-list-nodrag-li-${item.key}`}
             tabIndex='0'
           >
             <Component
-              data={itemClone}
+              data={item}
               query={this.props.query}
               idx={idx}
+              queueIndex={item.queueIndex}
+              key={`${classes[0]}-Component-nodrag-${item.key}`}
               {...this.props.componentProps}
             />
           </li>
@@ -226,7 +228,6 @@ class List extends Component {
     })
     const loaderContents = this.props.items.length < this.props.maxResults ? this.props.loadingTxt : this.props.maxReachedTxt
     const loader = <li className='loader' tabIndex='0' ref={(el) => { this.loader = el; this.checkLoader() }}>{loaderContents}</li>
-
     const dropZone = this.props.areDraggable
       ? (
         <Droppable droppableId={`droppable-${classes[0]}`} isDropDisabled={this.props.isDropDisabled}>
@@ -268,7 +269,7 @@ class List extends Component {
         </ol>
       )
     return (
-      <div className={classes.join(' ')}>
+      <div key={`${classes[0]}-list`} className={classes.join(' ')}>
         {/* TODO handle `this.props.collapsible && !this.props.showLabel` */}
         {(this.props.showLabel && this.props.hideLabel && this.props.items.length > 0)
           ? (

@@ -5,7 +5,10 @@ import propTypes from '../helpers/propTypes'
 
 import ReactPlayer from 'react-player'
 
-import youtubeUrl from '../helpers/youtubeUrl.js'
+import toUrl from '../helpers/toUrl'
+import idbPlayer from './IndexedDBPlayer'
+
+ReactPlayer.addCustomPlayer(idbPlayer)
 
 class Player extends Component {
   render () {
@@ -15,7 +18,7 @@ class Player extends Component {
         <ReactPlayer
           ref={this.props.onRef}
           className={classes.join(' ')}
-          url={this.props.playingNow && this.props.playingNow.data && this.props.playingNow.data.id && youtubeUrl(this.props.playingNow.data)}
+          url={this.props.playingNow && this.props.playingNow.key && toUrl(this.props.playingNow)}
           controls
           playing={this.props.playing}
           onPlay={() => {

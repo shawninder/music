@@ -9,15 +9,19 @@ import controlsReducer from './features/controls/reducer'
 import partyReducer from './features/party/reducer'
 import playerReducer from './features/player/reducer'
 import dictReducer from './features/dict/reducer'
-const logReducer = (state = {}, action) => {
-  console.log('action', action)
-  return state
-}
+import noticeReducer from './features/notice/reducer'
+import fileInputReducer from './features/fileInput/reducer'
+// const logReducer = (state = {}, action) => {
+//   console.log('action', action)
+//   return state
+// }
+
+import cloneDeep from 'lodash.clonedeep'
 
 export default combineReducers({
   ack: ackReducer,
   auth: authReducer,
-  log: logReducer,
+  // log: logReducer,
   app: appReducer,
   collection: collectionReducer,
   dict: dictReducer,
@@ -28,5 +32,7 @@ export default combineReducers({
   player: playerReducer,
   socketKey: (state = {}) => {
     return state
-  }
+  },
+  notice: noticeReducer,
+  fileInput: fileInputReducer
 })

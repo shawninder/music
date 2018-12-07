@@ -111,6 +111,37 @@
     "en": "Up Next",
     "fr": "À venir"
   },
+  "files.sending": {
+    "en": "Sending files to party host",
+    "fr": "Envoi des fichiers"
+  },
+  "files.sending.singular": {
+    "en": "Sending file to party host",
+    "fr": "Envoi du fichiers"
+  },
+  "files.sending.ok": {
+    "en": "OK"
+  },
+  "files.sending.cancel": {
+    "en": "Cancel",
+    "fr": "Annuler"
+  },
+  "files.sending.undo": {
+    "en": "Undo",
+    "fr": "Retirer"
+  },
+  "files.sending.success": {
+    "en": "Files successfully sent to host",
+    "fr": "Fichiers envoyés à l'hôte"
+  },
+  "files.sending.error": {
+    "en": "Error sending files :(",
+    "fr": "Erreur lors de l'envoi des fichiers :("
+  },
+  "files.sending.error.singular": {
+    "en": "Error sending file :(",
+    "fr": "Erreur lors de l'envoi du fichier :("
+  },
   "feedback.submit": {
     "en": "Send",
     "fr": "Envoyer"
@@ -120,6 +151,10 @@
     "fr": "En route"
   },
   "feedback.submitted": {
+    "en": "Thanks! :)",
+    "fr": "Merci! :)"
+  },
+  "feedback.submittedShort": {
     "en": "Sent",
     "fr": "Envoyé"
   },
@@ -131,5 +166,4 @@
     "en": "Feedback, questions...",
     "fr": "Commentaires, questions..."
   }
-
 }

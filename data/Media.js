@@ -46,7 +46,7 @@ class Media {
             items: data.items.reduce((acc, item) => {
               if (this.isPlayable(item)) {
                 acc.push({
-                  type: 'YouTubeVideo',
+                  type: 'YouTube',
                   key: item.id.videoId,
                   ...item
                 })

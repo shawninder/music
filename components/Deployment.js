@@ -86,7 +86,7 @@ class Deployment extends Component {
   }
 
   render () {
-    const classes = this.props.className.split(' ')
+    const classes = this.props.className ? this.props.className.split(' ') : []
     classes.push('deployment')
     const date = new Date(this.props.data.created)
     const dateStr = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}.${date.getMilliseconds()}`

@@ -5,7 +5,7 @@ import propTypes from '../helpers/propTypes'
 
 class PartyStats extends Component {
   render () {
-    const classes = this.props.className.split(' ')
+    const classes = this.props.className ? this.props.className.split(' ') : []
     classes.push('partyStat')
 
     return (

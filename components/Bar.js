@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
+import deepEqual from 'deep-equal'
 import trim from 'lodash.trim'
 import debounce from 'lodash.debounce'
 import { filter, match, score } from 'fuzzaldrin'
@@ -9,8 +10,8 @@ import { filter, match, score } from 'fuzzaldrin'
 import Field from './Field'
 import List from './List'
 
-import searchIcon from './searchIcon'
-import clearIcon from './clearIcon'
+import searchIcon from './icons/search'
+import clearIcon from './icons/clear'
 
 const isServer = typeof window === 'undefined'
 
@@ -29,6 +30,10 @@ class Bar extends Component {
     this.menuClicked = this.menuClicked.bind(this)
     this.query = this.query.bind(this)
     this.debouncedQuery = debounce(this.query, 500, { maxWait: 750 })
+
+    this.previousItems = {}
+    this.previousPending = {}
+    this.previousComponentProps = {}
   }
 
   componentDidMount () {
@@ -45,6 +50,17 @@ class Bar extends Component {
         global.removeEventListener('click', this.globalClick, false)
       }
     }
+  }
+
+  shouldComponentUpdate (nextProps, nextState) {
+    if (!deepEqual(this.previousItems, nextProps.items) ||
+      !deepEqual(this.previousComponentProps, nextProps.componentProps)
+    ) {
+      this.previousItems = nextProps.items
+      this.previousComponentProps = nextProps.componentProps
+      return true
+    }
+    return false
   }
 
   globalClick (event) {
@@ -114,16 +130,9 @@ class Bar extends Component {
     this.props.suggest(query)
       .then(({ items, hasMore, prevPageToken, nextPageToken }) => {
         if (this.props.query === query) {
-          const data = items.map((item) => {
-            const obj = {
-              key: item.key,
-              data: item
-            }
-            return this.props.decorateItem(obj)
-          })
           this.props.dispatch({
             type: 'Bar:setItems',
-            data,
+            data: items,
             hasMore,
             nextPageToken,
             areCommands: false
@@ -196,7 +205,7 @@ class Bar extends Component {
           this.el = el
         }}
       >
-        <button className='bar-menu invisibutton' onClick={this.menuClicked}
+        <button className='bar-menu' onClick={this.menuClicked}
         >
           {searchIcon}
         </button>
@@ -241,7 +250,7 @@ class Bar extends Component {
         {
           this.props.query
             ? (
-              <button className='bar-dismiss invisibutton' onClick={(event) => {
+              <button className='bar-dismiss' onClick={(event) => {
                 if (this.props.items.length === 0) {
                   this.clear()
                 } else {
@@ -250,25 +259,38 @@ class Bar extends Component {
               }}>{clearIcon}</button>
             ) : null
         }
-
+        <style jsx>{`
+          button {
+            border: 0;
+            background: transparent;
+          }
+        `}</style>
       </div>
     )
   }
 }
 
 const props = [
+  { name: 'dispatch', type: PropTypes.func.isRequired },
   { name: 'placeholder', type: PropTypes.string, val: '' },
   { name: 'query', type: PropTypes.string.isRequired },
   { name: 'items', type: PropTypes.array.isRequired },
-  { name: 'autoFocus', type: PropTypes.bool, val: false },
-  { name: 'onRef', type: PropTypes.func, val: () => {} },
-  { name: 'autoDismiss', type: PropTypes.bool, val: true },
-  { name: 'onResult', type: PropTypes.object, val: {} },
-  { name: 'areCommands', type: PropTypes.bool, val: true },
   { name: 'hasMore', type: PropTypes.bool, val: false },
   { name: 'loadMore', type: PropTypes.func, val: () => {} },
+  { name: 'areCommands', type: PropTypes.bool, val: true },
+  { name: 'autoFocus', type: PropTypes.bool, val: false },
+  { name: 'suggest', type: PropTypes.func.isRequired },
+  { name: 'componentProps', type: PropTypes.object, val: {} },
+  { name: 'ResultComponent', type: PropTypes.any.isRequired },
+  { name: 'onResult', type: PropTypes.object, val: {} },
+  { name: 'commands', type: PropTypes.object, val: {} },
+  { name: 'filters', type: PropTypes.object, val: {} },
+  { name: 'onRef', type: PropTypes.func, val: () => {} },
+  { name: 'autoFocus', type: PropTypes.bool, val: false },
   { name: 'decorateItem', type: PropTypes.func, val: (item) => item },
-  { name: 'componentProps', type: PropTypes.object, val: {} }
+  { name: 'loadingTxt', type: PropTypes.string, val: 'Loading...' },
+  { name: 'maxReachedTxt', type: PropTypes.string, val: 'Max Reached' },
+  { name: 'autoDismiss', type: PropTypes.bool, val: true }
 ]
 
 Bar.defaultProps = defaultProps(props)

@@ -4,12 +4,13 @@ import pull from 'lodash.pull'
 
 import App from '../components/App'
 import Media from '../data/Media'
+import notify from '../features/notice/notify'
 
 const media = new Media()
 
 const mapStateToProps = (state) => {
-  const { ack, app, bar, dict, player, queue, socketKey, party } = state
-  return { ack, app, bar, dict, player, queue, socketKey, party }
+  const { ack, app, bar, dict, player, queue, socketKey, party, notice, fileInput } = state
+  return { ack, app, bar, dict, player, queue, socketKey, party, notice, fileInput }
 }
 
 const middlewares = []
@@ -49,6 +50,7 @@ const mapDispatchToProps = (dispatch) => {
         return media.search(query, nextPageToken)
       }
     },
+    notify,
     dev: () => {
       return (_dispatch, getState) => {
         return { _dispatch, getState }
