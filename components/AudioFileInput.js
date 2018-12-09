@@ -63,6 +63,7 @@ class AudioFileInput extends Component {
         queueIndex={this.props.queueIndex}
         idx={this.props.idx}
         playingNow={this.props.playingNow}
+        isPlaying={this.props.isPlaying}
         actionsAbove={this.props.actionsAbove}
         pending={this.props.pending}
       >
@@ -84,7 +85,7 @@ class AudioFileInput extends Component {
             padding: 15px;
             transition-property: opacity;
             transition-duration: 0.2s;
-            transition-timing-function: ${tfns.easeInOutQuint};
+            transition-timing-function: ${tfns.easeInOutQuad};
             opacity: 1;
           }
           input.hidden {
@@ -109,6 +110,7 @@ const props = [
   { name: 'actions', type: PropTypes.object, val: {} },
   { name: 'idx', type: PropTypes.number, val: -1 },
   { name: 'playingNow', type: PropTypes.string, val: '' },
+  { name: 'isPlaying', type: PropTypes.bool, val: false },
   { name: 'queueIndex', type: PropTypes.oneOfType([ PropTypes.number, PropTypes.bool ]), val: false },
   { name: 'actionsAbove', type: PropTypes.bool, val: false },
   { name: 'onFiles', type: PropTypes.func, val: (event) => { console.log('FILES', event.target.files) } },

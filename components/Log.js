@@ -7,7 +7,7 @@ class Log extends Component {
   render () {
     const classes = this.props.className ? this.props.className.split(' ') : []
     classes.push('log')
-    const { name, type, key, ...rest } = this.props.data.data
+    const { name, type, key, ...rest } = this.props.data
     return (
       <div
         className={classes.join(' ')}

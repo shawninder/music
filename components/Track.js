@@ -74,7 +74,7 @@ class Track extends Component {
   onToggle (event) {
     if (!this.props.data.inQueue) {
       event.stopPropagation()
-      if (!this.props.playingNow) {
+      if (!this.props.playingNow || !this.props.isPlaying) {
         if (this.props.actions.play) {
           this.props.actions.play.go(this.props.data)
         }
@@ -194,7 +194,7 @@ class Track extends Component {
             width: 0;
             transition-property: width;
             transition-duration: 0.1s;
-            transition-timing-function: ${tfns.easeInOutQuint};
+            transition-timing-function: ${tfns.easeInOutQuad};
           }
 
           .toggle.toggled .idx {
@@ -245,6 +245,7 @@ const props = [
   { name: 'onClick', type: PropTypes.func, val: () => {} },
   { name: 'idx', type: PropTypes.number, val: -1 },
   { name: 'playingNow', type: PropTypes.string, val: '' },
+  { name: 'isPlaying', type: PropTypes.bool, val: false },
   { name: 'queueIndex', type: PropTypes.oneOfType([ PropTypes.number, PropTypes.bool ]), val: false },
   { name: 'actionsAbove', type: PropTypes.bool, val: false },
   { name: 'pending', type: PropTypes.object, val: {} }

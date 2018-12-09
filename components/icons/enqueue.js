@@ -1,15 +1,8 @@
+import SvgSkeleton from './SvgSkeleton'
+
 export default (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
+  <SvgSkeleton
     viewBox='0 0 2839.7594 2839.7594'
-    style={{
-      clipRule: 'evenodd',
-      fillRule: 'evenodd',
-      imageRendering: 'optimizeQuality',
-      shapeRendering: 'geometricPrecision',
-      textRendering: 'geometricPrecision'
-    }}
-    version='1.1'
     title='enqueue'
     alt='enqueue'
     className='icon'
@@ -21,5 +14,5 @@ export default (
         d='m 3239.8108,4659.6812 c -48.7903,0.7071 -88.3883,-38.8908 -87.6812,-87.6812 -0.7071,-48.7904 38.8909,-88.3883 87.6812,-87.6812 l 1243.8009,-0.7071 0.7071,-1243.8009 c -0.7071,-48.7903 38.8908,-88.3883 87.6812,-87.6812 48.7904,-0.7071 88.3883,38.8909 87.6812,87.6812 l 0.7071,1243.8009 1243.8009,0.7071 c 48.7903,-0.7071 88.3883,38.8908 87.6812,87.6812 0.7071,48.7904 -38.8909,88.3883 -87.6812,87.6812 l -1243.8009,0.7071 -0.7071,1243.8009 c 0.7071,48.7903 -38.8908,88.3883 -87.6812,87.6812 -48.7904,0.7071 -88.3883,-38.8909 -87.6812,-87.6812 l -0.7071,-1243.8009 z'
       />
     </g>
-  </svg>
+  </SvgSkeleton>
 )

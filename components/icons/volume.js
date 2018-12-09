@@ -1,15 +1,8 @@
+import SvgSkeleton from './SvgSkeleton'
+
 export default (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
+  <SvgSkeleton
     viewBox='0 0 100 100'
-    style={{
-      clipRule: 'evenodd',
-      fillRule: 'evenodd',
-      imageRendering: 'optimizeQuality',
-      shapeRendering: 'geometricPrecision',
-      textRendering: 'geometricPrecision'
-    }}
-    version='1.1'
     title='volume'
     alt='volume'
     className='icon'
@@ -19,5 +12,5 @@ export default (
     >
       🔊
     </g>
-  </svg>
+  </SvgSkeleton>
 )

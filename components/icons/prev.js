@@ -1,14 +1,7 @@
+import SvgSkeleton from './SvgSkeleton'
+
 export default (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    version='1.1'
-    style={{
-      clipRule: 'evenodd',
-      fillRule: 'evenodd',
-      imageRendering: 'optimizeQuality',
-      shapeRendering: 'geometricPrecision',
-      textRendering: 'geometricPrecision'
-    }}
+  <SvgSkeleton
     viewBox='0 0 2199.9999 2199.9999'
     title='previous'
     alt='previous'
@@ -24,5 +17,5 @@ export default (
         d='m 3560,3531 h 542 c 49,0 88,39 88,88 v 1905 c 0,49 -39,88 -88,88 h -542 c -49,0 -88,-39 -88,-88 V 3619 c 0,-49 39,-88 88,-88 z'
       />
     </g>
-  </svg>
+  </SvgSkeleton>
 )

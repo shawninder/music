@@ -34,14 +34,7 @@ class Range extends Component {
   }
 
   startSeeking (event) {
-    const value = this.eventValue(event)
-    if (this.props.live) {
-      this.props.onChange(value)
-    }
-    this.setState({
-      seeking: true,
-      seekingTo: value
-    })
+    this.followSeek(event)
     global.addEventListener('mousemove', this.followSeek, false)
     global.addEventListener('mouseup', this.endSeek, false)
   }
@@ -87,29 +80,20 @@ class Range extends Component {
   eventValue (event) {
     const pos = this.props.vertical ? event.clientY : event.clientX
     const el = event.target
-    let total = 1
-    let displacement = 0
+
     // TODO this is all really risky, find better way
     if (el.className.indexOf(Range.makeClassName(this.props.className)) !== -1) {
-      total = this.props.vertical ? el.offsetHeight : el.offsetWidth
-      const rect = el.getBoundingClientRect()
-      displacement = this.props.vertical ? rect.top : rect.left
-    } else if (el.className.indexOf(Range.makeCurrentClassName(this.props.className)) !== -1) {
-      total = this.props.vertical ? el.parentNode.offsetHeight : el.parentNode.offsetWidth
-      const rect = el.parentNode.getBoundingClientRect()
-      displacement = this.props.vertical ? rect.top : rect.left
-    } else if (el.className.indexOf(Range.makeHandleClassName(this.props.className)) !== -1) {
-      total = this.props.vertical ? el.parentNode.offsetHeight : el.parentNode.offsetWidth
-      const rect = el.parentNode.getBoundingClientRect()
-      displacement = this.props.vertical ? rect.top : rect.left
-    } else {
-      let track = global.document.getElementsByClassName(this.props.className)[0]
-      total = this.props.vertical ? track.offsetHeight : track.offsetWidth
-      const rect = track.getBoundingClientRect()
-      displacement = this.props.vertical ? rect.top : rect.left
+      return calcPos(this.props.vertical, el, pos)
     }
-    const result = (pos - displacement) / total
-    return this.props.vertical ? 1 - result : result
+    if (el.className.indexOf(Range.makeCurrentClassName(this.props.className)) !== -1) {
+      return calcPos(this.props.vertical, el.parentNode, pos)
+    }
+    if (el.className.indexOf(Range.makeHandleClassName(this.props.className)) !== -1) {
+      return calcPos(this.props.vertical, el.parentNode, pos)
+    } else {
+      const track = global.document.getElementsByClassName(this.props.className)[0]
+      return calcPos(this.props.vertical, track, pos)
+    }
   }
 
   render () {
@@ -169,4 +153,12 @@ export default Range
 
 function chop (i, min, max) {
   return Math.max(Math.min(max, i), min)
+}
+
+function calcPos (isVertical, el, pos) {
+  const total = isVertical ? el.offsetHeight : el.offsetWidth
+  const rect = el.getBoundingClientRect()
+  const displacement = isVertical ? rect.top : rect.left
+  const result = (pos - displacement) / total
+  return isVertical ? 1 - result : result
 }

@@ -9,15 +9,11 @@ import propTypes from '../helpers/propTypes'
 import Head from '../components/Head'
 import List from '../components/List'
 import Deployment from '../components/Deployment.js'
+import AuthForm from '../components/AuthForm.js'
 
 // const isServer = typeof window === 'undefined'
 
 class Status extends Component {
-  constructor (props) {
-    super(props)
-    this.usernameChanged = this.usernameChanged.bind(this)
-    this.passwordChanged = this.passwordChanged.bind(this)
-  }
   static async getInitialProps ({ req, res }) {
     const url = `${process.env.API_URL}/deployments`
     const response = await fetch(url)
@@ -28,21 +24,6 @@ class Status extends Component {
     } catch (ex) {
       return { deployments: [] }
     }
-  }
-
-  usernameChanged (event) {
-    const action = {
-      type: 'Auth:setUsername',
-      value: event.target.value
-    }
-    this.props.dispatch(action)
-  }
-
-  passwordChanged (event) {
-    this.props.dispatch({
-      type: 'Auth:setPassword',
-      value: event.target.value
-    })
   }
 
   render () {
@@ -99,12 +80,7 @@ class Status extends Component {
             background: chocolate;
           }
         `}</style>
-        <form className='authForm'>
-          <label>Username: </label>
-          <input type='text' onChange={this.usernameChanged} />
-          <label>Password: </label>
-          <input type='password' onChange={this.passwordChanged} />
-        </form>
+        <AuthForm dispatch={this.props.dispatch} />
         <h2>Deployments</h2>
         <List
           className='deploymentList'

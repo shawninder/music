@@ -16,10 +16,6 @@ class Media {
     // Look in network
     // Look online
     const start = Date.now()
-    console.log('GET', `${process.env.API_URL}/media?${qs.stringify({
-      q: query,
-      pageToken: nextPageToken
-    })}`)
     return fetch(`${process.env.API_URL}/media?${qs.stringify({
       q: query,
       pageToken: nextPageToken

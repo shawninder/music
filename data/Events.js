@@ -9,10 +9,6 @@ class Events {
     // Look in network
     // Look online
     const start = Date.now()
-    console.log('GET', `${process.env.API_URL}/logs?${qs.stringify({
-      q: query,
-      pageToken: nextPageToken
-    })}`)
     const token = btoa(`${adminUsername}:${adminPassword}`)
     return fetch(`${process.env.API_URL}/logs?${qs.stringify({
       q: query,

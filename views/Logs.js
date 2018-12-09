@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-// import PropTypes from 'prop-types'
+import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
 
 import defaultProps from '../helpers/defaultProps'
@@ -7,6 +7,7 @@ import propTypes from '../helpers/propTypes'
 import Head from '../components/Head'
 import Bar from '../components/Bar'
 import Log from '../components/Log'
+import AuthForm from '../components/AuthForm'
 
 import tfns from '../styles/timing-functions'
 
@@ -15,28 +16,8 @@ import tfns from '../styles/timing-functions'
 class Logs extends Component {
   constructor (props) {
     super(props)
-    this.usernameChanged = this.usernameChanged.bind(this)
-    this.passwordChanged = this.passwordChanged.bind(this)
-    this.dispatch = this.dispatch.bind(this)
     this.loadMore = this.loadMore.bind(this)
     this.debouncedLoadMore = debounce(this.loadMore, 500, { maxWait: 750 }).bind(this) // TODO remove this debounce (possible when "loading" is implemented wherein a subsequent call would cancel, but only if calling with a different query or pageToken)
-  }
-  usernameChanged (event) {
-    const action = {
-      type: 'Auth:setUsername',
-      value: event.target.value
-    }
-    this.props.dispatch(action)
-  }
-
-  passwordChanged (event) {
-    this.props.dispatch({
-      type: 'Auth:setPassword',
-      value: event.target.value
-    })
-  }
-  dispatch (action) {
-    this.props.dispatch(action)
   }
   loadMore () {
     this.props.findLogs(this.props.bar.query, this.props.bar.nextPageToken).then(({ items, hasMore, prevPageToken, nextPageToken }) => {
@@ -50,7 +31,7 @@ class Logs extends Component {
           }
           return obj
         })
-        this.dispatch({
+        this.props.dispatch({
           type: 'Bar:setItems',
           data: this.props.bar.items.concat(newItems),
           hasMore,
@@ -113,7 +94,7 @@ class Logs extends Component {
 
 
           .App {
-            transition-timing-function: ${tfns.easeInOutQuint};
+            transition-timing-function: ${tfns.easeInOutQuad};
           }
 
           .App {
@@ -143,14 +124,6 @@ class Logs extends Component {
 
           .App.disconnected, .App.disconnected .figure, .App.disconnected .autoparty {
             background-color: #666666;
-          }
-
-          .authForm {
-            float: right;
-          }
-
-          .authForm label {
-            margin-left: 10px;
           }
 
           .bar {
@@ -901,17 +874,12 @@ class Logs extends Component {
             background: rgba(249, 249, 255, 0.25);
           }
         `}</style>
-        <form className='authForm'>
-          <label>Username: </label>
-          <input type='text' onChange={this.usernameChanged} />
-          <label>Password: </label>
-          <input type='password' onChange={this.passwordChanged} />
-        </form>
+        <AuthForm dispatch={this.props.dispatch} />
         <h2>Logs</h2>
         <div className='logsContainer'>
           <Bar
             className='logsBar'
-            dispatch={this.dispatch}
+            dispatch={this.props.dispatch}
             query={this.props.bar.query}
             items={this.props.bar.items}
             hasMore={this.props.bar.hasMore}
@@ -934,7 +902,9 @@ class Logs extends Component {
 }
 
 const props = [
-
+  { name: 'dispatch', type: PropTypes.func.isRequired },
+  { name: 'findLogs', type: PropTypes.func.isRequired },
+  { name: 'bar', type: PropTypes.object.isRequired }
 ]
 
 Logs.defaultProps = defaultProps(props)

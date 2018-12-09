@@ -767,55 +767,45 @@ class App extends Component {
   }
 
   playNext (data) {
-    const state = this.getPartyState()
-    if (!state.queue.now.key) {
-      this.play(data)
-    } else {
-      const newData = cloneDeep(data)
-      this.dispatch({
-        type: 'Queue:playNext',
-        data: newData,
-        origin: this.makeOrigin()
-      })
-      setTimeout(this.updateTracks, 10)
-    }
+    const newData = cloneDeep(data)
+    this.dispatch({
+      type: 'Queue:playNext',
+      data: newData,
+      origin: this.makeOrigin()
+    })
+    setTimeout(this.updateTracks, 10)
   }
 
   enqueue (data) {
-    const state = this.getPartyState()
-    if (!state.queue.now.key) {
-      this.play(data)
-    } else {
-      const newData = cloneDeep(data)
-      newData.key = data.key
-      const origin = this.makeOrigin()
-      if (this.props.party.attending) {
-        this.dispatch({
-          type: 'Ack:addPending',
-          dispatching: 'Queue:enqueue',
-          data: newData,
-          origin
-        })
-        const confirm = (obj) => {
-          if (obj.ack && obj.ack.origin === origin) {
-            this.props.socket.off('slice', confirm)
-            this.dispatch({
-              type: 'Ack:removePending',
-              dispatching: 'Queue:enqueue',
-              data: newData,
-              origin
-            })
-          }
-        }
-        this.props.socket.on('slice', confirm)
-      }
+    const newData = cloneDeep(data)
+    newData.key = data.key
+    const origin = this.makeOrigin()
+    if (this.props.party.attending) {
       this.dispatch({
-        type: 'Queue:enqueue',
+        type: 'Ack:addPending',
+        dispatching: 'Queue:enqueue',
         data: newData,
         origin
       })
-      setTimeout(this.updateTracks, 10)
+      const confirm = (obj) => {
+        if (obj.ack && obj.ack.origin === origin) {
+          this.props.socket.off('slice', confirm)
+          this.dispatch({
+            type: 'Ack:removePending',
+            dispatching: 'Queue:enqueue',
+            data: newData,
+            origin
+          })
+        }
+      }
+      this.props.socket.on('slice', confirm)
     }
+    this.dispatch({
+      type: 'Queue:enqueue',
+      data: newData,
+      origin
+    })
+    setTimeout(this.updateTracks, 10)
   }
 
   dequeue (data, idx, queueIndex, event) {
@@ -1034,10 +1024,24 @@ class App extends Component {
 
   getTrackEvents () {
     return {
-      'space': this.enqueue,
+      'space': (...args) => {
+        if (this.props.queue.now.key && this.props.player.playing) {
+          this.enqueue(...args)
+        } else {
+          this.play(...args)
+        }
+      },
       'ctrl+enter': this.enqueue,
       'shift+enter': this.playNext,
       'ctrl+shift+enter': this.play
+    }
+  }
+
+  getComponentProps () {
+    return {
+      pending: this.props.ack.pending,
+      playingNow: this.props.queue.now.key,
+      isPlaying: this.props.player.playing
     }
   }
 
@@ -1092,6 +1096,7 @@ class App extends Component {
           onClick={this.togglePlaying}
           pending={this.props.ack.pending}
           playingNow={this.props.queue.now.key}
+          isPlaying={this.props.player.playing}
           idx={0}
           queueIndex={0}
         />
@@ -1120,9 +1125,53 @@ class App extends Component {
       partyName = this.props.linkedPartyName
     }
 
+    const defaultActions = {
+      enqueue: {
+        targetIdx: state.queue.upNext.length + 1,
+        go: this.enqueue,
+        txt: this.dict.get('actions.enqueue'),
+        icon: enqueueIcon,
+        cdn
+      },
+      playNext: {
+        targetIdx: 1,
+        go: this.playNext,
+        txt: this.dict.get('actions.playNext'),
+        icon: nextIcon,
+        cdn
+      },
+      play: {
+        targetIdx: 0,
+        go: this.play,
+        txt: this.dict.get('actions.playNow'),
+        icon: playNowIcon,
+        cdn
+      },
+      jumpBackTo: {
+        targetIdx: 0,
+        go: this.jumpBackTo,
+        txt: this.dict.get('actions.jumpBackTo'),
+        icon: jumpBackToIcon,
+        cdn: cdnNeg
+      },
+      jumpTo: {
+        targetIdx: 0,
+        go: this.jumpTo,
+        txt: 'jump to this track',
+        icon: jumpToIcon,
+        cdn: cdnPos
+      },
+      remove: {
+        targetIdx: null,
+        go: this.dequeue,
+        txt: this.dict.get('actions.remove'),
+        icon: dequeueIcon,
+        cdn: cdnQueued
+      }
+    }
+
     const fileInputProps = {
-      pending: this.props.ack.pending,
-      playingNow: this.props.queue.now.key,
+      ...this.getComponentProps(),
       actionsAbove: true,
       onFiles: this.onFiles,
       onCancel: (event) => {
@@ -1130,50 +1179,7 @@ class App extends Component {
           type: 'FileInput:cancelNew'
         })
       },
-      actions: {
-        enqueue: {
-          targetIdx: state.queue.upNext.length + 1,
-          go: this.enqueue,
-          txt: this.dict.get('actions.enqueue'),
-          icon: enqueueIcon,
-          cdn
-        },
-        playNext: {
-          targetIdx: 1,
-          go: this.playNext,
-          txt: this.dict.get('actions.playNext'),
-          icon: nextIcon,
-          cdn
-        },
-        play: {
-          targetIdx: 0,
-          go: this.play,
-          txt: this.dict.get('actions.playNow'),
-          icon: playNowIcon,
-          cdn
-        },
-        jumpBackTo: {
-          targetIdx: 0,
-          go: this.jumpBackTo,
-          txt: this.dict.get('actions.jumpBackTo'),
-          icon: jumpBackToIcon,
-          cdn: cdnNeg
-        },
-        jumpTo: {
-          targetIdx: 0,
-          go: this.jumpTo,
-          txt: 'jump to this track',
-          icon: jumpToIcon,
-          cdn: cdnPos
-        },
-        remove: {
-          targetIdx: null,
-          go: this.dequeue,
-          txt: this.dict.get('actions.remove'),
-          icon: dequeueIcon,
-          cdn: cdnQueued
-        }
-      }
+      actions: defaultActions
     }
 
     return (
@@ -1200,52 +1206,8 @@ class App extends Component {
                   })
               }}
               componentProps={{
-                pending: this.props.ack.pending,
-                playingNow: this.props.queue.now.key,
-                actions: {
-                  enqueue: {
-                    targetIdx: state.queue.upNext.length + 1,
-                    go: this.enqueue,
-                    txt: this.dict.get('actions.enqueue'),
-                    icon: enqueueIcon,
-                    cdn
-                  },
-                  playNext: {
-                    targetIdx: 1,
-                    go: this.playNext,
-                    txt: this.dict.get('actions.playNext'),
-                    icon: nextIcon,
-                    cdn
-                  },
-                  play: {
-                    targetIdx: 0,
-                    go: this.play,
-                    txt: this.dict.get('actions.playNow'),
-                    icon: playNowIcon,
-                    cdn
-                  },
-                  jumpBackTo: {
-                    targetIdx: 0,
-                    go: this.jumpBackTo,
-                    txt: this.dict.get('actions.jumpBackTo'),
-                    icon: jumpBackToIcon,
-                    cdn: cdnNeg
-                  },
-                  jumpTo: {
-                    targetIdx: 0,
-                    go: this.jumpTo,
-                    txt: 'jump to this track',
-                    icon: jumpToIcon,
-                    cdn: cdnPos
-                  },
-                  remove: {
-                    targetIdx: null,
-                    go: this.dequeue,
-                    txt: this.dict.get('actions.remove'),
-                    icon: dequeueIcon,
-                    cdn: cdnQueued
-                  }
-                }
+                ...this.getComponentProps(),
+                actions: defaultActions
               }}
               ResultComponent={YouTube}
               onResult={this.getTrackEvents()}
@@ -1323,8 +1285,7 @@ class App extends Component {
                   className={historyClasses.join(' ')}
                   items={state.queue.history}
                   componentProps={{
-                    pending: this.props.ack.pending,
-                    playingNow: this.props.queue.now.key,
+                    ...this.getComponentProps(),
                     actions: {
                       jumpTo: {
                         targetIdx: 0,
@@ -1368,8 +1329,7 @@ class App extends Component {
                   className={upNextClasses.join(' ')}
                   items={state.queue.upNext}
                   componentProps={{
-                    pending: this.props.ack.pending,
-                    playingNow: this.props.queue.now.key,
+                    ...this.getComponentProps(),
                     actions: {
                       jumpTo: {
                         targetIdx: 0,
@@ -1480,28 +1440,6 @@ class App extends Component {
           `}
         </style>
         <style jsx global>{`
-          :root {
-            --ease-in-quad: cubic-bezier(.55, .085, .68, .53);
-            --ease-in-cubic: cubic-bezier(.550, .055, .675, .19);
-            --ease-in-quart: cubic-bezier(.895, .03, .685, .22);
-            --ease-in-quint: cubic-bezier(.755, .05, .855, .06);
-            --ease-in-expo: cubic-bezier(.95, .05, .795, .035);
-            --ease-in-circ: cubic-bezier(.6, .04, .98, .335);
-
-            --ease-out-quad: cubic-bezier(.25, .46, .45, .94);
-            --ease-out-cubic: cubic-bezier(.215, .61, .355, 1);
-            --ease-out-quart: cubic-bezier(.165, .84, .44, 1);
-            --ease-out-quint: cubic-bezier(.23, 1, .32, 1);
-            --ease-out-expo: cubic-bezier(.19, 1, .22, 1);
-            --ease-out-circ: cubic-bezier(.075, .82, .165, 1);
-
-            --ease-in-out-quad: cubic-bezier(.455, .03, .515, .955);
-            --ease-in-out-cubic: cubic-bezier(.645, .045, .355, 1);
-            --ease-in-out-quart: cubic-bezier(.77, 0, .175, 1);
-            --ease-in-out-quint: cubic-bezier(.86, 0, .07, 1);
-            --ease-in-out-expo: cubic-bezier(1, 0, 0, 1);
-            --ease-in-out-circ: cubic-bezier(.785, .135, .15, .86);
-          }
           html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
 
           * {
@@ -1542,7 +1480,7 @@ class App extends Component {
           }
 
           .App {
-            transition-timing-function: ${tfns.easeInOutQuint};
+            transition-timing-function: ${tfns.easeInOutQuad};
           }
 
           .App {
@@ -1770,12 +1708,12 @@ class App extends Component {
           }
           .bar-list .track .toggle .art {
             transition-duration: 0.1s;
-            transition-timing-function: ${tfns.easeInOutQuint};
+            transition-timing-function: ${tfns.easeInOutQuad};
           }
 
           .bar-list .track .toggle .art-img {
             transition-duration: 0.1s;
-            transition-timing-function: ${tfns.easeInOutQuint};
+            transition-timing-function: ${tfns.easeInOutQuad};
           }
 
           .track .icon {

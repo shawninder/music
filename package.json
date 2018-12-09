@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "lint": "standard",
-    "dev": "node server.js",
-    "analyze": "BUNDLE_ANALYZE=both node server.js",
-    "analyze-server": "BUNEL_ANALYZE=server node server.js",
+    "dev": "next",
+    "analyze": "BUNDLE_ANALYZE=both next",
+    "analyze-server": "BUNEL_ANALYZE=server next",
     "build": "next build",
     "prestart": "npm run build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production next start",
     "predeploy": "npm run build",
     "deploy": "now --public",
     "relock": "rm -rf node_modules package-lock.json && npm install",
@@ -17,7 +17,8 @@
     "export": "NODE_ENV=dev next export -o ../App/www",
     "export-prod": "npm run export -o ../App/www",
     "postexport": "find ../App/www -type f \\( -iname \\*.js -o -iname \\*.map -o -iname \\*.css -o -iname \\*.html \\) -print0 | xargs -0 sed -i '' -e 's/\"\\/_next/\"_next/g' # Recursively replace `\"/_href` with `\"_href` in produced code",
-    "clean": "rm -rf ../App/www/*"
+    "clean": "rm -rf ../App/www/*",
+    "jsinspect": "jsinspect"
   },
   "dependencies": {
     "@zeit/next-css": "1.0.1",
@@ -58,6 +59,7 @@
   "devDependencies": {
     "@zeit/next-bundle-analyzer": "0.1.2",
     "babel-plugin-transform-define": "1.3.0",
+    "jsinspect": "0.12.7",
     "standard": "12.0.1",
     "webpack-bundle-analyzer": "3.0.3"
   },

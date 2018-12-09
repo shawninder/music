@@ -1,14 +1,7 @@
+import SvgSkeleton from './SvgSkeleton'
+
 export default (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    version='1.1'
-    style={{
-      clipRule: 'evenodd',
-      fillRule: 'evenodd',
-      imageRendering: 'optimizeQuality',
-      shapeRendering: 'geometricPrecision',
-      textRendering: 'geometricPrecision'
-    }}
+  <SvgSkeleton
     viewBox='0 0 2080.7722 2080.7722'
     title='volume-high'
     alt='volume-high'
@@ -20,5 +13,5 @@ export default (
         d='m 266.7656,275.7656 q 0,64.9688 -43.875,120.5156 l -10.2656,-8.0156 q 41.2031,-50.9062 41.2031,-112.5 0,-60.3281 -41.0625,-112.3594 l 10.2656,-8.0156 q 43.7344,55.5469 43.7344,120.375 z m -30.9375,0 q 0,53.8594 -36.2812,101.25 l -10.2657,-7.7344 q 33.6094,-43.875 33.6094,-93.5156 0,-49.5 -33.6094,-93.375 l 10.2657,-7.7344 q 36.2812,46.4063 36.2812,101.1094 z m -30.9375,0 q 0,42.6094 -28.8281,81.9844 l -10.4063,-7.5938 Q 191.9531,315 191.9531,275.7656 q 0,-38.5312 -26.2969,-74.3906 l 10.4063,-7.5938 q 28.8281,39.375 28.8281,81.9844 z M 136.125,378.1406 69.8906,316.9688 H 28.125 v -82.4063 h 41.9062 l 66.0938,-61.0313 z'
       />
     </g>
-  </svg>
+  </SvgSkeleton>
 )

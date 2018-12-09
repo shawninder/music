@@ -72,7 +72,7 @@ class Controls extends Component {
             opacity: 0;
             transition-property: opacity, background-color;
             transition-duration: 0.2s;
-            transition-timing-function: ${tfns.easeInOutQuint};
+            transition-timing-function: ${tfns.easeInOutQuad};
           }
           .controls-toggleFiles.showingFiles {
             border-top-color: #666666;

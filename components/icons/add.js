@@ -1,14 +1,7 @@
+import SvgSkeleton from './SvgSkeleton'
+
 export default (
-  <svg
-    xmlns='http://www.w3.org/2000/svg'
-    version='1.1'
-    style={{
-      clipRule: 'evenodd',
-      fillRule: 'evenodd',
-      imageRendering: 'optimizeQuality',
-      shapeRendering: 'geometricPrecision',
-      textRendering: 'geometricPrecision'
-    }}
+  <SvgSkeleton
     viewBox='0 0 2080.7722 2080.7722'
   >
     <g
@@ -45,5 +38,5 @@ export default (
         />
       </g>
     </g>
-  </svg>
+  </SvgSkeleton>
 )

@@ -31,6 +31,7 @@ class AudioFile extends Track {
         queueIndex={this.props.queueIndex}
         idx={this.props.idx}
         playingNow={this.props.playingNow}
+        isPlaying={this.props.isPlaying}
         actionsAbove={this.props.actionsAbove}
         pending={this.props.pending}
       >
@@ -69,6 +70,7 @@ const props = [
   { name: 'actions', type: PropTypes.object, val: {} },
   { name: 'idx', type: PropTypes.number, val: -1 },
   { name: 'playingNow', type: PropTypes.string, val: '' },
+  { name: 'isPlaying', type: PropTypes.bool, val: false },
   { name: 'queueIndex', type: PropTypes.oneOfType([ PropTypes.number, PropTypes.bool ]), val: false },
   { name: 'actionsAbove', type: PropTypes.bool, val: false },
   { name: 'className', type: PropTypes.string, val: '' }

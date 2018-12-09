@@ -1,11 +1,16 @@
 import cloneDeep from 'lodash.clonedeep'
 
-function playNext (state, action) {
-  const newState = cloneDeep(state)
+function getItems (action) {
   let items = cloneDeep(action.data)
   if (!Array.isArray(items)) {
-    items = [items]
+    return [items]
   }
+  return items
+}
+
+function playNext (state, action) {
+  const newState = cloneDeep(state)
+  let items = getItems(action)
   items = items.map((item, idx) => {
     item.inQueue = true
     item.queueIndex = 1 + idx
@@ -22,10 +27,7 @@ function playNext (state, action) {
 }
 function toHistory (state, action) {
   const newState = cloneDeep(state)
-  let items = cloneDeep(action.data)
-  if (!Array.isArray(items)) {
-    items = [items]
-  }
+  let items = getItems(action)
   newState.history = newState.history
     .map((item, idx) => {
       item.inQueue = true
@@ -185,46 +187,13 @@ export default function queueReducer (state = {}, action) {
       }
       newState.now = data
       // Reset queueIndex and inQueue
-      const hLen = newState.history.length
-      newState.history = newState.history.map((item, idx) => {
-        item.queueIndex = -hLen + idx
-        item.inQueue = true
-        return item
-      })
-      newState.now.queueIndex = 0
-      newState.upNext = newState.upNext.map((item, idx) => {
-        item.queueIndex = 1 + idx
-        item.inQueue = true
-        return item
-      })
+      newState = reIndexQueue(newState)
       break
     }
     case 'Queue:move': {
-      if (action.from.name === action.to.name) {
-        if (action.from.idx > action.to.idx) {
-          const item = newState[action.from.name].splice(action.from.idx, 1)[0]
-          newState[action.to.name].splice(action.to.idx, 0, item)
-        } else {
-          const item = newState[action.from.name].splice(action.from.idx, 1)[0]
-          newState[action.to.name].splice(action.to.idx, 0, item)
-        }
-      } else {
-        const item = newState[action.from.name].splice(action.from.idx, 1)[0]
-        newState[action.to.name].splice(action.to.idx, 0, item)
-      }
-      const hLen = newState.history.length
-      newState.history = newState.history.map((item, idx) => {
-        item.queueIndex = -hLen + idx
-        item.inQueue = true
-        return item
-      })
-      newState.now.queueIndex = 0
-      newState.now.inQueue = true
-      newState.upNext = newState.upNext.map((item, idx) => {
-        item.queueIndex = 1 + idx
-        item.inQueue = true
-        return item
-      })
+      const item = newState[action.from.name].splice(action.from.idx, 1)[0]
+      newState[action.to.name].splice(action.to.idx, 0, item)
+      newState = reIndexQueue(newState)
       break
     }
     case 'Queue:insert': {
@@ -248,5 +217,22 @@ export default function queueReducer (state = {}, action) {
       break
     }
   }
+  return newState
+}
+
+function reIndexQueue (newState) {
+  const hLen = newState.history.length
+  newState.history = newState.history.map((item, idx) => {
+    item.queueIndex = -hLen + idx
+    item.inQueue = true
+    return item
+  })
+  newState.now.queueIndex = 0
+  newState.now.inQueue = true
+  newState.upNext = newState.upNext.map((item, idx) => {
+    item.queueIndex = 1 + idx
+    item.inQueue = true
+    return item
+  })
   return newState
 }
