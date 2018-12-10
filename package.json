@@ -18,7 +18,7 @@
     "export-prod": "npm run export -o ../App/www",
     "postexport": "find ../App/www -type f \\( -iname \\*.js -o -iname \\*.map -o -iname \\*.css -o -iname \\*.html \\) -print0 | xargs -0 sed -i '' -e 's/\"\\/_next/\"_next/g' # Recursively replace `\"/_href` with `\"_href` in produced code",
     "clean": "rm -rf ../App/www/*",
-    "jsinspect": "jsinspect"
+    "jsinspect": "jsinspect --ignore .next"
   },
   "dependencies": {
     "@zeit/next-css": "1.0.1",
