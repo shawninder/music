@@ -22,6 +22,7 @@ import YouTube from './YouTube'
 import AudioFileInput from './AudioFileInput'
 import Smart from './Smart'
 import NoticeList from './NoticeList'
+import Artwork from './Artwork'
 
 import Dict from '../data/Dict.js'
 import getFileMeta from '../features/fileInput/getFileMeta'
@@ -850,9 +851,10 @@ class App extends Component {
   }
 
   getTrackEvents () {
+    const state = this.getPartyState()
     return {
       'space': (...args) => {
-        if (this.props.queue.now.key && this.props.player.playing) {
+        if (state.queue.now.key && state.player.playing) {
           this.enqueue(...args)
         } else {
           this.play(...args)
@@ -864,11 +866,11 @@ class App extends Component {
     }
   }
 
-  getComponentProps () {
+  getComponentProps (state) {
     return {
       pending: this.props.ack.pending,
-      playingNow: this.props.queue.now.key,
-      isPlaying: this.props.player.playing
+      playingNow: state.queue.now.key,
+      isPlaying: state.player.playing
     }
   }
 
@@ -922,8 +924,8 @@ class App extends Component {
           }}
           onClick={this.togglePlaying}
           pending={this.props.ack.pending}
-          playingNow={this.props.queue.now.key}
-          isPlaying={this.props.player.playing}
+          playingNow={state.queue.now.key}
+          isPlaying={state.player.playing}
           idx={0}
           queueIndex={0}
         />
@@ -998,7 +1000,7 @@ class App extends Component {
     }
 
     const fileInputProps = {
-      ...this.getComponentProps(),
+      ...this.getComponentProps(state),
       actionsAbove: true,
       onFiles: this.onFiles,
       onCancel: (event) => {
@@ -1033,7 +1035,7 @@ class App extends Component {
                   })
               }}
               componentProps={{
-                ...this.getComponentProps(),
+                ...this.getComponentProps(state),
                 actions: defaultActions
               }}
               ResultComponent={YouTube}
@@ -1112,7 +1114,7 @@ class App extends Component {
                   className={historyClasses.join(' ')}
                   items={state.queue.history}
                   componentProps={{
-                    ...this.getComponentProps(),
+                    ...this.getComponentProps(state),
                     actions: {
                       jumpTo: {
                         targetIdx: 0,
@@ -1150,13 +1152,19 @@ class App extends Component {
                         dispatch={this.dispatch}
                         onEnded={this.onTrackEnd}
                       />
-                    ) : null}
+                    ) : (
+                      <Artwork
+                        playingNow={state.queue.now}
+                        isPlaying={state.player.playing}
+                        dispatch={this.dispatch}
+                      />
+                    )}
                 </section>
                 <List
                   className={upNextClasses.join(' ')}
                   items={state.queue.upNext}
                   componentProps={{
-                    ...this.getComponentProps(),
+                    ...this.getComponentProps(state),
                     actions: {
                       jumpTo: {
                         targetIdx: 0,
