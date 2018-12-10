@@ -3,6 +3,8 @@ import SvgSkeleton from './SvgSkeleton'
 export default (
   <SvgSkeleton
     viewBox='0 0 2080.7722 2080.7722'
+    title='Add'
+    alt='Add'
   >
     <g
       transform='matrix(0.3604151,0,0,0.3604151,61.347983,828.41229)'
