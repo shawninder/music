@@ -178,46 +178,45 @@ class Track extends Component {
             grid-area: left;
           }
 
-          .toggle img {
-            margin-left: 0;
-            transition-property: margin-left;
-            transition-duration: 2s;
-          }
-
-          .toggle.toggled img {
-            margin-left: 5px;
-          }
-
-          .toggle .idx {
-            display: inline-block;
-            text-align: right;
-            width: 0;
-            transition-property: width;
-            transition-duration: 0.1s;
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
-          .toggle.toggled .idx {
-            width: 25px;
-          }
-
-          .toggle.busy .idx {
-            width: 12px;
-          }
-
           .art {
             border-radius: 5px;
           }
 
-          .art img {
-            border-radius: 5px;
+          .idx {
+            display: inline-block;
+            width: 25px;
+            text-align: right;
+            transform: translate(-25px);
+            transition-property: transform;
+            transition-duration: 0.1s;
+            transition-timing-function: ${tfns.easeInOutQuad};
+          }
+
+          .busy .idx {
+            transform: translate(-13px);
+          }
+
+          .toggled .idx {
+            transform: translate(0);
           }
 
           .art-img {
+            border-radius: 5px;
             width: 60px;
             height: 45px;
             vertical-align: middle;
+            transform: translate(-25px);
+            transition-property: transform;
+            transition-duration: 0.1s;
+            transition-timing-function: ${tfns.easeInOutQuad}
           }
+          .busy .art-img {
+            transform: translate(-13px);
+          }
+          .toggled .art-img {
+            transform: translate(0);
+          }
+
           .body {
             grid-area: right;
           }
