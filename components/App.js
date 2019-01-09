@@ -377,68 +377,69 @@ class App extends Component {
         filePath
       })
       if (this.props.party.attending) {
-        // const id = `sending:${key}`
-        // const handler = this.sendFile({
-        //   key,
-        //   arrayBuffer: []
-        // })
-        // handler.on('progress', (progress) => {
-        //   this.props.notify({
-        //     id,
-        //     progress
-        //   })
-        // })
-        // handler.on('success', () => {
-        //   console.log('====B success')
-        //   this.props.notify({
-        //     id,
-        //     body: this.dict.get('files.sending.success'),
-        //     progress: 1,
-        //     buttons: {
-        //       no: {
-        //         label: this.dict.get('files.sending.undo'),
-        //         cb: () => {
-        //           console.log('====File sent successfully')
-        //         }
-        //       }
-        //     }
-        //   })
-        // })
-        // handler.on('error', (err) => {
-        //   console.log('====C error', err)
-        //   this.props.notify({
-        //     id,
-        //     body: this.dict.get('files.sending.error'),
-        //     err,
-        //     buttons: {
-        //       no: null
-        //     }
-        //   })
-        // })
-        // console.log('====D sending')
-        // this.props.notify({
-        //   id,
-        //   body: this.dict.get('files.sending'),
-        //   progress: 0,
-        //   buttons: {
-        //     ok: {
-        //       label: this.dict.get('files.sending.ok'),
-        //       cb: () => {
-        //         this.dispatch({
-        //           type: 'Notice:remove',
-        //           id
-        //         })
-        //       }
-        //     },
-        //     no: {
-        //       label: this.dict.get('files.sending.cancel'),
-        //       cb: () => {
-        //         handler.cancel()
-        //         // TODO: Tell receiver to clean up partial download?
-        //       }
-        //     }
-        //   }
-        // })
+        const id = `sending:${key}`
+        const handler = this.sendFile({
+          key,
+          arrayBuffer: []
+        })
+        handler.on('progress', (progress) => {
+          this.props.notify({
+            id,
+            progress
+          })
+        })
+        handler.on('success', () => {
+          console.log('====B success')
+          this.props.notify({
+            id,
+            body: this.dict.get('files.sending.success'),
+            progress: 1,
+            buttons: {
+              no: {
+                label: this.dict.get('files.sending.undo'),
+                cb: () => {
+                  console.log('====File sent successfully')
+                }
+              }
+            }
+          })
+        })
+        handler.on('error', (err) => {
+          console.log('====C error', err)
+          this.props.notify({
+            id,
+            body: this.dict.get('files.sending.error'),
+            err,
+            buttons: {
+              no: null
+            }
+          })
+        })
+        console.log('====D sending')
+        this.props.notify({
+          id,
+          body: this.dict.get('files.sending'),
+          progress: 0,
+          buttons: {
+            ok: {
+              label: this.dict.get('files.sending.ok'),
+              cb: () => {
+                this.dispatch({
+                  type: 'Notice:remove',
+                  id
+                })
+              }
+            },
+            no: {
+              label: this.dict.get('files.sending.cancel'),
+              cb: () => {
+                handler.cancel()
+                console.log('====E TODO: Tell receiver to clean up partial download')
+                // TODO: Tell receiver to clean up partial download?
+              }
+            }
+          }
+        })
       }
       let meta
       getFileMeta(file)
@@ -1211,21 +1212,21 @@ class App extends Component {
                 this.toggleShowFiles()
               }}
               newFileInput={() => {
-                if (this.props.party.attending) {
-                  this.props.notify({
-                    id: Math.random().toString().slice(2),
-                    body: 'Still working on this feature, stay tuned!',
-                    duration: 5000
-                  })
-                } else {
-                  this.dispatch({
-                    type: 'FileInput:new',
-                    idx: this.props.fileInput.files.length > 0 ? this.props.fileInput.files.length - 1 : 0
-                  })
-                  if (!this.props.app.showFiles) {
-                    this.toggleShowFiles()
-                  }
+                // if (this.props.party.attending) {
+                //   this.props.notify({
+                //     id: Math.random().toString().slice(2),
+                //     body: 'Still working on this feature, stay tuned!',
+                //     duration: 5000
+                //   })
+                // } else {
+                this.dispatch({
+                  type: 'FileInput:new',
+                  idx: this.props.fileInput.files.length > 0 ? this.props.fileInput.files.length - 1 : 0
+                })
+                if (!this.props.app.showFiles) {
+                  this.toggleShowFiles()
                 }
+                // }
               }}
               showingFiles={this.props.app.showFiles}
             />

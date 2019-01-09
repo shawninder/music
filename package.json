@@ -5,6 +5,7 @@
   "scripts": {
     "lint": "standard",
     "dev": "next",
+    "clean": "rm -rf .next bundles",
     "analyze": "BUNDLE_ANALYZE=both next",
     "analyze-server": "BUNEL_ANALYZE=server next",
     "build": "next build",
@@ -17,7 +18,7 @@
     "export": "NODE_ENV=dev next export -o ../App/www",
     "export-prod": "npm run export -o ../App/www",
     "postexport": "find ../App/www -type f \\( -iname \\*.js -o -iname \\*.map -o -iname \\*.css -o -iname \\*.html \\) -print0 | xargs -0 sed -i '' -e 's/\"\\/_next/\"_next/g' # Recursively replace `\"/_href` with `\"_href` in produced code",
-    "clean": "rm -rf ../App/www/*",
+    "clean-native": "rm -rf ../App/www/*",
     "jsinspect": "jsinspect --ignore .next"
   },
   "dependencies": {
@@ -54,14 +55,14 @@
     "redux-sessionstorage": "0.4.0",
     "redux-thunk": "2.3.0",
     "socket.io": "2.1.1",
-    "socket.io-client": "2.1.1"
+    "socket.io-client": "2.1.1",
+    "babel-plugin-transform-define": "1.3.1"
   },
   "devDependencies": {
-    "@zeit/next-bundle-analyzer": "0.1.2",
-    "babel-plugin-transform-define": "1.3.0",
     "jsinspect": "0.12.7",
     "standard": "12.0.1",
-    "webpack-bundle-analyzer": "3.0.3"
+    "webpack-bundle-analyzer": "3.0.3",
+    "@zeit/next-bundle-analyzer": "0.1.2"
   },
   "homepage": "https://shawninder.github.io/music",
   "engines": {
