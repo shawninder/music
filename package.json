@@ -9,7 +9,6 @@
     "analyze": "BUNDLE_ANALYZE=both next",
     "analyze-server": "BUNEL_ANALYZE=server next",
     "build": "next build",
-    "prestart": "npm run build",
     "start": "NODE_ENV=production next start",
     "predeploy": "npm run build",
     "deploy": "now --public",
