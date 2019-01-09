@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+
+import imgDataToUrl from '../helpers/imgDataToUrl'
+
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
@@ -101,11 +104,7 @@ class Track extends Component {
     const actionListClasses = ['actions']
     let artSrc = this.props.artSrc
     if (this.props.artFormat && this.props.artData) {
-      let base64String = ''
-      for (let i = 0, len = this.props.artData.length; i < len; i += 1) {
-        base64String += String.fromCharCode(this.props.artData[i])
-      }
-      artSrc = `data:${this.props.artFormat};base64,${global.btoa(base64String)}`
+      artSrc = imgDataToUrl(this.props.artData, this.props.artFormat)
     }
     return (
       <div
@@ -197,7 +196,7 @@ class Track extends Component {
           }
 
           .toggled .idx {
-            transform: translate(0);
+            transform: translate(-5px);
           }
 
           .art-img {
