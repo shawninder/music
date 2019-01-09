@@ -6,9 +6,10 @@ import propTypes from '../helpers/propTypes'
 import ReactPlayer from 'react-player'
 
 import toUrl from '../helpers/toUrl'
-import idbPlayer from './IndexedDBPlayer'
+import { IndexedDBPlayer } from './IndexedDBPlayer'
+import getFileArt from '../helpers/getFileArt'
 
-ReactPlayer.addCustomPlayer(idbPlayer)
+ReactPlayer.addCustomPlayer(IndexedDBPlayer)
 
 class Player extends Component {
   render () {
@@ -55,6 +56,11 @@ class Player extends Component {
           config={{
             youtube: {
               start: 0
+            },
+            indexeddb: {
+              attributes: {
+                poster: getFileArt(this.props.playingNow)
+              }
             }
           }}
         />
