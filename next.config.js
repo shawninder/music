@@ -1,5 +1,6 @@
 const { PHASE_EXPORT, PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER, PHASE_DEVELOPMENT_SERVER } = require('next/constants')
 const compose = require('next-compose-plugins')
+// const withCss = require('@zeit/next-css')
 // const withManifest = require('next-manifest')
 // const withSW = require('next-offline')
 const withBabelCacheBusting = require('./withBabelCacheBusting')
@@ -9,6 +10,7 @@ module.exports = (phase, { defaultConfig }) => {
   const config = [
     // [withManifest({ manifest })],
     withBabelCacheBusting
+    // withCss
     // [withSW()]
   ]
   if (phase === PHASE_EXPORT) {

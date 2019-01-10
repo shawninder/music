@@ -1370,6 +1370,7 @@ class App extends Component {
             left: 5px;
             z-index: 5;
             padding: 10px;
+            height: 50px;
           }
 
           .bar-menu:focus {

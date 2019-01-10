@@ -60,14 +60,12 @@ class Controls extends Component {
           }
           .controls-newFile {
             grid-area: addMedia;
-            position: relative;
             font-size: xx-large;
-            width: 100%;
             padding: 10px;
           }
           .controls-toggleFiles {
             border: 3px solid transparent;
-            grid-aread: lspace;
+            grid-area: lspace;
             justify-self: left;
             opacity: 0;
             transition-property: opacity, background-color;
@@ -90,7 +88,7 @@ class Controls extends Component {
             grid-area: next;
           }
           .controls-toggleFiles-right {
-            grid-aread: rspace;
+            grid-area: rspace;
             justify-self: right;
             opacity: 0;
           }

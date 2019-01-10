@@ -76,7 +76,7 @@ class Status extends Component {
             float: right;
           }
 
-          .deployment-may-scale, .deployment-may-sleep, .deployment-may-scale {
+          .deployment-is-sleeping, .deployment-may-sleep, .deployment-may-scale {
             background: chocolate;
           }
         `}</style>
