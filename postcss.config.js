@@ -1,7 +1,6 @@
 module.exports = (ctx) => {
   const plugins = {
     autoprefixer: {
-      ...ctx.options.autoprefixer,
       browsers: [
         '>1%',
         'last 4 versions',
@@ -10,6 +9,5 @@ module.exports = (ctx) => {
       ]
     }
   }
-  plugins['postcss-nested'] = {}
   return { plugins }
 }
