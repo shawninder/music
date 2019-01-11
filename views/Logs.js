@@ -308,6 +308,7 @@ class Logs extends Component {
           .youtube-result {
             display: grid;
             grid-template-columns: 100px auto 50px;
+            grid-template-rows: 1fr;
             grid-template-areas:
               "left    right corner"
               "actions actions actions"
@@ -435,6 +436,7 @@ class Logs extends Component {
             width: 100%;
             display: grid;
             grid-template-columns: 100px auto 50px;
+            grid-template-rows: 1fr;
             grid-template-areas:
               "action-idx action-label action-icon"
           }
@@ -556,6 +558,7 @@ class Logs extends Component {
           .controls-buttons {
             display: grid;
             grid-template-columns: 50px minmax(50px, 1fr) 50px;
+            grid-template-rows: 1fr;
             grid-template-areas:
               "prev togglePlaying next";
             background: #333333;

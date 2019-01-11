@@ -46,8 +46,10 @@ class Controls extends Component {
             /* box-shadow: 0px -2px 5px 0px rgba(0,0,0,0.25); */
           }
           .controls-buttons {
+            height: 60px;
             display: grid;
-            grid-template-columns: 50px auto 50px minmax(50px, 100px) 50px auto 50px;
+            grid-template-columns: 50px 1fr 50px minmax(50px, 100px) 50px 1fr 50px;
+            grid-template-rows: 1fr;
             grid-template-areas:
               "addMedia lspace prev togglePlaying next rspace volume";
             background: #333333;

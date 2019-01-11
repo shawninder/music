@@ -1812,38 +1812,38 @@ class App extends Component {
           .Feedback {
             margin-top: 50px;
             text-align: center;
-          }
-          .Feedback form {
-            padding: 10px;
-            max-width: 640px;
-            margin: 0 auto;
-            text-align: left;
-            line-height: 1.5em;
-            color: ${colors.whitesmoke};
-          }
-          .Feedback h2 {
-            font-size: x-large;
-          }
-          .Feedback p {
-            margin: 10px;
-          }
-          .Feedback textarea {
-            margin: 10px 0;
-            width: 100%;
-            height: 7em;
-          }
-          .Feedback [type=email] {
-          }
-          .Feedback label {
-            margin-right: 10px;
-          }
-          .Feedback [type=submit] {
-            float: right;
-          }
-          .Feedback .submitting [type=submit], .Feedback .submitted [type=submit] {
-            color: ${colors.linen};
-            background: rgba(200, 200, 200, 20%);
-            border-color: rgba(200, 200, 200, 20%);
+            form {
+              padding: 10px;
+              max-width: 640px;
+              margin: 0 auto;
+              text-align: left;
+              line-height: 1.5em;
+              color: ${colors.whitesmoke};
+            }
+            h2 {
+              font-size: x-large;
+            }
+            p {
+              margin: 10px;
+            }
+            textarea {
+              margin: 10px 0;
+              width: 100%;
+              height: 7em;
+            }
+            [type=email] {
+            }
+            label {
+              margin-right: 10px;
+            }
+            [type=submit] {
+              float: right;
+            }
+            .submitting [type=submit], .submitted [type=submit] {
+              color: ${colors.linen};
+              background: rgba(200, 200, 200, 20%);
+              border-color: rgba(200, 200, 200, 20%);
+            }
           }
 
           @media screen and (max-width: 640px) {

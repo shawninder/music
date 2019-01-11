@@ -163,6 +163,7 @@ class Track extends Component {
             cursor: pointer;
             display: grid;
             grid-template-columns: 100px auto 50px;
+            grid-template-rows: 1fr;
             grid-template-areas:
               "actionListAbove  actionListAbove  actionListAbove"
               "left             right            corner"

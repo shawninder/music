@@ -71,6 +71,7 @@ class Action extends Component {
             width: 100%;
             display: grid;
             grid-template-columns: 100px auto 50px;
+            grid-template-rows: 1fr;
             grid-template-areas:
               "idx label icon"
           }
