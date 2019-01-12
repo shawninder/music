@@ -5,14 +5,14 @@ import isIndexedDBAudioStream from '../helpers/isIndexedDBAudioStream'
 
 const IOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
 const AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx)($|\?)/i
-const VIDEO_EXTENSIONS = /\.(mp4|og[gv]|webm|mov|m4v)($|\?)/i
+// const VIDEO_EXTENSIONS = /\.(mp4|og[gv]|webm|mov|m4v)($|\?)/i
 const HLS_EXTENSIONS = /\.(m3u8)($|\?)/i
-const HLS_SDK_URL = 'https://cdnjs.cloudflare.com/ajax/libs/hls.js/VERSION/hls.min.js'
-const HLS_GLOBAL = 'Hls'
+// const HLS_SDK_URL = 'https://cdnjs.cloudflare.com/ajax/libs/hls.js/VERSION/hls.min.js'
+// const HLS_GLOBAL = 'Hls'
 const DASH_EXTENSIONS = /\.(mpd)($|\?)/i
-const DASH_SDK_URL = 'https://cdnjs.cloudflare.com/ajax/libs/dashjs/VERSION/dash.all.min.js'
-const DASH_GLOBAL = 'dashjs'
-const MATCH_DROPBOX_URL = /www\.dropbox\.com\/.+/
+// const DASH_SDK_URL = 'https://cdnjs.cloudflare.com/ajax/libs/dashjs/VERSION/dash.all.min.js'
+// const DASH_GLOBAL = 'dashjs'
+// const MATCH_DROPBOX_URL = /www\.dropbox\.com\/.+/
 
 function canPlay (url) {
   if (url instanceof Array) {
@@ -37,10 +37,16 @@ function canEnablePIP (url) {
 }
 
 export class IndexedDBPlayer extends Component {
-  static displayName = 'IndexedDBPlayer'
-  static canPlay = canPlay
-  static canEnablePIP = canEnablePIP
-
+  constructor (props) {
+    super(props)
+    this.onDisablePIP = this.onDisablePIP.bind(this)
+    this.onSeek = this.onSeek.bind(this)
+    this.mute = this.mute.bind(this)
+    this.unmute = this.unmute.bind(this)
+    this.renderSourceElement = this.renderSourceElement.bind(this)
+    this.renderTrack = this.renderTrack.bind(this)
+    this.ref = this.ref.bind(this)
+  }
   componentDidMount () {
     this.addListeners()
     if (IOS) {
@@ -86,14 +92,14 @@ export class IndexedDBPlayer extends Component {
     this.player.removeEventListener('enterpictureinpicture', onEnablePIP)
     this.player.removeEventListener('leavepictureinpicture', this.onDisablePIP)
   }
-  onDisablePIP = e => {
+  onDisablePIP (e) {
     const { onDisablePIP, playing } = this.props
     onDisablePIP(e)
     if (playing) {
       this.play()
     }
   }
-  onSeek = e => {
+  onSeek (e) {
     this.props.onSeek(e.target.currentTime)
   }
   shouldUseAudio (props) {
@@ -140,10 +146,10 @@ export class IndexedDBPlayer extends Component {
   setVolume (fraction) {
     this.player.volume = fraction
   }
-  mute = () => {
+  mute () {
     this.player.muted = true
   }
-  unmute = () => {
+  unmute () {
     this.player.muted = false
   }
   enablePIP () {
@@ -194,16 +200,16 @@ export class IndexedDBPlayer extends Component {
     }
     return url
   }
-  renderSourceElement = (source, index) => {
+  renderSourceElement (source, index) {
     if (typeof source === 'string') {
       return <source key={index} src={source} />
     }
     return <source key={index} {...source} />
   }
-  renderTrack = (track, index) => {
+  renderTrack (track, index) {
     return <track key={index} {...track} />
   }
-  ref = player => {
+  ref (player) {
     this.player = player
   }
   render () {
@@ -236,5 +242,9 @@ export class IndexedDBPlayer extends Component {
     )
   }
 }
+
+IndexedDBPlayer.displayName = 'IndexedDBPlayer'
+IndexedDBPlayer.canPlay = canPlay
+IndexedDBPlayer.canEnablePIP = canEnablePIP
 
 export default createSinglePlayer(IndexedDBPlayer)
