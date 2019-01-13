@@ -1,3 +1,5 @@
+import 'core-js/es6/string.js' // for startsWith
+
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'

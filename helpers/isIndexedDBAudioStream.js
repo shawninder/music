@@ -1,3 +1,5 @@
+import 'core-js/es6/string.js' // for startsWith
+
 const idbProtocol = 'indexeddb://'
 export default function isIndexedDBAudioStream (url) {
   return (

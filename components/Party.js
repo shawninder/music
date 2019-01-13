@@ -1,3 +1,5 @@
+import 'core-js/es6/string.js' // for startsWith
+
 import qs from 'querystring'
 import Clipboard from 'clipboard'
 import React, { Component } from 'react'
