@@ -36,6 +36,7 @@ class Artwork extends Component {
         />
         <style jsx>{`
           img {
+            width: 100%;
             max-width: 640px;
             max-height: 360px;
           }
