@@ -116,7 +116,7 @@ class Controls extends Component {
             cursor: pointer;
           }
           button {
-            padding: 10px 7px;
+            padding: 10px 5px;
             font-weight: bold;
             -webkit-appearance: none;
             -moz-appearance: none;
