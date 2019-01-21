@@ -30,8 +30,8 @@ class Bar extends Component {
     this.cede = this.cede.bind(this)
     this.clear = this.clear.bind(this)
     this.menuClicked = this.menuClicked.bind(this)
-    this.query = this.query.bind(this)
-    this.debouncedQuery = debounce(this.query, 500, { maxWait: 750 })
+    this.go = this.go.bind(this)
+    this.debounced = debounce(this.go, 500, { maxWait: 750 })
 
     this.previousItems = {}
     this.previousPending = {}
@@ -88,13 +88,13 @@ class Bar extends Component {
   }
 
   onEnter (event) {
-    this.query(event.target.value)
+    this.go(event.target.value)
   }
 
   suggest (value) {
     const val = trim(value)
     if (val === '') {
-      this.debouncedQuery.cancel()
+      this.debounced.cancel()
       this.dismiss()
     } else {
       if (val.startsWith('/')) {
@@ -123,13 +123,13 @@ class Bar extends Component {
           areCommands: true
         })
       } else {
-        this.debouncedQuery(value)
+        this.debounced(value)
       }
     }
   }
 
-  query (query) {
-    this.props.suggest(query)
+  go (query) {
+    this.props.go(query)
       .then(({ items, hasMore, prevPageToken, nextPageToken }) => {
         if (this.props.query === query) {
           this.props.dispatch({
@@ -281,7 +281,7 @@ const props = [
   { name: 'loadMore', type: PropTypes.func, val: () => {} },
   { name: 'areCommands', type: PropTypes.bool, val: true },
   { name: 'autoFocus', type: PropTypes.bool, val: false },
-  { name: 'suggest', type: PropTypes.func.isRequired },
+  { name: 'go', type: PropTypes.func.isRequired },
   { name: 'componentProps', type: PropTypes.object, val: {} },
   { name: 'ResultComponent', type: PropTypes.any.isRequired },
   { name: 'onResult', type: PropTypes.object, val: {} },

@@ -323,7 +323,7 @@ class Logs extends Component {
             items={this.props.bar.items}
             hasMore={this.props.bar.hasMore}
             loadMore={this.debouncedLoadMore}
-            suggest={(query) => {
+            go={(query) => {
               return this.props.findLogs(query)
             }}
             ResultComponent={Log}
