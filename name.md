@@ -162,15 +162,17 @@ crowds-play.com
 - .life
 
 ## Available urls ($/month)
-- crowds-play.com  13$  Get the Crowd involved in your playlist!
-- joinplaylist.tech 5$  Join the playlist and insert your favourite tunes!
-- wedj.in 13$           Allow guests to wedge songs into your playlist
-- gimmedj.com 13$       (.org,.net 16, .app 22)
-- playlist.city 14$     Name your city and let visitors mess with the playlist
-- massplay.org 16$      Give the masses control of the playlist
-- wedj.it 17$           Special requests? Wedge it in the playlist
-- djus.app 22$          Collaborative DJ App by and for us.
-- massplay.app 22$      Give the masses control of the playlist
+- pimpmyplaylist.com 13$ Pimp My Playlist! 
+- crowds-play.com  13$   Get the Crowd involved in your playlist!
+- partyplaylist.org 16$  Add your own tracks to the party playlist!
+- joinplaylist.tech 5$   Join the playlist and insert your favourite tunes!
+- wedj.in 13$            Allow guests to wedge songs into your playlist
+- gimmedj.com 13$        (.org,.net 16, .app 22)
+- playlist.city 14$      Name your city and let visitors mess with the playlist
+- massplay.org 16$       Give the masses control of the playlist
+- wedj.it 17$            Special requests? Wedge it in the playlist
+- djus.app 22$           Collaborative DJ App by and for us.
+- massplay.app 22$       Give the masses control of the playlist
 - imotepmusic.com 13$
 - imoteplay.com 13$
 - imoteptunes.com 13$
@@ -182,5 +184,3 @@ crowds-play.com
 - tune-in.cloud
 - crewtunes.org
 - tunesharing.live 27$
-- joinplaylist.tech 5$
-- justcrowdsplay.com 13$
