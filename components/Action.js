@@ -69,8 +69,9 @@ class Action extends Component {
           }
           .action {
             width: 100%;
+            height: 32px;
             display: grid;
-            grid-template-columns: 100px auto 50px;
+            grid-template-columns: 100px 1fr 50px;
             grid-template-rows: 1fr;
             grid-template-areas:
               "idx label icon"

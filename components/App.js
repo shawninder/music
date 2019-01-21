@@ -1025,7 +1025,7 @@ class App extends Component {
               hasMore={this.props.bar.hasMore}
               loadMore={this.debouncedLoadMore}
               areCommands={this.props.bar.areCommands}
-              suggest={(query) => {
+              go={(query) => {
                 return this.props.findMusic(query)
                   .then((results) => {
                     if (results.items.length > 0) {
@@ -1460,6 +1460,7 @@ class App extends Component {
 
           .bar-list {
             display: grid;
+            grid-template-columns: 1fr;
             grid-template-rows: 50px 1fr;
             grid-template-areas:
               "nothing"
