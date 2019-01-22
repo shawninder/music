@@ -13,7 +13,9 @@ ReactPlayer.addCustomPlayer(IndexedDBPlayer)
 
 class Player extends Component {
   render () {
-    const classes = ['Player']
+    const classes = this.props.className.split(' ')
+    classes.push('Player')
+    // classes.push('hidden')
     return (
       <div>
         <ReactPlayer
@@ -74,7 +76,8 @@ const props = [
   { name: 'playing', type: PropTypes.bool.isRequired },
   { name: 'onRef', type: PropTypes.func.isRequired },
   { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'onEnded', type: PropTypes.func.isRequired }
+  { name: 'onEnded', type: PropTypes.func.isRequired },
+  { name: 'className', type: PropTypes.string, val: '' }
 ]
 
 Player.defaultProps = defaultProps(props)
