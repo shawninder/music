@@ -9,6 +9,7 @@ export const aqua = 'aqua'
 export const green = 'green'
 export const orange = '#e0b01d'
 export const dimgrey = 'dimgrey'
+export const white = 'rgba(255, 255, 255, 0.7)'
 export const whitesmoke = 'whitesmoke'
 export const ghostwhite = 'ghostwhite'
 export const darkred = 'darkred'
@@ -30,5 +31,6 @@ export default {
   ghostwhite,
   darkred,
   steelblue,
-  linen
+  linen,
+  white
 }
