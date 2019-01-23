@@ -92,8 +92,8 @@ if (!isServer) {
     'queue',
     'player'
   ], {
-    socket,
-    indexedDB
+    socket
+    // indexedDB
   }))
 }
 const enhancer = composeWithDevTools(...composed)
