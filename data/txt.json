@@ -36,12 +36,12 @@
     "fr": "Affinez votre recherche"
   },
   "party.placeholder": {
-    "en": "name",
-    "fr": "nom"
+    "en": "Party name",
+    "fr": "Nom de la fête"
   },
   "party.default": {
-    "en": "Party",
-    "fr": "Fête"
+    "en": "Name your Party",
+    "fr": "Nomme ta Fête"
   },
   "party.buttonDefault": {
     "en": "Enter name",
@@ -76,36 +76,40 @@
     "fr": "Hôte"
   },
   "party.copyLinkPrefix": {
-    "en": "Invite link:",
-    "fr": "Lien d'invitation:"
+    "en": "Invite others to collaborate on the playlist!",
+    "fr": "Invitez vos amis à collaborer sur la playlist!"
   },
   "party.copyBtn": {
-    "en": "copy",
-    "fr": "copier"
+    "en": "copy invite link",
+    "fr": "copier le lien"
   },
   "party.linkCopied": {
     "en": "Copied to your clipboard",
     "fr": "Copié dans votre presse-papier"
+  },
+  "queue.name": {
+    "en": "Playlist name",
+    "fr": "Nom de la playlist"
   },
   "queue.playingNow.title": {
     "en": "Playing Now",
     "fr": "En Cours"
   },
   "queue.playingNow.emptyZone": {
-    "en": "drop here to play",
-    "fr": "glisser ici pour jouer"
+    "en": "empty",
+    "fr": "vide"
   },
   "queue.upNext.emptyZone": {
     "en": "",
     "fr": ""
   },
   "queue.history.show": {
-    "en": "view history",
-    "fr": "voir l'historique"
+    "en": "history",
+    "fr": "historique"
   },
   "queue.history.hide": {
-    "en": "hide history",
-    "fr": "cacher l'historique"
+    "en": "history",
+    "fr": "historique"
   },
   "upnext.title": {
     "en": "Up Next",
