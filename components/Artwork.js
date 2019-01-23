@@ -27,6 +27,7 @@ class Artwork extends Component {
         <img
           key='artwork'
           src={src}
+          className={this.props.className}
           onClick={(event) => {
             event.stopPropagation()
             this.props.dispatch({
@@ -48,6 +49,7 @@ class Artwork extends Component {
 
 const props = [
   { name: 'dispatch', type: PropTypes.func.isRequired },
+  { name: 'className', type: PropTypes.string, val: '' },
   { name: 'playingNow', type: PropTypes.object.isRequired },
   { name: 'isPlaying', type: PropTypes.bool.isRequired }
 ]
