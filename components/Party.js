@@ -17,6 +17,8 @@ class Party extends Component {
     this.onKeyDown = this.onKeyDown.bind(this)
     this.onChange = this.onChange.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
+    this.onStart = this.onStart.bind(this)
+    this.onJoin = this.onJoin.bind(this)
     this.startListening = this.startListening.bind(this)
     this.stopListening = this.stopListening.bind(this)
     this.middleware = this.middleware.bind(this)
@@ -24,13 +26,13 @@ class Party extends Component {
     this.start = this.start.bind(this)
     this.leave = this.leave.bind(this)
     this.stop = this.stop.bind(this)
-    this.busy = this.busy.bind(this)
     this.hydrate = this.hydrate.bind(this)
     this.checkPartyName = this.checkPartyName.bind(this)
     this.onGlobalFocus = this.onGlobalFocus.bind(this)
     this.setUrlName = this.setUrlName.bind(this)
     this.debouncedSetUrlName = debounce(this.setUrlName, 1000, { maxWait: 2000 }).bind(this)
-    this.button = null
+    this.joinButton = null
+    this.startButton = null
     this.pulse = new Pulser(() => {
       if (global.document.hasFocus()) {
         // TODO on hydrate if document didn't have focus at last pulse?
@@ -142,15 +144,63 @@ class Party extends Component {
 
   onSubmit (event) {
     event.preventDefault()
-    if (this.state.checkingName) {
-      this.busy(event)
-    } else {
+    const ok = !isServer &&
+      this.props.socket.connected &&
+      !(
+        this.state.checkingName ||
+        this.props.name === '' ||
+        this.props.name === null
+      )
+    if (ok) {
+      if (this.props.exists) {
+        if (this.props.attending) {
+          this.leave(event)
+        } else if (this.props.hosting) {
+          this.stop(event)
+        } else {
+          this.join(event)
+        }
+      } else {
+        this.start(event)
+      }
+    }
+  }
+
+  onJoin (event) {
+    event.preventDefault()
+    const ok = !isServer &&
+      this.props.socket.connected &&
+      this.props.exists &&
+      !(
+        this.state.checkingName ||
+        this.props.name === '' ||
+        this.props.name === null ||
+        this.props.hosting
+      )
+    if (ok) {
+      if (this.props.attending) {
+        this.leave(event)
+      } else {
+        this.join(event)
+      }
+    }
+  }
+
+  onStart (event) {
+    event.preventDefault()
+    const ok = !isServer &&
+      this.props.socket.connected &&
+      !(
+        this.state.checkingName ||
+        this.props.name === '' ||
+        this.props.name === null ||
+        this.props.attending
+      )
+    if (ok) {
       if (this.props.hosting) {
         this.stop(event)
-      } else if (this.props.attending) {
-        this.leave(event)
       } else if (this.props.exists) {
-        this.join(event)
+        this.props.notify({ id: Math.random().toString(), body: 'Party already exists...', duration: 5000 })
       } else {
         this.start(event)
       }
@@ -420,36 +470,15 @@ class Party extends Component {
     this.socketRequest(emitting, onResponse)
   }
 
-  busy (event) {
-    console.log('busy (TODO)')
-    // TODO
-  }
-
   render () {
-    let title = this.props.dict.get('party.default')
-    const partying = (this.props.hosting || this.props.attending) && this.props.socket.connected
-    let label = 'buttonDefault'
-    if (this.props.name !== '') {
-      if (partying) {
-        if (this.props.hosting) {
-          title = `${this.props.dict.get('party.hosting')}`
-          label = 'stop'
-        } else {
-          title = `${this.props.dict.get('party.attending')} "${this.props.name}"`
-          label = 'leave'
-        }
-      } else {
-        if (this.state.checkingName) {
-          label = 'checking'
-        } else {
-          if (this.props.exists) {
-            label = 'join'
-          } else {
-            label = 'start'
-          }
-        }
-      }
-    }
+    const ok = !isServer &&
+      this.props.socket.connected &&
+      !(
+        this.state.checkingName ||
+        this.props.name === '' ||
+        this.props.name === null
+      )
+    const partying = (this.props.hosting || this.props.attending) && ok
     const classes = this.props.className ? this.props.className.split(' ') : []
     if (this.props.collapsed) {
       classes.push('collapsed')
@@ -463,23 +492,31 @@ class Party extends Component {
     if (this.props.attending) {
       classes.push('attending')
     }
-    const copyLinkClasses = ['copyLink']
+
+    const canJoin = ok && this.props.exists
+    const canStart = ok && !this.props.exists
+    const joinBtnClasses = ['joinBtn']
+    const startBtnClasses = ['startBtn']
+    const copyLinkClasses = ['copyButton']
+    if (canJoin) {
+      joinBtnClasses.push('enabled')
+    }
+    if (canStart) {
+      startBtnClasses.push('enabled')
+    }
+    if (this.props.hosting || this.props.attending) {
+      copyLinkClasses.push('enabled')
+    }
     return (
       <div
         className={classes.join(' ')}
-        onClick={(event) => {
-          event.stopPropagation() // Avoid dismissing dialog when clicking inside it
-        }}
       >
         {
           <form onSubmit={this.onSubmit}>
-            <h3>
-              {title}
-            </h3>
             <input
               type='text'
               placeholder={this.props.placeholder}
-              autoFocus={this.props.autoFocus}
+              autoFocus={this.props.autoFocus && ok && !partying}
               onChange={this.onChange}
               onKeyDown={this.onKeyDown}
               disabled={partying}
@@ -497,34 +534,38 @@ class Party extends Component {
                 this.props.onFieldRef(ref)
               }}
             />
-            <button className='partyBtn' disabled={!isServer && (this.state.checkingName || this.props.name === '')}
-              onClick={this.onSubmit}
-              ref={(el) => {
-                this.button = el
-                this.props.onButtonRef(el)
-              }}
-              key='notCopyLinkBtnAtAll'
+            <button
+              className={joinBtnClasses.join(' ')}
+              // disabled={!canJoin}
+              onClick={this.onJoin}
+              key='joinBtn'
             >
               {
-                this.props.dict.get(`party.${label}`)
+                this.props.attending
+                  ? this.props.dict.get('party.leave')
+                  : this.props.dict.get('party.join')
+              }
+            </button>
+            <button
+              className={startBtnClasses.join(' ')}
+              // disabled={!canStart}
+              onClick={this.onStart}
+              key='startBtn'
+            >
+              {
+                this.props.hosting
+                  ? this.props.dict.get('party.stop')
+                  : this.props.dict.get('party.start')
               }
             </button>
             <p className={copyLinkClasses.join(' ')}>
               {this.props.dict.get('party.copyLinkPrefix')}
-              <span
-                className='copyLink-url'
-                ref={(el) => {
-                  this.copyLink = el
-                }}
-              >
-                {global.location && global.location.href}
-              </span>
               <a
                 className='copyBtn'
                 ref={(el) => {
                   this.copyBtn = el
                 }}
-                key='copyLinkBtnMuthaFucka'
+                key='copyBtn'
               >
                 {this.props.dict.get('party.copyBtn')}
               </a>
@@ -551,7 +592,6 @@ const props = [
   { name: 'socketKey', type: PropTypes.string.isRequired },
   { name: 'collapsed', type: PropTypes.bool.isRequired },
   { name: 'onFieldRef', type: PropTypes.func, val: () => {} },
-  { name: 'onButtonRef', type: PropTypes.func, val: () => {} },
   { name: 'linkedPartyName', type: PropTypes.string, val: '' },
   { name: 'notice', type: PropTypes.func, val: console.log }
 ]
