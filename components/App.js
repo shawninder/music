@@ -34,6 +34,7 @@ import jumpBackToIcon from './icons/jumpBackTo'
 import enqueueIcon from './icons/enqueue'
 import nextIcon from './icons/next'
 import dequeueIcon from './icons/dequeue'
+import moreIcon from './icons/more'
 
 import colors from '../styles/colors'
 import tfns from '../styles/timing-functions'
@@ -541,13 +542,11 @@ class App extends Component {
 
   figureKeyDown (event) {
     if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
-      this.dispatch({
-        type: 'App:collapseParty'
-      })
+
     }
     if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
       this.dispatch({
-        type: 'App:toggleParty'
+        type: 'App:toggleMenu'
       })
     }
     if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
@@ -1011,12 +1010,12 @@ class App extends Component {
       },
       actions: defaultActions
     }
-
     return (
       <React.Fragment>
         <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
           <Head title="Crowd's Play" />
           <div className={appClasses.join(' ')}>
+            <img className='bg' src='static/bg-46-l.svg' />
             <Bar
               dispatch={this.dispatch}
               placeholder={this.dict.get('bar.placeholder')}
@@ -1065,7 +1064,6 @@ class App extends Component {
               onRef={(ref) => {
                 this.bar = ref
               }}
-              autoFocus
               decorateItem={this.decorateItem}
               loadingTxt={this.dict.get('bar.loading')}
               maxReachedTxt={this.dict.get('bar.maxReached')}
@@ -1100,15 +1098,23 @@ class App extends Component {
                 onFieldRef={(el) => {
                   this.partyField = el
                 }}
-                onButtonRef={(el) => {
-                  this.partyButton = el
-                }}
                 pending={this.props.ack.pending}
                 notify={this.props.notify}
                 gotFileChunk={this.gotFileChunk}
+                autoFocus
               />
-              <h3 className='partyName'>{partyName}</h3>
               <div className='queue'>
+                <div className='playlistBox'>
+                  <input className='playlistName' type='text' placeholder={this.dict.get('queue.name')} />
+                  <button
+                    className='playlistActionsToggle'
+                    onClick={(event) => {
+                      // TODO
+                    }}
+                  >
+                    {moreIcon}
+                  </button>
+                </div>
                 <List
                   showLabel={`${this.dict.get('queue.history.show')} (${state.queue.history.length})`}
                   hideLabel={`${this.dict.get('queue.history.hide')} (${state.queue.history.length})`}
@@ -1152,12 +1158,14 @@ class App extends Component {
                         playing={state.player.playing}
                         dispatch={this.dispatch}
                         onEnded={this.onTrackEnd}
+                        // className='hidden'
                       />
                     ) : (
                       <Artwork
                         playingNow={state.queue.now}
                         isPlaying={state.player.playing}
                         dispatch={this.dispatch}
+                        // className='hidden'
                       />
                     )}
                 </section>
@@ -1298,7 +1306,6 @@ class App extends Component {
               "Droid Sans", "Helvetica Neue", sans-serif; // Old Android
             */
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-            background-color: ${colors.black};
           }
 
           input[type=text].disabled {
@@ -1320,30 +1327,46 @@ class App extends Component {
           .App {
             padding: 0;
             position: relative;
-            background-color: ${colors.black};
-            background-image: url('static/bg.svg');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: 100% 100% !important;
+            background-color: black;
             transition-property: background-color;
             transition-duration: 1s;
             overflow: scroll;
           }
 
-          .App.connected, .App.connected .figure, .App.connected .autoparty {
+          .bg {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+          }
+
+          .App.connected, .App.connected .figure {
             background-color: ${colors.aqua};
           }
 
-          .App.attending, .App.attending .figure, .App.attending .autoparty {
+          .App.attending, .App.attending .figure {
             background-color: ${colors.green};
           }
 
-          .App.hosting, .App.hosting .figure, .App.hosting .autoparty {
+          .App.hosting, .App.hosting .figure {
             background-color: ${colors.orange};
           }
 
-          .App.disconnected, .App.disconnected .figure, .App.disconnected .autoparty {
-            background-color: ${colors.six};
+          .App.disconnected, .App.disconnected .figure {
+            background-color: ${colors.white};
+          }
+          .App.connected .autoparty {
+            background-color: ${colors.aquaish};
+          }
+          .App.attending .autoparty {
+            background-color: ${colors.greenish};
+          }
+          .App.hosting .autoparty {
+            background-color: ${colors.orangeish};
+          }
+          .App.disconnected .autoparty {
+            background-color: ${colors.whiteish};
           }
 
           .authForm {
@@ -1362,12 +1385,10 @@ class App extends Component {
           }
 
           .bar-menu {
-            color: ${colors.dimgrey};
+            color: ${colors.whitesmoke};
             position: fixed;
-            top: 5px;
-            left: 5px;
             z-index: 5;
-            padding: 10px;
+            padding: 15px;
             height: 50px;
           }
 
@@ -1521,8 +1542,9 @@ class App extends Component {
 
           .main {
             position: relative;
-            padding: 50px 5px 130px;
+            padding-bottom: 130px;
             width: 100%;
+            min-width: 250px;
           }
 
           .player-alt {
@@ -1530,13 +1552,14 @@ class App extends Component {
             margin: auto auto;
             max-width: 100%;
           }
+
           .Player {
             margin: auto auto;
             max-width: 100%;
           }
 
-          .Player.hidden {
-            /* display: none; */
+          .hidden {
+            opacity: 0;
           }
 
           .bar-list .toggle .idx {
@@ -1564,11 +1587,11 @@ class App extends Component {
             background-color: ${colors.whitesmoke};
           }
 
-          .upNext>h3, .history>h3 {
+          .history>h3 {
             cursor: pointer;
           }
 
-          .history>h3, .playingNow>h3, .upNext>h3 {
+          .history>h3 {
             transition-property: opacity, height;
             transition-duration: 0.5s;
             opacity: 1;
@@ -1580,20 +1603,8 @@ class App extends Component {
             transition-duration: 0.5s;
           }
 
-          .history.hidden {
-            opacity: 1;
-          }
-
-          .history.empty>h3, .playingNow.empty>h3, .upNext.empty>h3 {
-            /* opacity: 0; */
-          }
-
           .App.dragging .history>h3, .App.dragging .playingNow>h3, .App.dragging .upNext>h3 {
             opacity: 1;
-          }
-
-          .history.not-collapsed>h3 {
-
           }
 
           .collapsed>ol {
@@ -1605,7 +1616,24 @@ class App extends Component {
             margin: 0 auto;
             width: 100%;
             max-width: 640px;
+          }
+          .history, .upNext {
+            background: ${colors.whiteish};
+          }
+          .playingNow {
+            background: ${colors.blackish};
             color: ${colors.whitesmoke};
+            height: 64px;
+            .art {
+              .idx {
+                width: 0;
+              }
+              .art-img {
+                width: 88px;
+                height: 60px;
+                border-radius: 0;
+              }
+            }
           }
 
           .emptyDropZone {
@@ -1613,13 +1641,8 @@ class App extends Component {
             text-align: center;
           }
 
-          .playingNow {
-            background: black;
-          }
-
           .upNext ol, .history ol, .playingNow ol {
             width: 100%;
-            min-height: 45px;
             transition-property: background-color;
             transition-duration: .75s
           }
@@ -1644,23 +1667,50 @@ class App extends Component {
             color: black;
           }
 
-          .partyName {
-            color: ${colors.whitesmoke};
-            font-size: xx-large;
-            text-align: center;
-            margin-bottom: 10px;
-          }
-
           .queue {
             /* margin-bottom: 100px; */
+            color: ${colors.black};
           }
 
           .queue h3 {
-            font-size: large;
+            font-size: medium;
             padding: 10px;
           }
 
           .queue .icon {
+            color: ${colors.black};
+          }
+          .playlistBox {
+            display: grid;
+            border: 1px solid black;
+            width: 640px;
+            max-width: 100%;
+            margin: 0 auto;
+            font-size: medium;
+            line-height: 1.5em;
+            grid-template-columns: 1fr 50px;
+            grid-template-rows: 1fr;
+            grid-template-areas: "playlistName playlistActionsToggle"
+          }
+          .playlistName {
+            grid-area: playlistName;
+            padding: 5px;
+            text-align: center;
+            border-radius: 0;
+          }
+          .playlistActionsToggle {
+            grid-area: playlistActionsToggle;
+            padding: 5px;
+            border-width: 0 0 0 1px;
+            border-color: black;
+            background: ${colors.white};
+            .icon {
+              width: 20px;
+              height: 20px;
+            }
+          }
+
+          .playingNow .icon {
             color: ${colors.whitesmoke};
           }
 
@@ -1712,62 +1762,84 @@ class App extends Component {
           }
 
           .autoparty {
-            transition-property: background-color, width, top, opacity;
-            transition-duration: 0.4s;
-            position: fixed;
-            top: 50px;
-            right: 0;
-            z-index: 1;
-            border-radius: 0 0 10px 10px;
-            width: 33%;
-            padding: 15px;
-            opacity: 1;
-          }
-
-          .autoparty.collapsed {
-            top: -7em;
-            opacity: 0;
-          }
-
-          .autoparty .dismiss-button {
-            width: 15px;
-            height: 15px;
-            float: right;
-            cursor: pointer;
-          }
-
-          .autoparty h3 {
-            font-size: xx-large;
-            padding: 10px 5px 15px;
+            max-width: 640px;
+            margin: 0 auto;
           }
 
           .autoparty.disconnected .partyBtn, .autoparty:disabled {
             color: ${colors.grey};
           }
 
-          .autoparty h3 {
-            width: 100%;
+          .autoparty .joinBtn, .autoparty .startBtn {
+            width: 50%;
           }
 
           .autoparty input {
             display: block;
             width: 100%;
+            padding: 5px;
+            font-size: xx-large;
+            line-height: 2em;
+            text-align: center;
+            border-radius: 0;
           }
 
-
-          .autoparty .partyBtn {
-            width: 100%;
-          }
-
-          .autoparty input, .autoparty button, .autoparty .copyBtn {
+          .autoparty button, .autoparty .copyBtn {
             padding: 5px;
             font-size: medium;
-            /* border-radius: 0; */
-            background: ${colors.whitesmoke};
             line-height: 1.5em;
+            color: ${colors.black};
+            background-color: ${colors.whitesmoke};
+            &.enabled {
+              background-color: ${colors.aqua};
+            }
           }
 
-          .autoparty .copyLink {
+          .joinBtn, .startBtn {
+            cursor: pointer;
+            opacity: 1;
+            transition-property: opacity, background-color;
+            transition-duration: 0.1s;
+            transition-timing-function: ${tfns.easeInOutQuad};
+          }
+
+          .App.attending .joinBtn {
+            background-color: ${colors.white};
+          }
+
+          .App.hosting .startBtn {
+            background-color: ${colors.white};
+            color: ${colors.darkred};
+          }
+
+          .App.hosting .joinBtn {
+            opacity: 0;
+          }
+
+          .App.attending .startBtn {
+            opacity: 0;
+          }
+
+          .copyButton {
+            opacity: 0;
+            transition-property: opacity;
+            transition-duration: 0.1s;
+            transition-timing-function: ${tfns.easeInOutQuad};
+          }
+
+          .copyBtn {
+            cursor: pointer;
+            background-color: ${colors.white};
+            transition-property: background-color;
+            transition-duration: 0.1s;
+            transition-timing-function: ${tfns.easeInOutQuad};
+          }
+
+          .App.attending .copyButton, .App.hosting .copyButton {
+            opacity: 1;
+          }
+
+          .autoparty .copyButton {
             padding: 5px;
             font-size: medium;
             line-height: 1.5em;
@@ -1775,19 +1847,9 @@ class App extends Component {
             /* font-weight: bold; */
           }
 
-          .autoparty .copyLink-url {
-            margin-left: 5px;
-          }
-
           .autoparty .copyBtn {
-            cursor: pointer;
             display: inline-block; /* TODO Consider setting this in the reset styles */
-            transform: translateX(5px); /* Cancels .copyLink padding to align with other inputs */
-          }
-
-          .autoparty.connected .partyBtn:enabled {
-            color: ${colors.steelblue};
-            cursor: pointer;
+            transform: translateX(5px); /* Cancels .copyButton padding to align with other inputs */
           }
 
           .autoparty .dismiss {
@@ -1820,6 +1882,7 @@ class App extends Component {
               text-align: left;
               line-height: 1.5em;
               color: ${colors.whitesmoke};
+              text-shadow: 0 0 30px black;
             }
             h2 {
               font-size: x-large;
@@ -1839,6 +1902,8 @@ class App extends Component {
             }
             [type=submit] {
               float: right;
+              border-color: ${colors.aqua};
+              background: ${colors.aqua};
             }
             .submitting [type=submit], .submitted [type=submit] {
               color: ${colors.linen};
