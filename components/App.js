@@ -915,20 +915,27 @@ class App extends Component {
     let playingNowZone
     if (state.queue.now.key) {
       playingNowZone = (
-        <Smart
-          key='Playing-Now'
-          data={{
-            ...state.queue.now,
-            inQueue: true,
-            queueIndex: 0
-          }}
-          onClick={this.togglePlaying}
-          pending={this.props.ack.pending}
-          playingNow={state.queue.now.key}
-          isPlaying={state.player.playing}
-          idx={0}
-          queueIndex={0}
-        />
+        <React.Fragment>
+          <Smart
+            key='Playing-Now'
+            data={{
+              ...state.queue.now,
+              inQueue: true,
+              queueIndex: 0
+            }}
+            onClick={this.togglePlaying}
+            pending={this.props.ack.pending}
+            playingNow={state.queue.now.key}
+            isPlaying={state.player.playing}
+            idx={0}
+            queueIndex={0}
+          />
+          <div className='overlay' onClick={(event) => {
+            this.dispatch({
+              type: 'App:cyclePlayerMode'
+            })
+          }} />
+        </React.Fragment>
       )
     } else {
       playingNowZone = (
@@ -947,12 +954,8 @@ class App extends Component {
 
     const historyClasses = ['history']
     const playingNowClasses = ['playingNow']
+    playingNowClasses.push(this.props.app.playerMode)
     const upNextClasses = ['upNext']
-
-    let partyName = this.props.name
-    if (!this.props.name && this.props.name !== '' && this.props.linkedPartyName) {
-      partyName = this.props.linkedPartyName
-    }
 
     const defaultActions = {
       enqueue: {
@@ -1009,6 +1012,16 @@ class App extends Component {
         })
       },
       actions: defaultActions
+    }
+
+    let playerWidth
+    let playerHeight
+    if (this.props.app.playerMode === 'mini') {
+      playerWidth = '88px'
+      playerHeight = '60px'
+    } else if (this.props.app.playerMode === 'medium') {
+      playerWidth = '640px'
+      playerHeight = '360px'
     }
     return (
       <React.Fragment>
@@ -1103,98 +1116,97 @@ class App extends Component {
                 gotFileChunk={this.gotFileChunk}
                 autoFocus
               />
-              <div className='queue'>
-                <div className='playlistBox'>
-                  <input className='playlistName' type='text' placeholder={this.dict.get('queue.name')} />
-                  <button
-                    className='playlistActionsToggle'
-                    onClick={(event) => {
-                      // TODO
-                    }}
-                  >
-                    {moreIcon}
-                  </button>
-                </div>
-                <List
-                  showLabel={`${this.dict.get('queue.history.show')} (${state.queue.history.length})`}
-                  hideLabel={`${this.dict.get('queue.history.hide')} (${state.queue.history.length})`}
-                  className={historyClasses.join(' ')}
-                  items={state.queue.history}
-                  componentProps={{
-                    ...this.getComponentProps(state),
-                    actions: {
-                      jumpTo: {
-                        targetIdx: 0,
-                        go: this.jumpBackTo,
-                        txt: this.dict.get('actions.jumpBackTo'),
-                        icon: jumpBackToIcon
-                      },
-                      remove: {
-                        targetIdx: null,
-                        go: this.dequeue,
-                        txt: this.dict.get('actions.remove'),
-                        icon: dequeueIcon
-                      }
-                    }
+              <div className='playlistBox'>
+                <input className='playlistName' type='text' placeholder={this.dict.get('queue.name')} />
+                <button
+                  className='playlistActionsToggle'
+                  onClick={(event) => {
+                    // TODO
                   }}
-                  defaultComponent={Smart}
-                  onItem={{
-                    space: this.jumpBackTo
-                  }}
-                  startsCollapsed
-                  collapsible
-                  areDraggable
-                  hidden={state.queue.history.length === 0}
-                />
-                <section className={playingNowClasses.join(' ')}>
-                  {playingNowZone}
-                  {(state.queue.now.key && !this.props.party.attending)
-                    ? (
-                      <Player
-                        onRef={(playerEl) => {
-                          this.playerEl = playerEl
-                        }}
-                        playingNow={state.queue.now}
-                        playing={state.player.playing}
-                        dispatch={this.dispatch}
-                        onEnded={this.onTrackEnd}
-                        // className='hidden'
-                      />
-                    ) : (
-                      <Artwork
-                        playingNow={state.queue.now}
-                        isPlaying={state.player.playing}
-                        dispatch={this.dispatch}
-                        // className='hidden'
-                      />
-                    )}
-                </section>
-                <List
-                  className={upNextClasses.join(' ')}
-                  items={state.queue.upNext}
-                  componentProps={{
-                    ...this.getComponentProps(state),
-                    actions: {
-                      jumpTo: {
-                        targetIdx: 0,
-                        go: this.jumpTo,
-                        txt: this.dict.get('actions.jumpTo'),
-                        icon: jumpToIcon
-                      },
-                      remove: {
-                        targetIdx: null,
-                        go: this.dequeue,
-                        txt: this.dict.get('actions.remove'),
-                        icon: dequeueIcon
-                      }
-                    }
-                  }}
-                  defaultComponent={Smart}
-                  collapsible
-                  areDraggable
-                  empty={<li key='upNext-emptyDropZone'><div className='emptyDropZone'>{this.dict.get('queue.upNext.emptyZone')}</div></li>}
-                />
+                >
+                  {moreIcon}
+                </button>
               </div>
+              <List
+                showLabel={`${this.dict.get('queue.history.show')} (${state.queue.history.length})`}
+                hideLabel={`${this.dict.get('queue.history.hide')} (${state.queue.history.length})`}
+                className={historyClasses.join(' ')}
+                items={state.queue.history}
+                componentProps={{
+                  ...this.getComponentProps(state),
+                  actions: {
+                    jumpTo: {
+                      targetIdx: 0,
+                      go: this.jumpBackTo,
+                      txt: this.dict.get('actions.jumpBackTo'),
+                      icon: jumpBackToIcon
+                    },
+                    remove: {
+                      targetIdx: null,
+                      go: this.dequeue,
+                      txt: this.dict.get('actions.remove'),
+                      icon: dequeueIcon
+                    }
+                  }
+                }}
+                defaultComponent={Smart}
+                onItem={{
+                  space: this.jumpBackTo
+                }}
+                startsCollapsed
+                collapsible
+                areDraggable
+                hidden={state.queue.history.length === 0}
+              />
+              <div className={playingNowClasses.join(' ')}>
+                {playingNowZone}
+                {(state.queue.now.key && !this.props.party.attending)
+                  ? (
+                    <Player
+                      onRef={(playerEl) => {
+                        this.playerEl = playerEl
+                      }}
+                      playingNow={state.queue.now}
+                      playing={state.player.playing}
+                      dispatch={this.dispatch}
+                      onEnded={this.onTrackEnd}
+                      width={playerWidth}
+                      height={playerHeight}
+                      controls
+                    />
+                  ) : (
+                    <Artwork
+                      playingNow={state.queue.now}
+                      isPlaying={state.player.playing}
+                      dispatch={this.dispatch}
+                      // className='hidden'
+                    />
+                  )}
+              </div>
+              <List
+                className={upNextClasses.join(' ')}
+                items={state.queue.upNext}
+                componentProps={{
+                  ...this.getComponentProps(state),
+                  actions: {
+                    jumpTo: {
+                      targetIdx: 0,
+                      go: this.jumpTo,
+                      txt: this.dict.get('actions.jumpTo'),
+                      icon: jumpToIcon
+                    },
+                    remove: {
+                      targetIdx: null,
+                      go: this.dequeue,
+                      txt: this.dict.get('actions.remove'),
+                      icon: dequeueIcon
+                    }
+                  }
+                }}
+                defaultComponent={Smart}
+                areDraggable
+                emptyComponent={<li key='upNext-emptyDropZone'><div className='emptyDropZone'>{this.dict.get('queue.upNext.emptyZone')}</div></li>}
+              />
               <Feedback
                 dispatch={this.dispatch}
                 notify={this.props.notify}
@@ -1367,14 +1379,6 @@ class App extends Component {
           }
           .App.disconnected .autoparty {
             background-color: ${colors.whiteish};
-          }
-
-          .authForm {
-            float: right;
-          }
-
-          .authForm label {
-            margin-left: 10px;
           }
 
           .bar {
@@ -1554,8 +1558,37 @@ class App extends Component {
           }
 
           .Player {
-            margin: auto auto;
-            max-width: 100%;
+            width: ${playerWidth};
+            height: ${playerHeight};
+            position: relative;
+            z-index: 0;
+          }
+
+          .playingNow {
+            position: relative;
+            &.mini {
+              margin-bottom: 0;
+              .Player {
+                top: -62px;
+                left: 5px;
+              }
+            }
+            &.medium {
+              margin-bottom: 360px;
+              .Player {
+                top: 0;
+                left: 0;
+              }
+            }
+            .overlay {
+              width: 88px;
+              height: 60px;
+              position: absolute;
+              top: 2px;
+              left: 5px;
+              cursor: pointer;
+              z-index: 1;
+            }
           }
 
           .hidden {
@@ -1589,9 +1622,8 @@ class App extends Component {
 
           .history>h3 {
             cursor: pointer;
-          }
-
-          .history>h3 {
+            font-size: medium;
+            padding: 10px;
             transition-property: opacity, height;
             transition-duration: 0.5s;
             opacity: 1;
@@ -1663,26 +1695,9 @@ class App extends Component {
             background-color: ${colors.darkred};
           }
 
-          .playingNow>h3 {
-            color: black;
-          }
-
-          .queue {
-            /* margin-bottom: 100px; */
-            color: ${colors.black};
-          }
-
-          .queue h3 {
-            font-size: medium;
-            padding: 10px;
-          }
-
-          .queue .icon {
-            color: ${colors.black};
-          }
           .playlistBox {
             display: grid;
-            border: 1px solid black;
+            border-radius: 15px 15px 0 0;
             width: 640px;
             max-width: 100%;
             margin: 0 auto;
@@ -1690,24 +1705,28 @@ class App extends Component {
             line-height: 1.5em;
             grid-template-columns: 1fr 50px;
             grid-template-rows: 1fr;
-            grid-template-areas: "playlistName playlistActionsToggle"
+            grid-template-areas: "playlistName playlistActionsToggle";
+            border-bottom: 1px solid ${colors.whiteish};
           }
           .playlistName {
             grid-area: playlistName;
             padding: 5px;
             text-align: center;
-            border-radius: 0;
+            border-radius: 15px 0 0 0;
           }
           .playlistActionsToggle {
             grid-area: playlistActionsToggle;
             padding: 5px;
-            border-width: 0 0 0 1px;
-            border-color: black;
+            border-radius: 0 15px 0 0;
             background: ${colors.white};
             .icon {
               width: 20px;
               height: 20px;
             }
+          }
+
+          .history, .history .icon, .upNext, .upNext .icon {
+            color: ${colors.black};
           }
 
           .playingNow .icon {
@@ -1716,10 +1735,6 @@ class App extends Component {
 
           .inCollection {
             color: ${colors.green};
-          }
-
-          .notInCollection {
-
           }
 
           .figure {

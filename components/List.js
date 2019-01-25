@@ -245,7 +245,7 @@ class List extends Component {
                 className={this.props.loadsMore ? 'loadsMore' : ''}
               >
                 {items}
-                {(items.length === 0) ? this.props.empty : null}
+                {(items.length === 0) ? this.props.emptyComponent : null}
                 {(this.props.hasMore && items.length > 0) ? loader : null}
                 {droppableProvided.placeholder}
               </ol>
@@ -264,7 +264,7 @@ class List extends Component {
           key={`${classes[0]}-list-nodrop`}
         >
           {items}
-          {(items.length === 0) ? this.props.empty : null}
+          {(items.length === 0) ? this.props.emptyComponent : null}
           {(this.props.hasMore && items.length > 0) ? loader : null}
         </ol>
       )
@@ -307,7 +307,7 @@ const props = [
   { name: 'maxResults', type: PropTypes.number, val: 500 },
   { name: 'loadingTxt', type: PropTypes.string, val: 'Loading...' },
   { name: 'maxReachedTxt', type: PropTypes.string, val: 'Please refine your search' },
-  { name: 'empty', type: PropTypes.element, val: <li className='emptyPlaceholder' /> },
+  { name: 'emptyComponent', type: PropTypes.element, val: <li className='emptyPlaceholder' /> },
   { name: 'hidden', type: PropTypes.bool, val: false },
   { name: 'loadsMore', type: PropTypes.bool, val: false },
   { name: 'componentProps', type: PropTypes.object, val: {} }
