@@ -21,7 +21,6 @@ export const whitesmoke = 'whitesmoke'
 export const ghostwhite = 'ghostwhite'
 export const darkred = 'darkred'
 export const steelblue = 'steelblue'
-export const linen = 'linen'
 
 export default {
   black,
@@ -42,7 +41,6 @@ export default {
   ghostwhite,
   darkred,
   steelblue,
-  linen,
   white,
   whiteish
 }

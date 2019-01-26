@@ -23,6 +23,7 @@ import AudioFileInput from './AudioFileInput'
 import Smart from './Smart'
 import NoticeList from './NoticeList'
 import Artwork from './Artwork'
+import Figure from './Figure'
 
 import Dict from '../data/Dict.js'
 import getFileMeta from '../features/fileInput/getFileMeta'
@@ -66,8 +67,6 @@ class App extends Component {
     this.onDragStart = this.onDragStart.bind(this)
     this.onDragUpdate = this.onDragUpdate.bind(this)
     this.onDragEnd = this.onDragEnd.bind(this)
-    this.figureClicked = this.figureClicked.bind(this)
-    this.figureKeyDown = this.figureKeyDown.bind(this)
     this.play = this.play.bind(this)
     this.togglePlaying = this.togglePlaying.bind(this)
     this.playNext = this.playNext.bind(this)
@@ -520,42 +519,6 @@ class App extends Component {
     return handler
   }
 
-  figureClicked (event) {
-    event.stopPropagation() // Avoid from letting the global click listeners from collapsing the party
-    if (this.props.app.partyCollapsed) {
-      this.dispatch({
-        type: 'Bar:setItems',
-        data: [],
-        hasMore: false,
-        nextPageToken: null,
-        areCommands: true
-      })
-      this.dispatch({
-        type: 'App:showParty'
-      })
-    } else {
-      this.dispatch({
-        type: 'App:collapseParty'
-      })
-    }
-  }
-
-  figureKeyDown (event) {
-    if (event.keyCode === 27 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // esc
-
-    }
-    if (event.keyCode === 32 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // space
-      this.dispatch({
-        type: 'App:toggleMenu'
-      })
-    }
-    if (event.keyCode === 13 && !event.metaKey && !event.ctrlKey && !event.shiftKey) { // enter
-      this.dispatch({
-        type: 'App:showParty'
-      })
-    }
-  }
-
   play (data) {
     const state = this.getPartyState()
     const origin = this.makeOrigin()
@@ -876,14 +839,6 @@ class App extends Component {
 
   render () {
     const state = this.getPartyState()
-    const figureClasses = ['figure']
-    figureClasses.push(this.props.socket.connected ? 'connected' : 'disconnected')
-    if (this.props.party.hosting) {
-      figureClasses.push('hosting')
-    }
-    if (this.props.party.attending) {
-      figureClasses.push('attending')
-    }
     const cdn = (queueIndex) => {
       return !queueIndex
     }
@@ -1084,11 +1039,11 @@ class App extends Component {
             <div className='cancelDropZone'>
               Drop here to cancel
             </div>
-            <div
-              className={figureClasses.join(' ')}
-              onClick={this.figureClicked}
-              onKeyDown={this.figureKeyDown}
-              tabIndex='0'
+            <Figure
+              socket={this.props.socket}
+              partyState={state}
+              dispatch={this.dispatch}
+              partyCollapsed={this.props.app.partyCollapsed}
             />
             <div className='main'>
               <Party
@@ -1174,14 +1129,16 @@ class App extends Component {
                       height={playerHeight}
                       controls
                     />
-                  ) : (
+                  ) : null}
+                {(state.queue.now.key && this.props.party.attending)
+                  ? (
                     <Artwork
                       playingNow={state.queue.now}
                       isPlaying={state.player.playing}
                       dispatch={this.dispatch}
-                      // className='hidden'
+                      className='Artwork'
                     />
-                  )}
+                  ) : null}
               </div>
               <List
                 className={upNextClasses.join(' ')}
@@ -1564,6 +1521,13 @@ class App extends Component {
             z-index: 0;
           }
 
+          .Artwork {
+            width: ${playerWidth};
+            height: ${playerHeight};
+            position: relative;
+            z-index: 0;
+          }
+
           .playingNow {
             position: relative;
             &.mini {
@@ -1572,10 +1536,18 @@ class App extends Component {
                 top: -62px;
                 left: 5px;
               }
+              .Artwork {
+                top: -62px;
+                left: 5px;
+              }
             }
             &.medium {
               margin-bottom: 360px;
               .Player {
+                top: 0;
+                left: 0;
+              }
+              .Artwork {
                 top: 0;
                 left: 0;
               }
@@ -1737,87 +1709,6 @@ class App extends Component {
             color: ${colors.green};
           }
 
-          .figure {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 50px;
-            height: 50px;
-            font-size: large;
-            z-index: 4;
-            cursor: pointer;
-            background-repeat: no-repeat;
-            background-position: top 10px right 10px;
-            background-origin: content-box;
-            background-size: 30px 30px;
-            transition-property: background-color;
-            transition-duration: 0.5s;
-          }
-
-          .figure.disconnected {
-            background-image: url('static/asleep.svg');
-          }
-          .figure.connected {
-            background-image: url('static/manga.svg');
-          }
-          .figure.hosting.disconnected {
-            background-image: url('static/guilty.svg');
-          }
-          .figure.hosting.connected {
-            background-image: url('static/happy.svg');
-          }
-          .figure.attending.disconnected {
-            background-image: url('static/sad.svg')
-          }
-          .figure.attending.connected {
-            background-image: url('static/glad.svg')
-          }
-          .figure.attending.host-disconnected {
-            background-image: url('static/sad.svg')
-          }
-
-          .autoparty {
-            max-width: 640px;
-            margin: 0 auto;
-          }
-
-          .autoparty.disconnected .partyBtn, .autoparty:disabled {
-            color: ${colors.grey};
-          }
-
-          .autoparty .joinBtn, .autoparty .startBtn {
-            width: 50%;
-          }
-
-          .autoparty input {
-            display: block;
-            width: 100%;
-            padding: 5px;
-            font-size: xx-large;
-            line-height: 2em;
-            text-align: center;
-            border-radius: 0;
-          }
-
-          .autoparty button, .autoparty .copyBtn {
-            padding: 5px;
-            font-size: medium;
-            line-height: 1.5em;
-            color: ${colors.black};
-            background-color: ${colors.whitesmoke};
-            &.enabled {
-              background-color: ${colors.aqua};
-            }
-          }
-
-          .joinBtn, .startBtn {
-            cursor: pointer;
-            opacity: 1;
-            transition-property: opacity, background-color;
-            transition-duration: 0.1s;
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
           .App.attending .joinBtn {
             background-color: ${colors.white};
           }
@@ -1835,103 +1726,8 @@ class App extends Component {
             opacity: 0;
           }
 
-          .copyButton {
-            opacity: 0;
-            transition-property: opacity;
-            transition-duration: 0.1s;
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
-          .copyBtn {
-            cursor: pointer;
-            background-color: ${colors.white};
-            transition-property: background-color;
-            transition-duration: 0.1s;
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
           .App.attending .copyButton, .App.hosting .copyButton {
             opacity: 1;
-          }
-
-          .autoparty .copyButton {
-            padding: 5px;
-            font-size: medium;
-            line-height: 1.5em;
-            text-align: right;
-            /* font-weight: bold; */
-          }
-
-          .autoparty .copyBtn {
-            display: inline-block; /* TODO Consider setting this in the reset styles */
-            transform: translateX(5px); /* Cancels .copyButton padding to align with other inputs */
-          }
-
-          .autoparty .dismiss {
-            position: absolute;
-            top: 0;
-            right: 0;
-            border: 0;
-            padding: 5px 10px;
-          }
-
-          .command, .loader {
-            padding: 12px;
-            line-height: 150%;
-            cursor: pointer;
-            font-size: large;
-            border: 0;
-          }
-
-          .fuzz--match {
-            font-weight: bold;
-          }
-
-          .Feedback {
-            margin-top: 50px;
-            text-align: center;
-            form {
-              padding: 10px;
-              max-width: 640px;
-              margin: 0 auto;
-              text-align: left;
-              line-height: 1.5em;
-              color: ${colors.whitesmoke};
-              text-shadow: 0 0 30px black;
-            }
-            h2 {
-              font-size: x-large;
-            }
-            p {
-              margin: 10px;
-            }
-            textarea {
-              margin: 10px 0;
-              width: 100%;
-              height: 7em;
-            }
-            [type=email] {
-            }
-            label {
-              margin-right: 10px;
-            }
-            [type=submit] {
-              float: right;
-              border-color: ${colors.aqua};
-              background: ${colors.aqua};
-            }
-            .submitting [type=submit], .submitted [type=submit] {
-              color: ${colors.linen};
-              background: rgba(200, 200, 200, 20%);
-              border-color: rgba(200, 200, 200, 20%);
-            }
-          }
-
-          @media screen and (max-width: 640px) {
-            .autoparty {
-              width: 100%;
-              border-radius: 0;
-            }
           }
         `}</style>
       </React.Fragment>

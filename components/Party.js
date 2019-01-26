@@ -8,6 +8,10 @@ import debounce from 'lodash.debounce'
 import get from 'lodash.get'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
+import Pulser from '../helpers/Pulser'
+
+import colors from '../styles/colors'
+import tfns from '../styles/timing-functions'
 
 const isServer = typeof window === 'undefined'
 
@@ -572,6 +576,68 @@ class Party extends Component {
             </p>
           </form>
         }
+        <style jsx>{`
+          .autoparty {
+            max-width: 640px;
+            margin: 0 auto;
+          }
+
+          .autoparty.disconnected .partyBtn, .autoparty:disabled {
+            color: ${colors.grey};
+          }
+
+          .autoparty input {
+            display: block;
+            width: 100%;
+            padding: 5px;
+            font-size: xx-large;
+            line-height: 2em;
+            text-align: center;
+            border-radius: 0;
+          }
+
+          .autoparty button, .autoparty .copyBtn {
+            padding: 5px;
+            font-size: medium;
+            line-height: 1.5em;
+            color: ${colors.black};
+            background-color: ${colors.whitesmoke};
+            &.enabled {
+              background-color: ${colors.aqua};
+            }
+          }
+
+          .joinBtn, .startBtn {
+            width: 50%;
+            cursor: pointer;
+            opacity: 1;
+            transition-property: opacity, background-color;
+            transition-duration: 0.1s;
+            transition-timing-function: ${tfns.easeInOutQuad};
+          }
+
+          .copyButton {
+            padding: 5px;
+            font-size: medium;
+            line-height: 1.5em;
+            text-align: right;
+            /* font-weight: bold; */
+            opacity: 0;
+            transition-property: opacity;
+            transition-duration: 0.1s;
+            transition-timing-function: ${tfns.easeInOutQuad};
+          }
+
+          .copyBtn {
+            cursor: pointer;
+            background-color: ${colors.white};
+            display: inline-block; /* TODO Consider setting this in the reset styles */
+            transform: translateX(5px); /* Cancels .copyButton padding to align with other inputs */
+            transition-property: background-color;
+            transition-duration: 0.1s;
+            transition-timing-function: ${tfns.easeInOutQuad};
+          }
+        `}</style>
       </div>
     )
   }
@@ -600,41 +666,3 @@ Party.defaultProps = defaultProps(props)
 Party.propTypes = propTypes(props)
 
 export default Party
-
-function Pulser (pulse) {
-  return {
-    delay: 30000,
-    start: function (delay) {
-      this.timestamp = Date.now()
-      this.timeout = global.setTimeout(() => {
-        pulse()
-        this.start(this.delay)
-      }, delay || this.delay)
-    },
-    stop: function () {
-      if (this.timeout) {
-        global.clearTimeout(this.timeout)
-      }
-      if (this.timestamp) {
-        this.timestamp = null
-      }
-    },
-    setDelay: function (newDelay) {
-      if (this.timeout && this.timestamp) {
-        global.clearTimeout(this.timeout)
-        const now = Date.now()
-        const diff = now - this.timestamp
-
-        if (diff > newDelay) {
-          pulse()
-          this.start(newDelay)
-        } else {
-          this.start(newDelay - diff)
-        }
-      } else {
-        this.start(newDelay)
-      }
-      this.delay = newDelay
-    }
-  }
-}

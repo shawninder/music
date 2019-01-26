@@ -6,6 +6,7 @@ import deepEqual from 'deep-equal'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 import { Droppable, Draggable } from 'react-beautiful-dnd'
+import isElementInViewport from '../helpers/isElementInViewport'
 
 const isServer = typeof window === 'undefined'
 
@@ -281,6 +282,15 @@ class List extends Component {
           ) : null
         }
         {dropZone}
+        <style>{`
+          .loader {
+            padding: 12px;
+            line-height: 150%;
+            cursor: pointer;
+            font-size: large;
+            border: 0;
+          }
+        `}</style>
       </div>
     )
   }
@@ -310,21 +320,11 @@ const props = [
   { name: 'emptyComponent', type: PropTypes.element, val: <li className='emptyPlaceholder' /> },
   { name: 'hidden', type: PropTypes.bool, val: false },
   { name: 'loadsMore', type: PropTypes.bool, val: false },
-  { name: 'componentProps', type: PropTypes.object, val: {} }
+  { name: 'componentProps', type: PropTypes.object, val: {} },
+  { name: 'startsCollapsed', type: PropTypes.bool, val: false }
 ]
 
 List.defaultProps = defaultProps(props)
 List.propTypes = propTypes(props)
 
 export default List
-
-function isElementInViewport (el) {
-  var rect = el.getBoundingClientRect()
-
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-  )
-}

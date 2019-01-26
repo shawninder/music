@@ -23,26 +23,17 @@ class Artwork extends Component {
       src = 'https://placeholder.pics/svg/640x320/000000-2A2A2A/F1F1F1-000000/%E2%98%86'
     }
     return (
-      <React.Fragment>
-        <img
-          key='artwork'
-          src={src}
-          className={this.props.className}
-          onClick={(event) => {
-            event.stopPropagation()
-            this.props.dispatch({
-              type: 'Player:togglePlaying'
-            })
-          }}
-        />
-        <style jsx>{`
-          img {
-            width: 100%;
-            max-width: 640px;
-            max-height: 360px;
-          }
-        `}</style>
-      </React.Fragment>
+      <img
+        key='artwork'
+        src={src}
+        className={this.props.className}
+        onClick={(event) => {
+          event.stopPropagation()
+          this.props.dispatch({
+            type: 'Player:togglePlaying'
+          })
+        }}
+      />
     )
   }
 }
