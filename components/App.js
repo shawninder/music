@@ -983,7 +983,7 @@ class App extends Component {
         <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
           <Head title="Crowd's Play" />
           <div className={appClasses.join(' ')}>
-            <img className='bg' src='static/bg-46-l.svg' />
+            <img className='bg' src='static/underwater-horizon.jpg' />
             <Bar
               dispatch={this.dispatch}
               placeholder={this.dict.get('bar.placeholder')}
@@ -1113,7 +1113,7 @@ class App extends Component {
                 areDraggable
                 hidden={state.queue.history.length === 0}
               />
-              <div className={playingNowClasses.join(' ')}>
+              <div className={playingNowClasses.join(' ')} key='playingNow'>
                 {playingNowZone}
                 {(state.queue.now.key && !this.props.party.attending)
                   ? (
