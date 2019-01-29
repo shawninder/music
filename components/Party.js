@@ -582,10 +582,6 @@ class Party extends Component {
             margin: 0 auto;
           }
 
-          .autoparty.disconnected .partyBtn, .autoparty:disabled {
-            color: ${colors.grey};
-          }
-
           .autoparty input {
             display: block;
             width: 100%;
@@ -594,6 +590,12 @@ class Party extends Component {
             line-height: 2em;
             text-align: center;
             border-radius: 0;
+            background-color: white;
+          }
+
+          .autoparty.hosting input, .autoparty.attending input {
+            background-color: transparent;
+            border-width: 0;
           }
 
           .autoparty button, .autoparty .copyBtn {
@@ -605,6 +607,27 @@ class Party extends Component {
             &.enabled {
               background-color: ${colors.aqua};
             }
+          }
+
+          .autoparty .copyButton.enabled a {
+            background-color: ${colors.aqua};
+          }
+
+          .hosting .startBtn {
+            background-color: ${colors.white};
+            color: ${colors.darkred};
+          }
+
+          .attending .joinBtn {
+            background-color: ${colors.white};
+            color: ${colors.darkred};
+          }
+          .hosting .joinBtn {
+            opacity: 0.4;
+          }
+
+          .attending .startBtn {
+            opacity: 0.4;
           }
 
           .joinBtn, .startBtn {

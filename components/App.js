@@ -983,7 +983,7 @@ class App extends Component {
         <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
           <Head title="Crowd's Play" />
           <div className={appClasses.join(' ')}>
-            <img className='bg' src='static/underwater-horizon.jpg' />
+            <img className='bg' src='static/bg.svg' />
             <Bar
               dispatch={this.dispatch}
               placeholder={this.dict.get('bar.placeholder')}
@@ -1325,18 +1325,6 @@ class App extends Component {
           .App.disconnected, .App.disconnected .figure {
             background-color: ${colors.white};
           }
-          .App.connected .autoparty {
-            background-color: ${colors.aquaish};
-          }
-          .App.attending .autoparty {
-            background-color: ${colors.greenish};
-          }
-          .App.hosting .autoparty {
-            background-color: ${colors.orangeish};
-          }
-          .App.disconnected .autoparty {
-            background-color: ${colors.whiteish};
-          }
 
           .bar {
             position: relative;
@@ -1612,7 +1600,8 @@ class App extends Component {
           }
 
           .collapsed>ol {
-            display: none;
+            opacity: 0;
+            position: absolute;
           }
 
           .upNext, .history, .playingNow {
@@ -1641,7 +1630,7 @@ class App extends Component {
           }
 
           .emptyDropZone {
-            line-height: 3em;
+            line-height: 60px;
             text-align: center;
           }
 
@@ -1707,23 +1696,6 @@ class App extends Component {
 
           .inCollection {
             color: ${colors.green};
-          }
-
-          .App.attending .joinBtn {
-            background-color: ${colors.white};
-          }
-
-          .App.hosting .startBtn {
-            background-color: ${colors.white};
-            color: ${colors.darkred};
-          }
-
-          .App.hosting .joinBtn {
-            opacity: 0;
-          }
-
-          .App.attending .startBtn {
-            opacity: 0;
           }
 
           .App.attending .copyButton, .App.hosting .copyButton {

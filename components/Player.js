@@ -13,7 +13,7 @@ ReactPlayer.addCustomPlayer(IndexedDBPlayer)
 
 class Player extends Component {
   render () {
-    const classes = this.props.className.split(' ')
+    const classes = this.props.className ? this.props.className.split(' ') : []
     classes.push('Player')
     return (
       <div className={classes.join(' ')}>
