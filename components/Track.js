@@ -11,6 +11,7 @@ import moreIcon from './icons/more'
 
 import ActionList from './ActionList'
 
+import lengths from '../styles/lengths'
 import tfns from '../styles/timing-functions'
 
 const isServer = typeof window === 'undefined'
@@ -163,7 +164,7 @@ class Track extends Component {
             cursor: pointer;
             display: grid;
             grid-template-columns: 100px 1fr 50px;
-            grid-template-rows: 1fr minmax(50px, min-content) 1fr;
+            grid-template-rows: 1fr minmax(${lengths.rowHeight}, min-content) 1fr;
             grid-template-areas:
               "actionListAbove  actionListAbove  actionListAbove"
               "left             right            corner"

@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import lengths from '../styles/lengths'
+
 class Figure extends Component {
   constructor (props) {
     super(props)
@@ -64,8 +66,8 @@ class Figure extends Component {
             position: fixed;
             top: 0;
             right: 0;
-            width: 50px;
-            height: 50px;
+            width: ${lengths.rowHeight};
+            height: ${lengths.rowHeight};
             font-size: large;
             z-index: 4;
             cursor: pointer;

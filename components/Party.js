@@ -1,7 +1,6 @@
 import 'core-js/es6/string.js' // for startsWith
 
 import qs from 'querystring'
-import Clipboard from 'clipboard'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import debounce from 'lodash.debounce'
@@ -51,23 +50,6 @@ class Party extends Component {
   componentDidMount () {
     this.startListening()
     this.hydrate()
-    this.clipboard = new Clipboard(this.copyBtn, {
-      target: () => {
-        return this.copyLink
-      }
-    })
-    this.clipboard.on('success', (event) => {
-      // event.clearSelection()
-      this.props.notify({
-        id: `party.linkCopied${Math.random()}`,
-        body: this.props.dict.get('party.linkCopied'),
-        duration: 1500
-      })
-    })
-    this.clipboard.on('error', (event) => {
-      console.error('Clipboard error', event)
-      // TODO
-    })
     if (this.props.linkedPartyName) {
       this.props.dispatch({ type: 'App:showParty' })
     }
@@ -75,7 +57,6 @@ class Party extends Component {
 
   componentWillUnmount () {
     this.stopListening()
-    this.clipboard.destroy()
   }
 
   checkPartyName (providedName) {
@@ -501,15 +482,11 @@ class Party extends Component {
     const canStart = ok && !this.props.exists
     const joinBtnClasses = ['joinBtn']
     const startBtnClasses = ['startBtn']
-    const copyLinkClasses = ['copyButton']
     if (canJoin) {
       joinBtnClasses.push('enabled')
     }
     if (canStart) {
       startBtnClasses.push('enabled')
-    }
-    if (this.props.hosting || this.props.attending) {
-      copyLinkClasses.push('enabled')
     }
     return (
       <div
@@ -562,18 +539,6 @@ class Party extends Component {
                   : this.props.dict.get('party.start')
               }
             </button>
-            <p className={copyLinkClasses.join(' ')}>
-              {this.props.dict.get('party.copyLinkPrefix')}
-              <a
-                className='copyBtn'
-                ref={(el) => {
-                  this.copyBtn = el
-                }}
-                key='copyBtn'
-              >
-                {this.props.dict.get('party.copyBtn')}
-              </a>
-            </p>
           </form>
         }
         <style jsx>{`
@@ -598,36 +563,29 @@ class Party extends Component {
             border-width: 0;
           }
 
-          .autoparty button, .autoparty .copyBtn {
+          .autoparty button {
             padding: 5px;
             font-size: medium;
             line-height: 1.5em;
             color: ${colors.black};
-            background-color: ${colors.whitesmoke};
+            background-color: ${colors.white};
             &.enabled {
               background-color: ${colors.aqua};
             }
           }
 
-          .autoparty .copyButton.enabled a {
-            background-color: ${colors.aqua};
+          .autoparty.hosting button.enabled, .autoparty.attending button.enabled {
+            background-color: ${colors.white};
           }
 
-          .hosting .startBtn {
-            background-color: ${colors.white};
+          .hosting .startBtn, .attending .joinBtn {
+            background-color: ${colors.reddish};
             color: ${colors.darkred};
           }
 
-          .attending .joinBtn {
+          .hosting .joinBtn, .attending .startBtn {
+            opacity: 0.4;
             background-color: ${colors.white};
-            color: ${colors.darkred};
-          }
-          .hosting .joinBtn {
-            opacity: 0.4;
-          }
-
-          .attending .startBtn {
-            opacity: 0.4;
           }
 
           .joinBtn, .startBtn {
@@ -635,28 +593,6 @@ class Party extends Component {
             cursor: pointer;
             opacity: 1;
             transition-property: opacity, background-color;
-            transition-duration: 0.1s;
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
-          .copyButton {
-            padding: 5px;
-            font-size: medium;
-            line-height: 1.5em;
-            text-align: right;
-            /* font-weight: bold; */
-            opacity: 0;
-            transition-property: opacity;
-            transition-duration: 0.1s;
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
-          .copyBtn {
-            cursor: pointer;
-            background-color: ${colors.white};
-            display: inline-block; /* TODO Consider setting this in the reset styles */
-            transform: translateX(5px); /* Cancels .copyButton padding to align with other inputs */
-            transition-property: background-color;
             transition-duration: 0.1s;
             transition-timing-function: ${tfns.easeInOutQuad};
           }

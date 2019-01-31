@@ -90,7 +90,6 @@ class Feedback extends Component {
         </form>
         <style jsx>{`
           .Feedback {
-            margin-top: 50px;
             text-align: center;
             form {
               padding: 10px;

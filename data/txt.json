@@ -35,9 +35,13 @@
     "en": "Refine your search",
     "fr": "Affinez votre recherche"
   },
+  "header.tagline": {
+    "en": "Get the crowd involved in your playlist",
+    "fr": "Invitez la foule à collaborer sur votre playlist"
+  },
   "party.placeholder": {
-    "en": "Party name",
-    "fr": "Nom de la fête"
+    "en": "Playlist name",
+    "fr": "Nom de la playlist"
   },
   "party.default": {
     "en": "Name your Party",

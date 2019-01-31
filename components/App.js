@@ -12,6 +12,7 @@ import pullAt from 'lodash.pullat'
 import debounce from 'lodash.debounce'
 
 import Head from './Head'
+import Header from './Header'
 import Bar from './Bar'
 import Player from './Player'
 import Controls from './Controls'
@@ -24,6 +25,7 @@ import Smart from './Smart'
 import NoticeList from './NoticeList'
 import Artwork from './Artwork'
 import Figure from './Figure'
+import Links from './Links'
 
 import Dict from '../data/Dict.js'
 import getFileMeta from '../features/fileInput/getFileMeta'
@@ -35,9 +37,9 @@ import jumpBackToIcon from './icons/jumpBackTo'
 import enqueueIcon from './icons/enqueue'
 import nextIcon from './icons/next'
 import dequeueIcon from './icons/dequeue'
-import moreIcon from './icons/more'
 
 import colors from '../styles/colors'
+import lengths from '../styles/lengths'
 import tfns from '../styles/timing-functions'
 
 const isServer = typeof window === 'undefined'
@@ -1045,7 +1047,11 @@ class App extends Component {
               dispatch={this.dispatch}
               partyCollapsed={this.props.app.partyCollapsed}
             />
-            <div className='main'>
+            <main>
+              <Header
+                dict={this.dict}
+                notify={this.props.notify}
+              />
               <Party
                 className={'autoparty'}
                 placeholder={this.dict.get('party.placeholder')}
@@ -1071,17 +1077,6 @@ class App extends Component {
                 gotFileChunk={this.gotFileChunk}
                 autoFocus
               />
-              <div className='playlistBox'>
-                <input className='playlistName' type='text' placeholder={this.dict.get('queue.name')} />
-                <button
-                  className='playlistActionsToggle'
-                  onClick={(event) => {
-                    // TODO
-                  }}
-                >
-                  {moreIcon}
-                </button>
-              </div>
               <List
                 showLabel={`${this.dict.get('queue.history.show')} (${state.queue.history.length})`}
                 hideLabel={`${this.dict.get('queue.history.hide')} (${state.queue.history.length})`}
@@ -1169,7 +1164,10 @@ class App extends Component {
                 notify={this.props.notify}
                 dict={this.dict}
               />
-            </div>
+              <Links
+                dict={this.dict}
+              />
+            </main>
             <Controls
               f={state.player.f}
               t={state.player.t}
@@ -1329,7 +1327,7 @@ class App extends Component {
           .bar {
             position: relative;
             z-index: 3;
-            height: 50px;
+            height: ${lengths.rowHeight};
             width: 100%;
           }
 
@@ -1338,7 +1336,7 @@ class App extends Component {
             position: fixed;
             z-index: 5;
             padding: 15px;
-            height: 50px;
+            height: ${lengths.rowHeight};
           }
 
           .bar-menu:focus {
@@ -1352,7 +1350,7 @@ class App extends Component {
           .bar-field {
             position: fixed;
             top: 0;
-            height: 50px;
+            height: ${lengths.rowHeight};
             width: 100%;
             font-size: large;
             font-weight: bold;
@@ -1370,7 +1368,7 @@ class App extends Component {
           .cancelDropZone {
             position: fixed;
             top: 0;
-            height: 50px;
+            height: ${lengths.rowHeight};
             width: 100%;
             font-size: large;
             font-weight: bold;
@@ -1431,7 +1429,7 @@ class App extends Component {
           .bar-list {
             display: grid;
             grid-template-columns: 1fr;
-            grid-template-rows: 50px 1fr;
+            grid-template-rows: ${lengths.rowHeight} 1fr;
             grid-template-areas:
               "nothing"
               "results";
@@ -1489,11 +1487,18 @@ class App extends Component {
             grid-area: results;
           }
 
-          .main {
+          main {
             position: relative;
             padding-bottom: 130px;
             width: 100%;
             min-width: 250px;
+          }
+
+          @media screen and (min-width: 640px) {
+            main {
+              max-width: 640px;
+              margin: auto auto;
+            }
           }
 
           .player-alt {
@@ -1654,36 +1659,6 @@ class App extends Component {
 
           .App.disconnected .seek-bar--current {
             background-color: ${colors.darkred};
-          }
-
-          .playlistBox {
-            display: grid;
-            border-radius: 15px 15px 0 0;
-            width: 640px;
-            max-width: 100%;
-            margin: 0 auto;
-            font-size: medium;
-            line-height: 1.5em;
-            grid-template-columns: 1fr 50px;
-            grid-template-rows: 1fr;
-            grid-template-areas: "playlistName playlistActionsToggle";
-            border-bottom: 1px solid ${colors.whiteish};
-          }
-          .playlistName {
-            grid-area: playlistName;
-            padding: 5px;
-            text-align: center;
-            border-radius: 15px 0 0 0;
-          }
-          .playlistActionsToggle {
-            grid-area: playlistActionsToggle;
-            padding: 5px;
-            border-radius: 0 15px 0 0;
-            background: ${colors.white};
-            .icon {
-              width: 20px;
-              height: 20px;
-            }
           }
 
           .history, .history .icon, .upNext, .upNext .icon {
