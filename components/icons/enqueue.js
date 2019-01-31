@@ -1,4 +1,4 @@
-import SvgSkeleton from './SvgSkeleton'
+import SvgSkeleton from '../SvgSkeleton'
 
 export default (
   <SvgSkeleton

@@ -1,8 +1,8 @@
 import { Component } from 'react'
 import PropTypes from 'prop-types'
 
-import defaultProps from '../../helpers/defaultProps'
-import propTypes from '../../helpers/propTypes'
+import defaultProps from '../helpers/defaultProps'
+import propTypes from '../helpers/propTypes'
 
 class SvgSkeleton extends Component {
   render () {
