@@ -19,6 +19,7 @@ import prevIcon from '../components/icons/prev'
 import searchIcon from '../components/icons/search'
 import volumeHighIcon from '../components/icons/volumeHigh'
 import addIcon from '../components/icons/add'
+import engine from '../components/icons/engine'
 // const isServer = typeof window === 'undefined'
 
 class Icons extends Component {
@@ -81,9 +82,10 @@ class Icons extends Component {
           <li>{jumpBackToIcon}<span className='label'>jumpBackTo</span></li>
           <li>{jumpToIcon}<span className='label'>jumpTo</span></li>
           <li>{moreIcon}<span className='label'>more</span></li>
-
+          <li>{engine}<span className='label'>engine</span></li>
         </ul>
         <ul>
+          <li><img src='/static/engine.svg' /><span className='label'>engine</span></li>
           <li><img src='/static/asleep.svg' /><span className='label'>asleep</span></li>
           <li><img src='/static/awake.svg' /><span className='label'>awake</span></li>
           <li><img src='/static/happy.svg' /><span className='label'>happy</span></li>

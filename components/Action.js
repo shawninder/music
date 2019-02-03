@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
+import colors from '../styles/colors'
+
 class Action extends Component {
   constructor (props) {
     super(props)
@@ -65,7 +67,7 @@ class Action extends Component {
           }
 
           .action:hover {
-            color: steelblue;
+            color: ${colors.primary};
           }
           .action {
             width: 100%;

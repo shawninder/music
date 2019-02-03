@@ -18,6 +18,7 @@ class Links extends Component {
         <style jsx>{`
           footer {
             margin-top: ${lengths.rowHeight};
+            padding-bottom: ${lengths.rowHeight};
             ul {
               list-style: none;
               li {
@@ -27,7 +28,7 @@ class Links extends Component {
           }
           a {
             cursor: pointer;
-            color: ${colors.blue};
+            color: ${colors.link};
             transition-property: color;
             transition-duration: 0.1s;
             transition-timing-function: ${tfns.easeInOutQuad};

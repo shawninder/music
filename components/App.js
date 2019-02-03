@@ -41,6 +41,7 @@ import dequeueIcon from './icons/dequeue'
 import colors from '../styles/colors'
 import lengths from '../styles/lengths'
 import tfns from '../styles/timing-functions'
+import alpha from '../helpers/alpha'
 
 const isServer = typeof window === 'undefined'
 const CHUNK_SIZE = 100000
@@ -1275,10 +1276,6 @@ class App extends Component {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
           }
 
-          input[type=text].disabled {
-            background: ${colors.beige};
-          }
-
           svg {
             fill: currentColor; /* For SVGs, see https://css-tricks.com/cascading-svg-fill-color/ */
           }
@@ -1316,7 +1313,11 @@ class App extends Component {
             background-color: ${colors.green};
           }
 
-          .App.hosting, .App.hosting .figure {
+          .App.hosting  {
+            background-color: ${colors.sand};
+          }
+
+          .App.hosting .figure {
             background-color: ${colors.orange};
           }
 
@@ -1358,7 +1359,7 @@ class App extends Component {
             z-index: 4;
             border: 0;
             color: ${colors.whitesmoke};
-            background: ${colors.black};
+            background: ${colors.text};
             border-radius: 0;
             box-shadow: 0px 5px 5px 0px rgb(0,0,0,0.25);
             transition-property: background-color;
@@ -1395,7 +1396,7 @@ class App extends Component {
           }
 
           .bar-field::placeholder {
-            color: ${colors.lightgrey};
+            color: ${colors.placeholder};
           }
 
           .bar-dismiss {
@@ -1440,7 +1441,7 @@ class App extends Component {
           }
 
           .App .bar-list {
-            background: ${colors.black};
+            background: ${colors.text};
           }
 
           .bar-list .loader {
@@ -1459,10 +1460,6 @@ class App extends Component {
 
           .App .bar-list.list > ol > li:nth-child(even) {
             background: ${colors.ghostwhite};
-          }
-
-          .filesDialog ol > li:nth-child(even) {
-            background: ${colors.four};
           }
 
           .App.dragging .bar-list {
@@ -1578,7 +1575,7 @@ class App extends Component {
           }
 
           li:nth-child(odd) .actions {
-            background-color: ${colors.eee};
+            background-color: ${colors.ghostwhite};
           }
 
           li:nth-child(even) .actions {
@@ -1619,8 +1616,8 @@ class App extends Component {
             background: ${colors.whiteish};
           }
           .playingNow {
-            background: ${colors.blackish};
-            color: ${colors.whitesmoke};
+            background: ${alpha(colors.text, 1 - colors.opacity)};
+            color: ${colors.white};
             height: 64px;
             .art {
               .idx {
@@ -1662,7 +1659,7 @@ class App extends Component {
           }
 
           .history, .history .icon, .upNext, .upNext .icon {
-            color: ${colors.black};
+            color: ${colors.text};
           }
 
           .playingNow .icon {

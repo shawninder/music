@@ -70,7 +70,7 @@ class CopyButton extends Component {
             transition-property: opacity;
             transition-duration: 0.1s;
             transition-timing-function: ${tfns.easeInOutQuad};
-            color: ${colors.black};
+            color: ${colors.text};
           }
           .copyButton.enabled {
             opacity: 1;

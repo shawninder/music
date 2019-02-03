@@ -11,6 +11,7 @@ import pauseIcon from './icons/pause'
 import nextIcon from './icons/next'
 import volumeIcon from './icons/volumeHigh'
 
+import colors from '../styles/colors'
 import tfns from '../styles/timing-functions'
 // import controlsCss from '../styles/controls'
 
@@ -58,7 +59,7 @@ class Controls extends Component {
             width: 20px;
           }
           .controls button:hover {
-            color: steelblue;
+            color: ${colors.primary};
           }
           .controls-newFile {
             grid-area: addMedia;

@@ -567,7 +567,7 @@ class Party extends Component {
             padding: 5px;
             font-size: medium;
             line-height: 1.5em;
-            color: ${colors.black};
+            color: ${colors.text};
             background-color: ${colors.white};
             &.enabled {
               background-color: ${colors.aqua};

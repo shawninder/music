@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import colors from '../styles/colors'
 import lengths from '../styles/lengths'
 
 class Figure extends Component {
@@ -71,6 +72,7 @@ class Figure extends Component {
             font-size: large;
             z-index: 4;
             cursor: pointer;
+            background-color: ${colors.white};
             background-repeat: no-repeat;
             background-position: top 10px right 10px;
             background-origin: content-box;

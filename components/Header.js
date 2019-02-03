@@ -25,7 +25,8 @@ class Header extends Component {
             margin: 5px 0;
             padding: 40px 0 0;
             mark {
-              float: right;
+              position: absolute;
+              right: -3px;
               font-size: x-large;
               font-family: fantasy;
               transform: rotate(45deg);
@@ -39,7 +40,6 @@ class Header extends Component {
               cursor: text;
             }
             p {
-              font-family: fantasy;
               padding: 0 5px;
             }
           }
