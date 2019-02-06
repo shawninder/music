@@ -288,11 +288,10 @@ class Bar extends Component {
             }
             .bar-dismiss {
               position: fixed;
-              top: 5px;
               right: 50px;
               font-size: large;
               z-index: 4;
-              padding: 13px 13px;
+              padding: 17px 13px 13px 13px;
               color: ${colors.white};
             }
             .bar-list {
