@@ -4,7 +4,9 @@ import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
 import Clipboard from 'clipboard'
+
 import colors from '../styles/colors'
+import durations from '../styles/durations'
 import tfns from '../styles/timing-functions'
 
 class CopyButton extends Component {
@@ -19,7 +21,7 @@ class CopyButton extends Component {
       this.props.notify({
         id: `party.linkCopied${Math.random()}`,
         body: this.props.dict.get('party.linkCopied'),
-        duration: 1500
+        duration: 2000
       })
     })
     this.clipboard.on('error', (event) => {
@@ -50,7 +52,6 @@ class CopyButton extends Component {
           ref={(el) => {
             this.el = el
           }}
-          href={global.location && global.location.href}
         >
           {this.props.dict.get('party.copyBtn')}
         </a>
@@ -68,7 +69,7 @@ class CopyButton extends Component {
             padding: 3px 5px;
             opacity: 0;
             transition-property: opacity;
-            transition-duration: 0.1s;
+            transition-duration: ${durations.instant};
             transition-timing-function: ${tfns.easeInOutQuad};
             color: ${colors.text};
           }

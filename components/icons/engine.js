@@ -1,5 +1,7 @@
 import SvgSkeleton from '../SvgSkeleton'
 
+import durations from '../../styles/durations'
+
 export default (
   <SvgSkeleton
     viewBox='0 0 512 512'
@@ -17,7 +19,7 @@ export default (
       .round {
         color: #111111;
         transition-property: background-color;
-        transition-duration: 0.4s;
+        transition-duration: ${durations.instant};
         background: #ff4136;
         border-radius: 512px;
       }

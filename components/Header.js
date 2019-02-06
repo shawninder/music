@@ -11,7 +11,6 @@ class Header extends Component {
   render () {
     return (
       <header>
-        <mark>beta</mark>
         <h1><MusicFont>Crowd's Play</MusicFont></h1>
         <p>{this.props.dict.get('header.tagline')}</p>
         <CopyButton
@@ -24,15 +23,6 @@ class Header extends Component {
             text-align: center;
             margin: 5px 0;
             padding: 40px 0 0;
-            mark {
-              position: absolute;
-              right: -3px;
-              font-size: x-large;
-              font-family: fantasy;
-              transform: rotate(45deg);
-              padding: 12px 7px 5px 5px;
-              text-transform: uppercase;
-            }
             h1 {
               font-size: xx-large;
               font-family: fantasy;

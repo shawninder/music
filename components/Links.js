@@ -5,6 +5,7 @@ import propTypes from '../helpers/propTypes'
 
 import colors from '../styles/colors'
 import lengths from '../styles/lengths'
+import durations from '../styles/durations'
 import tfns from '../styles/timing-functions'
 
 class Links extends Component {
@@ -30,7 +31,7 @@ class Links extends Component {
             cursor: pointer;
             color: ${colors.link};
             transition-property: color;
-            transition-duration: 0.1s;
+            transition-duration: ${durations.instant};
             transition-timing-function: ${tfns.easeInOutQuad};
           }
           a:hover {

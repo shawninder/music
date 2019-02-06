@@ -12,6 +12,7 @@ import moreIcon from './icons/more'
 import ActionList from './ActionList'
 
 import lengths from '../styles/lengths'
+import durations from '../styles/durations'
 import tfns from '../styles/timing-functions'
 
 const isServer = typeof window === 'undefined'
@@ -189,7 +190,7 @@ class Track extends Component {
             text-align: right;
             transform: translate(-25px);
             transition-property: transform;
-            transition-duration: 0.1s;
+            transition-duration: ${durations.instant};
             transition-timing-function: ${tfns.easeInOutQuad};
           }
 
@@ -208,7 +209,7 @@ class Track extends Component {
             vertical-align: middle;
             transform: translate(-25px);
             transition-property: transform;
-            transition-duration: 0.1s;
+            transition-duration: ${durations.instant};
             transition-timing-function: ${tfns.easeInOutQuad}
           }
           .busy .art-img {

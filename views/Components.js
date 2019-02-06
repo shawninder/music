@@ -12,6 +12,8 @@ import YouTube from '../components/YouTube'
 import NoticeList from '../components/NoticeList'
 // END
 
+import durations from '../styles/durations'
+
 // const isServer = typeof window === 'undefined'
 
 let t0 = null
@@ -206,7 +208,7 @@ class Components extends Component {
           .range-vertical .range-vertical--handle, .range-horizontal .range-horizontal--handle {
             opacity: 0;
             transition-property: opacity;
-            transition-duration: 0.1s;
+            transition-duration: ${durations.instant};
           }
           .range-vertical.seeking .range-vertical--handle {
             opacity: 1;

@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 
 import colors from '../styles/colors'
 import lengths from '../styles/lengths'
+import durations from '../styles/durations'
+
+import Happy from './icons/Happy'
+import Sad from './icons/Sad'
 
 class Figure extends Component {
   constructor (props) {
@@ -47,21 +51,18 @@ class Figure extends Component {
     }
   }
   render () {
-    const figureClasses = ['figure']
-    figureClasses.push(this.props.socket.connected ? 'connected' : 'disconnected')
-    if (this.props.partyState.hosting) {
-      figureClasses.push('hosting')
-    }
-    if (this.props.partyState.attending) {
-      figureClasses.push('attending')
-    }
+    const Image = (this.props.socket.connected)
+      ? Happy
+      : Sad
+
     return (
       <div
-        className={figureClasses.join(' ')}
+        className='figure'
         onClick={this.onClick}
         onKeyDown={this.figureKeyDown}
         tabIndex='0'
       >
+        <Image className='face' />
         <style jsx>{`
           .figure {
             position: fixed;
@@ -72,33 +73,22 @@ class Figure extends Component {
             font-size: large;
             z-index: 4;
             cursor: pointer;
-            background-color: ${colors.white};
-            background-repeat: no-repeat;
-            background-position: top 10px right 10px;
-            background-origin: content-box;
-            background-size: 30px 30px;
+            background-color: ${colors.aqua};
             transition-property: background-color;
-            transition-duration: 0.5s;
+            transition-duration: ${durations.moment};
+            .face {
+              margin: 10px;
+              width: 30px;
+              height: 30px;
+            }
             &.disconnected {
-              background-image: url('static/asleep.svg');
+              background-image: url('/static/sad.svg');
             }
-            &.connected {
-              background-image: url('static/manga.svg');
+            &.attending {
+              background-color: ${colors.green};
             }
-            &.hosting.disconnected {
-              background-image: url('static/guilty.svg');
-            }
-            &.hosting.connected {
-              background-image: url('static/happy.svg');
-            }
-            &.attending.disconnected {
-              background-image: url('static/sad.svg')
-            }
-            &.attending.connected {
-              background-image: url('static/glad.svg')
-            }
-            &.attending.host-disconnected {
-              background-image: url('static/sad.svg')
+            &.hosting {
+              background-color: ${colors.midOrange};
             }
           }
         `}</style>

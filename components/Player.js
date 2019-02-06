@@ -67,6 +67,14 @@ class Player extends Component {
             }
           }}
         />
+        <style jsx>{`
+          .Player {
+            width: ${this.props.width};
+            height: ${this.props.height};
+            position: relative;
+            z-index: 0;
+          }
+        `}</style>
       </div>
     )
   }

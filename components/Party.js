@@ -10,6 +10,7 @@ import propTypes from '../helpers/propTypes'
 import Pulser from '../helpers/Pulser'
 
 import colors from '../styles/colors'
+import durations from '../styles/durations'
 import tfns from '../styles/timing-functions'
 
 const isServer = typeof window === 'undefined'
@@ -131,10 +132,15 @@ class Party extends Component {
     event.preventDefault()
     const ok = !isServer &&
       this.props.socket.connected &&
-      !(
-        this.state.checkingName ||
-        this.props.name === '' ||
-        this.props.name === null
+      !this.state.checkingName &&
+      (
+        !(
+          this.props.linkedPartyName === '' ||
+          this.props.linkedPartyName === null
+        ) || !(
+          this.props.name === '' ||
+          this.props.name === null
+        )
       )
     if (ok) {
       if (this.props.exists) {
@@ -154,14 +160,19 @@ class Party extends Component {
   onJoin (event) {
     event.preventDefault()
     const ok = !isServer &&
-      this.props.socket.connected &&
-      this.props.exists &&
+    this.props.socket.connected &&
+    this.props.exists &&
+    !this.state.checkingName &&
+    !this.props.hosting &&
+    (
       !(
-        this.state.checkingName ||
+        this.props.linkedPartyName === '' ||
+        this.props.linkedPartyName === null
+      ) || !(
         this.props.name === '' ||
-        this.props.name === null ||
-        this.props.hosting
+        this.props.name === null
       )
+    )
     if (ok) {
       if (this.props.attending) {
         this.leave(event)
@@ -175,12 +186,18 @@ class Party extends Component {
     event.preventDefault()
     const ok = !isServer &&
       this.props.socket.connected &&
-      !(
-        this.state.checkingName ||
-        this.props.name === '' ||
-        this.props.name === null ||
-        this.props.attending
+      !this.state.checkingName &&
+      !this.props.attending &&
+      (
+        !(
+          this.props.linkedPartyName === '' ||
+          this.props.linkedPartyName === null
+        ) || !(
+          this.props.name === '' ||
+          this.props.name === null
+        )
       )
+
     if (ok) {
       if (this.props.hosting) {
         this.stop(event)
@@ -195,7 +212,7 @@ class Party extends Component {
   hydrate () {
     // TODO? replay events missed during loading, if any
     this.reconnect()
-    if (!this.props.hosting && !this.props.attending && !this.props.linkedPartyName) {
+    if (!this.props.hosting && !this.props.attending) {
       this.checkPartyName()
     }
   }
@@ -458,10 +475,15 @@ class Party extends Component {
   render () {
     const ok = !isServer &&
       this.props.socket.connected &&
-      !(
-        this.state.checkingName ||
-        this.props.name === '' ||
-        this.props.name === null
+      !this.state.checkingName &&
+      (
+        !(
+          this.props.linkedPartyName === '' ||
+          this.props.linkedPartyName === null
+        ) || !(
+          this.props.name === '' ||
+          this.props.name === null
+        )
       )
     const partying = (this.props.hosting || this.props.attending) && ok
     const classes = this.props.className ? this.props.className.split(' ') : []
@@ -524,7 +546,7 @@ class Party extends Component {
               {
                 this.props.attending
                   ? this.props.dict.get('party.leave')
-                  : this.props.dict.get('party.join')
+                  : (this.props.hosting ? 'Hosting' : this.props.dict.get('party.join'))
               }
             </button>
             <button
@@ -536,7 +558,7 @@ class Party extends Component {
               {
                 this.props.hosting
                   ? this.props.dict.get('party.stop')
-                  : this.props.dict.get('party.start')
+                  : (this.props.attending ? 'Attending' : this.props.dict.get('party.start'))
               }
             </button>
           </form>
@@ -561,6 +583,9 @@ class Party extends Component {
           .autoparty.hosting input, .autoparty.attending input {
             background-color: transparent;
             border-width: 0;
+            &:disabled {
+              color: ${colors.black};
+            }
           }
 
           .autoparty button {
@@ -586,6 +611,7 @@ class Party extends Component {
           .hosting .joinBtn, .attending .startBtn {
             opacity: 0.4;
             background-color: ${colors.white};
+            font-weight: bold;
           }
 
           .joinBtn, .startBtn {
@@ -593,8 +619,20 @@ class Party extends Component {
             cursor: pointer;
             opacity: 1;
             transition-property: opacity, background-color;
-            transition-duration: 0.1s;
+            transition-duration: ${durations.instant};
             transition-timing-function: ${tfns.easeInOutQuad};
+          }
+          .attending .joinBtn {
+            background-image: url("/static/back.svg");
+            background-repeat: no-repeat;
+            background-position: left 5px center;
+            background-size: 30px;
+          }
+          .hosting .startBtn {
+            background-image: url("/static/x.svg");
+            background-repeat: no-repeat;
+            background-position: right 5px center;
+            background-size: 20px;
           }
         `}</style>
       </div>

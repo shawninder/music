@@ -9,6 +9,7 @@ export const placeholder = '#aaaaaa'
 export const aqua = '#7fdbff'
 export const green = 'green'
 export const sand = '#e0b01d'
+export const midOrange = '#f09b1c'
 export const orange = '#ff851b'
 export const orangeish = `rgb(255, 165, 0, ${opacity})`
 export const dimgrey = 'dimgrey'
@@ -29,6 +30,7 @@ export default {
   green,
   orange,
   sand,
+  midOrange,
   orangeish,
   dimgrey,
   whitesmoke,

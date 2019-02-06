@@ -16,6 +16,10 @@ import Command from './Command'
 import searchIcon from './icons/search'
 import clearIcon from './icons/clear'
 
+import lengths from '../styles/lengths'
+import colors from '../styles/colors'
+import durations from '../styles/durations'
+
 const isServer = typeof window === 'undefined'
 
 class Bar extends Component {
@@ -265,6 +269,52 @@ class Bar extends Component {
           button {
             border: 0;
             background: transparent;
+          }
+          .bar {
+            position: relative;
+            z-index: 3;
+            height: ${lengths.rowHeight};
+            width: 100%;
+            .bar-menu {
+              cursor: pointer;
+              color: ${colors.white};
+              position: fixed;
+              z-index: 5;
+              padding: 15px;
+              height: ${lengths.rowHeight};
+              &:focus, &:hover {
+                color: ${colors.primary};
+              }
+            }
+            .bar-dismiss {
+              position: fixed;
+              top: 5px;
+              right: 50px;
+              font-size: large;
+              z-index: 4;
+              padding: 13px 13px;
+              color: ${colors.white};
+            }
+            .bar-list {
+              display: grid;
+              grid-template-columns: 1fr;
+              grid-template-rows: ${lengths.rowHeight} 1fr;
+              grid-template-areas:
+                "nothing"
+                "results";
+              transition-property: opacity;
+              transition-duration: ${durations.moment};
+              color: ${colors.black};
+              .loader {
+                text-align: center;
+                cursor: text;
+              }
+              & > ol {
+                grid-area: results;
+                max-height: 100vh;
+                overflow: auto;
+              }
+            }
           }
         `}</style>
       </div>

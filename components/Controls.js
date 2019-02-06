@@ -13,7 +13,7 @@ import volumeIcon from './icons/volumeHigh'
 
 import colors from '../styles/colors'
 import tfns from '../styles/timing-functions'
-// import controlsCss from '../styles/controls'
+import durations from '../styles/durations'
 
 class Controls extends Component {
   constructor (props) {
@@ -35,172 +35,6 @@ class Controls extends Component {
         key='controls'
         className='controls'
       >
-        <style jsx>{`
-          .controls {
-            position: fixed;
-            z-index: 1;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            font-size: medium;
-            /* background: whitesmoke; */
-            /* box-shadow: 0px -2px 5px 0px rgba(0,0,0,0.25); */
-          }
-          .controls-buttons {
-            height: 60px;
-            display: grid;
-            grid-template-columns: 50px 1fr 50px minmax(50px, 100px) 50px 1fr 50px;
-            grid-template-rows: 1fr;
-            grid-template-areas:
-              "addMedia lspace prev togglePlaying next rspace volume";
-            background: #333333;
-          }
-          .controls-buttons button svg {
-            width: 20px;
-          }
-          .controls button:hover {
-            color: ${colors.primary};
-          }
-          .controls-newFile {
-            grid-area: addMedia;
-            font-size: xx-large;
-            padding: 10px;
-          }
-          .controls-toggleFiles {
-            border: 3px solid transparent;
-            grid-area: lspace;
-            justify-self: left;
-            opacity: 0;
-            transition-property: opacity, background-color;
-            transition-duration: 0.2s;
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-          .controls-toggleFiles.showingFiles {
-            border-top-color: #666666;
-          }
-          .controls-toggleFiles.hasFiles {
-            opacity: 1;
-          }
-          .controls-prev {
-            grid-area: prev;
-          }
-          .controls-togglePlaying {
-            grid-area: togglePlaying;
-          }
-          .controls-next {
-            grid-area: next;
-          }
-          .controls-toggleFiles-right {
-            grid-area: rspace;
-            justify-self: right;
-            opacity: 0;
-          }
-          .controls-volume {
-            grid-area: volume;
-          }
-          .controls-volume-input.hidden {
-            display: none;
-          }
-          .controls-volume-input {
-            position: fixed;
-            bottom: 60px;
-            right: 1px;
-            width: 50px;
-            background: #333333;
-          }
-          button, input {
-            border: 0;
-            background: transparent;
-            color: whitesmoke;
-            transition-property: color;
-            transition-duration: 0.5s;
-            cursor: pointer;
-          }
-          button {
-            padding: 10px 5px;
-            font-weight: bold;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-          }
-          button:focus {
-            outline: none;
-          }
-          input[type=file] {
-            z-index: -1;
-            opacity: 0;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0.1px;
-            height: 0.1px;
-          }
-        `}</style>
-        <style global jsx>{`
-          .seek-bar {
-            grid-area: seekBar;
-            border: 1px solid #333333;
-            cursor: pointer;
-            background-color: black;
-            transition-property: background-color;
-            transition-duration: 0.5s;
-            z-index: 1;
-          }
-          .seek-bar--current {
-            height: 10px;
-            background-color: red;
-            transition-property: background-color;
-            transition-duration: 0.5s;
-          }
-          .seek-bar--handle {
-            width: 30px;
-            height: 30px;
-            background: rgba(255, 0, 0, 0.4);
-            border-radius: 5px;
-            position: absolute;
-            top: -10px;
-            left: -15px;
-            transition-property: opacity;
-            transition-duration: 0.1s;
-            opacity: 0;
-          }
-          .seek-bar.seeking .seek-bar--handle {
-            opacity: 1;
-          }
-          .volume {
-            border: 1px solid #333333;
-            height: 150px;
-            width: 5px;
-            margin-left: 22px;
-            cursor: pointer;
-            background-color: black;
-            transition-property: background-color;
-            transition-duration: 0.5s;
-          }
-          .volume--current {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background-color: red;
-            transition-property: background-color;
-            transition-duration: 0.5s;
-          }
-          .volume--handle {
-            position: absolute;
-            bottom: 0;
-            left: -23px;
-            width: 50px;
-            height: 50px;
-            margin-bottom: -15px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 5px;
-            transition-property: opacity;
-            transition-duration: 0.1s;
-            opacity: 0;
-          }
-          .volume.seeking .volume--handle {
-            opacity: 1
-          }
-        `}</style>
         <Range
           key='seek-bar'
           className='seek-bar'
@@ -289,6 +123,172 @@ class Controls extends Component {
             live
           />
         </div>
+        <style global jsx>{`
+          .seek-bar {
+            grid-area: seekBar;
+            border: 1px solid #333333;
+            cursor: pointer;
+            background-color: black;
+            transition-property: background-color;
+            transition-duration: ${durations.moment};
+            z-index: 1;
+          }
+          .seek-bar--current {
+            height: 10px;
+            background-color: red;
+            transition-property: background-color;
+            transition-duration: ${durations.moment};
+          }
+          .seek-bar--handle {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 0, 0, 0.4);
+            border-radius: 5px;
+            position: absolute;
+            top: -10px;
+            left: -15px;
+            transition-property: opacity;
+            transition-duration: ${durations.instant};
+            opacity: 0;
+          }
+          .seek-bar.seeking .seek-bar--handle {
+            opacity: 1;
+          }
+          .volume {
+            border: 1px solid #333333;
+            height: 150px;
+            width: 5px;
+            margin-left: 22px;
+            cursor: pointer;
+            background-color: black;
+            transition-property: background-color;
+            transition-duration: ${durations.moment};
+          }
+          .volume--current {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            transition-property: background-color;
+            transition-duration: ${durations.moment};
+          }
+          .volume--handle {
+            position: absolute;
+            bottom: 0;
+            left: -23px;
+            width: 50px;
+            height: 50px;
+            margin-bottom: -15px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 5px;
+            transition-property: opacity;
+            transition-duration: ${durations.instant};
+            opacity: 0;
+          }
+          .volume.seeking .volume--handle {
+            opacity: 1
+          }
+        `}</style>
+        <style jsx>{`
+          .controls {
+            position: fixed;
+            z-index: 1;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            font-size: medium;
+            /* background: whitesmoke; */
+            /* box-shadow: 0px -2px 5px 0px rgba(0,0,0,0.25); */
+          }
+          .controls-buttons {
+            height: 60px;
+            display: grid;
+            grid-template-columns: 50px 1fr 50px minmax(50px, 100px) 50px 1fr 50px;
+            grid-template-rows: 1fr;
+            grid-template-areas:
+              "addMedia lspace prev togglePlaying next rspace volume";
+            background: #333333;
+          }
+          .controls-buttons svg {
+            width: 20px;
+          }
+          .controls button:hover {
+            color: ${colors.primary};
+          }
+          .controls-newFile {
+            grid-area: addMedia;
+            font-size: xx-large;
+            padding: 10px;
+          }
+          .controls-toggleFiles {
+            border: 3px solid transparent;
+            grid-area: lspace;
+            justify-self: left;
+            opacity: 0;
+            transition-property: opacity, background-color;
+            transition-duration: ${durations.instant};
+            transition-timing-function: ${tfns.easeInOutQuad};
+          }
+          .controls-toggleFiles.showingFiles {
+            border-top-color: #666666;
+          }
+          .controls-toggleFiles.hasFiles {
+            opacity: 1;
+          }
+          .controls-prev {
+            grid-area: prev;
+          }
+          .controls-togglePlaying {
+            grid-area: togglePlaying;
+          }
+          .controls-next {
+            grid-area: next;
+          }
+          .controls-toggleFiles-right {
+            grid-area: rspace;
+            justify-self: right;
+            opacity: 0;
+          }
+          .controls-volume {
+            grid-area: volume;
+          }
+          .controls-volume-input.hidden {
+            display: none;
+          }
+          .controls-volume-input {
+            position: fixed;
+            bottom: 60px;
+            right: 1px;
+            width: 50px;
+            background: #333333;
+          }
+          button, input {
+            border: 0;
+            background: transparent;
+            color: whitesmoke;
+            transition-property: color;
+            transition-duration: ${durations.moment};
+            cursor: pointer;
+          }
+          button {
+            padding: 10px 5px;
+            font-weight: bold;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+          }
+          button:focus {
+            outline: none;
+          }
+          input[type=file] {
+            z-index: -1;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0.1px;
+            height: 0.1px;
+          }
+        `}</style>
       </div>
     )
   }

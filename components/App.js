@@ -20,15 +20,15 @@ import List from './List'
 import Party from './Party'
 import Feedback from './Feedback'
 import YouTube from './YouTube'
-import AudioFileInput from './AudioFileInput'
 import Smart from './Smart'
 import NoticeList from './NoticeList'
 import Artwork from './Artwork'
 import Figure from './Figure'
 import Links from './Links'
+import FilesDialog from './FilesDialog'
+import CancelDropZone from './CancelDropZone'
 
 import Dict from '../data/Dict.js'
-import getFileMeta from '../features/fileInput/getFileMeta'
 import getDragAndDropActions from '../features/dragAndDrop/getActions'
 
 import playNowIcon from './icons/playNow'
@@ -39,17 +39,17 @@ import nextIcon from './icons/next'
 import dequeueIcon from './icons/dequeue'
 
 import colors from '../styles/colors'
-import lengths from '../styles/lengths'
 import tfns from '../styles/timing-functions'
+import durations from '../styles/durations'
 import alpha from '../helpers/alpha'
+
+import resetStyles from '../styles/reset'
+import baseStyles from '../styles/base'
 
 const isServer = typeof window === 'undefined'
 const CHUNK_SIZE = 100000
-const visibleFiles = {}
 
-function fileToKey (file) {
-  return encodeURIComponent(`${file.size}_${file.lastModified}_${file.name}`)
-}
+const visibleFiles = {}
 
 class App extends Component {
   static getInitialProps ({ req, res }) {
@@ -99,9 +99,9 @@ class App extends Component {
     this.seekTo = this.seekTo.bind(this)
     this.setVolume = this.setVolume.bind(this)
     this.setPlayerVolume = this.setPlayerVolume.bind(this)
-    this.onFiles = this.onFiles.bind(this)
     this.getTrackEvents = this.getTrackEvents.bind(this)
     this.makeOrigin = this.makeOrigin.bind(this)
+    this.getComponentProps = this.getComponentProps.bind(this)
 
     this.loadMore = this.loadMore.bind(this)
     this.debouncedLoadMore = debounce(this.loadMore, 500, { maxWait: 750 }).bind(this) // TODO remove this debounce (possible when "loading" is implemented wherein a subsequent call would cancel, but only if calling with a different query or pageToken)
@@ -360,105 +360,6 @@ class App extends Component {
         const origin = this.makeOrigin()
         getDragAndDropActions({ source, destination, origin, state, props: this.props }).map(this.dispatch)
       }
-    }
-  }
-
-  onFiles (event) {
-    const target = event.target
-    const files = target.files
-    const nbFiles = files.length
-    let i = 0
-    while (i < nbFiles) {
-      const file = files[i]
-      const key = fileToKey(file)
-      visibleFiles[key] = file
-      const filePath = window.URL.createObjectURL(file)
-      this.props.dispatch({
-        type: 'FileInput:newFile',
-        file: file,
-        key,
-        filePath
-      })
-      if (this.props.party.attending) {
-        const id = `sending:${key}`
-        const handler = this.sendFile({
-          key,
-          arrayBuffer: []
-        })
-        handler.on('progress', (progress) => {
-          this.props.notify({
-            id,
-            progress
-          })
-        })
-        handler.on('success', () => {
-          console.log('====B success')
-          this.props.notify({
-            id,
-            body: this.dict.get('files.sending.success'),
-            progress: 1,
-            buttons: {
-              no: {
-                label: this.dict.get('files.sending.undo'),
-                cb: () => {
-                  console.log('====File sent successfully')
-                }
-              }
-            }
-          })
-        })
-        handler.on('error', (err) => {
-          console.log('====C error', err)
-          this.props.notify({
-            id,
-            body: this.dict.get('files.sending.error'),
-            err,
-            buttons: {
-              no: null
-            }
-          })
-        })
-        console.log('====D sending')
-        this.props.notify({
-          id,
-          body: this.dict.get('files.sending'),
-          progress: 0,
-          buttons: {
-            ok: {
-              label: this.dict.get('files.sending.ok'),
-              cb: () => {
-                this.dispatch({
-                  type: 'Notice:remove',
-                  id
-                })
-              }
-            },
-            no: {
-              label: this.dict.get('files.sending.cancel'),
-              cb: () => {
-                handler.cancel()
-                console.log('====E TODO: Tell receiver to clean up partial download')
-                // TODO: Tell receiver to clean up partial download?
-              }
-            }
-          }
-        })
-      }
-      let meta
-      getFileMeta(file)
-        .then((_meta) => {
-          meta = _meta
-          this.props.dispatch({
-            type: 'FileInput:meta',
-            meta,
-            target,
-            key
-          })
-        })
-        .catch((error) => {
-          console.error("Can't get metadata", error)
-        })
-      i += 1
     }
   }
 
@@ -854,11 +755,18 @@ class App extends Component {
     const cdnQueued = (queueIndex) => {
       return queueIndex === 0 || !!queueIndex
     }
+    const socketConnected = this.props.socket && this.props.socket.connected
+    const hosting = this.props.party.hosting
+    const attending = this.props.party.attending
+    const dragging = this.props.app.dragging
     const appClasses = ['App']
-    if (this.props.socket && this.props.socket.connected) {
-      appClasses.push('connected')
-    } else {
-      appClasses.push('disconnected')
+
+    if (this.props.socket) {
+      if (this.props.socket.connected) {
+        appClasses.push('connected')
+      } else {
+        appClasses.push('disconnected')
+      }
     }
     if (this.props.party.attending) {
       appClasses.push('attending')
@@ -960,18 +868,6 @@ class App extends Component {
       }
     }
 
-    const fileInputProps = {
-      ...this.getComponentProps(state),
-      actionsAbove: true,
-      onFiles: this.onFiles,
-      onCancel: (event) => {
-        this.dispatch({
-          type: 'FileInput:cancelNew'
-        })
-      },
-      actions: defaultActions
-    }
-
     let playerWidth
     let playerHeight
     if (this.props.app.playerMode === 'mini') {
@@ -986,7 +882,6 @@ class App extends Component {
         <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
           <Head title="Crowd's Play" />
           <div className={appClasses.join(' ')}>
-            <img className='bg' src='static/bg.svg' />
             <Bar
               dispatch={this.dispatch}
               placeholder={this.dict.get('bar.placeholder')}
@@ -1039,14 +934,11 @@ class App extends Component {
               loadingTxt={this.dict.get('bar.loading')}
               maxReachedTxt={this.dict.get('bar.maxReached')}
             />
-            <div className='cancelDropZone'>
-              Drop here to cancel
-            </div>
+            <CancelDropZone />
             <Figure
               socket={this.props.socket}
               partyState={state}
               dispatch={this.dispatch}
-              partyCollapsed={this.props.app.partyCollapsed}
             />
             <main>
               <Header
@@ -1207,78 +1099,28 @@ class App extends Component {
               showingFiles={this.props.app.showFiles}
             />
           </div>
-          <div className={`filesDialog ${this.props.app.showFiles ? 'showing' : 'hidden'}`}>
-            <div className='card'>
-              <List
-                className='files'
-                items={this.props.fileInput.files}
-                onItem={this.getTrackEvents()}
-                defaultComponent={AudioFileInput}
-                isDropDisabled
-                areDraggable
-                componentProps={fileInputProps}
-              />
-            </div>
-          </div>
+          <FilesDialog
+            items={this.props.fileInput.files}
+            state={state}
+            dispatch={this.dispatch}
+            actions={defaultActions}
+            attending={this.props.party.attending}
+            notify={this.props.notify}
+            getComponentProps={this.getComponentProps}
+            showFiles={this.props.app.showFiles}
+            getTrackEvents={this.getTrackEvents}
+            visibleFiles={visibleFiles}
+          />
         </DragDropContext>
         <NoticeList
           key='notice-list'
           showing={this.props.notice.showing.length > 0}
           notices={this.props.notice.showing}
         />
-        <style jsx>{`
-          .filesDialog {
-            position: fixed;
-            bottom: 65px;
-            left: 0;
-            width: 100%;
-            max-width: 640px;
-            border-radius: 4px;
-            color: whitesmoke;
-            background: #333333;
-            z-index: 2;
-            transition-property: opacity;
-            transition-duration: 0.1s;
-            opacity: 0;
-          }
-
-          .filesDialog.showing {
-            opacity: 1;
-          }
-          .filesDialog .card {
-            width: 100%;
-          }
-        `}</style>
         <style jsx global>{`
-          html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
+          ${resetStyles}
 
-          * {
-            box-sizing: border-box;
-          }
-
-          html, body, #__next, .App {
-            height: 100%;
-            width: 100%;
-          }
-
-          #__next-error {
-            position: fixed;
-            z-index: 1000;
-          }
-
-          body {
-            /* Approximate system fonts
-              -apple-system, BlinkMacSystemFont, // Safari Mac/iOS, Chrome
-              "Segoe UI", Roboto, Oxygen, // Windows, Android, KDE
-              Ubuntu, Cantarell, "Fira Sans", // Ubuntu, Gnome, Firefox OS
-              "Droid Sans", "Helvetica Neue", sans-serif; // Old Android
-            */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
-          }
-
-          svg {
-            fill: currentColor; /* For SVGs, see https://css-tricks.com/cascading-svg-fill-color/ */
-          }
+          ${baseStyles}
 
           .controls-buttons button svg {
             width: 20px;
@@ -1291,122 +1133,31 @@ class App extends Component {
           .App {
             padding: 0;
             position: relative;
-            background-color: black;
+            background-color: ${colors.aqua};
+            background-image: url("/static/bg.svg");
+            background-repeat: no-repeat;
+            background-position: left top;
+            background-size: 100% 100%;
             transition-property: background-color;
-            transition-duration: 1s;
+            transition-duration: ${durations.moment};
             overflow: scroll;
-          }
-
-          .bg {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
           }
 
           .App.connected, .App.connected .figure {
             background-color: ${colors.aqua};
           }
 
-          .App.attending, .App.attending .figure {
-            background-color: ${colors.green};
-          }
-
           .App.hosting  {
             background-color: ${colors.sand};
-          }
-
-          .App.hosting .figure {
-            background-color: ${colors.orange};
           }
 
           .App.disconnected, .App.disconnected .figure {
             background-color: ${colors.white};
           }
 
-          .bar {
-            position: relative;
-            z-index: 3;
-            height: ${lengths.rowHeight};
-            width: 100%;
-          }
-
-          .bar-menu {
-            color: ${colors.whitesmoke};
-            position: fixed;
-            z-index: 5;
-            padding: 15px;
-            height: ${lengths.rowHeight};
-          }
-
-          .bar-menu:focus {
-            color: ${colors.whitesmoke};
-          }
-
-          .bar-menu .icon {
-            width: 20px;
-          }
-
-          .bar-field {
-            position: fixed;
-            top: 0;
-            height: ${lengths.rowHeight};
-            width: 100%;
-            font-size: large;
-            font-weight: bold;
-            padding: 5px 80px 5px 60px;
-            z-index: 4;
-            border: 0;
-            color: ${colors.whitesmoke};
-            background: ${colors.text};
-            border-radius: 0;
-            box-shadow: 0px 5px 5px 0px rgb(0,0,0,0.25);
-            transition-property: background-color;
-            transition-duration: 0.5s;
-          }
-
-          .cancelDropZone {
-            position: fixed;
-            top: 0;
-            height: ${lengths.rowHeight};
-            width: 100%;
-            font-size: large;
-            font-weight: bold;
-            padding: 5px 80px 5px 60px;
-            z-index: 1;
-            border: 0;
-            color: ${colors.whitesmoke};
-            background: rgba(254, 70, 70, 0.8);
-            border-radius: 0;
-            transition-property: background-color;
-            transition-duration: 0.5s;
-            line-height: 2em;
-            text-align: center;
-            opacity: 0;
-          }
-
           .App.dragging .cancelDropZone {
             opacity: 1;
             z-index: 3;
-          }
-
-          .App.dragging .bar-field {
-            /* background: bisque; */
-          }
-
-          .bar-field::placeholder {
-            color: ${colors.placeholder};
-          }
-
-          .bar-dismiss {
-            position: fixed;
-            top: 5px;
-            right: 50px;
-            font-size: large;
-            z-index: 4;
-            padding: 13px 13px;
-            color: ${colors.whitesmoke};
           }
 
           .bar-dismiss svg {
@@ -1423,35 +1174,8 @@ class App extends Component {
             z-index: 2;
           }
 
-          .logsPage {
-            max-width: 100vw;
-          }
-
-          .bar-list {
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: ${lengths.rowHeight} 1fr;
-            grid-template-areas:
-              "nothing"
-              "results";
-            box-shadow: 0px 12px 15px 0px rgb(0,0,0,0.25);
-            transition-property: opacity, box-shadow;
-            transition-duration: 0.5s;
-            color: black;
-          }
-
           .App .bar-list {
             background: ${colors.text};
-          }
-
-          .bar-list .loader {
-            text-align: center;
-            cursor: text;
-          }
-
-          .bar-list > ol {
-            max-height: 100vh;
-            overflow: auto;
           }
 
           .App .bar-list.list > ol > li:nth-child(odd) {
@@ -1467,11 +1191,6 @@ class App extends Component {
             background: rgba(50, 50, 50, 0);
           }
 
-          .App .bar-list li {
-            transition-property: opacity, box-shadow;
-            transition-duration: 0.5s;
-          }
-
           .App.dragging .bar-list li {
             opacity: 0.05;
           }
@@ -1480,15 +1199,11 @@ class App extends Component {
             opacity: 1.01;
           }
 
-          .bar-list ol {
-            grid-area: results;
-          }
-
           main {
             position: relative;
-            padding-bottom: 130px;
             width: 100%;
             min-width: 250px;
+            overflow: scroll;
           }
 
           @media screen and (min-width: 640px) {
@@ -1496,19 +1211,6 @@ class App extends Component {
               max-width: 640px;
               margin: auto auto;
             }
-          }
-
-          .player-alt {
-            display: block;
-            margin: auto auto;
-            max-width: 100%;
-          }
-
-          .Player {
-            width: ${playerWidth};
-            height: ${playerHeight};
-            position: relative;
-            z-index: 0;
           }
 
           .Artwork {
@@ -1561,12 +1263,12 @@ class App extends Component {
             color: ${colors.dimgrey};
           }
           .bar-list .track .toggle .art {
-            transition-duration: 0.1s;
+            transition-duration: ${durations.instant};
             transition-timing-function: ${tfns.easeInOutQuad};
           }
 
           .bar-list .track .toggle .art-img {
-            transition-duration: 0.1s;
+            transition-duration: ${durations.instant};
             transition-timing-function: ${tfns.easeInOutQuad};
           }
 
@@ -1587,14 +1289,14 @@ class App extends Component {
             font-size: medium;
             padding: 10px;
             transition-property: opacity, height;
-            transition-duration: 0.5s;
+            transition-duration: ${durations.moment};
             opacity: 1;
           }
 
           .history {
             opacity: 1;
             transition-property: opacity;
-            transition-duration: 0.5s;
+            transition-duration: ${durations.moment};
           }
 
           .App.dragging .history>h3, .App.dragging .playingNow>h3, .App.dragging .upNext>h3 {
@@ -1637,7 +1339,6 @@ class App extends Component {
           }
 
           .upNext ol, .history ol, .playingNow ol {
-            width: 100%;
             transition-property: background-color;
             transition-duration: .75s
           }
@@ -1664,10 +1365,6 @@ class App extends Component {
 
           .playingNow .icon {
             color: ${colors.whitesmoke};
-          }
-
-          .inCollection {
-            color: ${colors.green};
           }
 
           .App.attending .copyButton, .App.hosting .copyButton {

@@ -5,6 +5,10 @@ import propTypes from '../helpers/propTypes'
 
 import Notice from './Notice'
 
+import lengths from '../styles/lengths'
+import durations from '../styles/durations'
+import colors from '../styles/colors'
+
 class NoticeList extends Component {
   render () {
     const notices = this.props.notices.map(({ id, body, progress, buttons, duration }) => {
@@ -35,17 +39,45 @@ class NoticeList extends Component {
         <style jsx>{`
           .notice-list {
             position: fixed;
-            top: 15px;
-            right: 10px;
+            top: 45px;
+            right: 45px;
             max-width: 450px;
             z-index: 5;
             list-style: none;
-            background-color: #d59925;
+            background-color: ${colors.white};
             padding: 7px;
-            border-radius: 4px;
+            border: 1px solid ${colors.text};
+            border-radius: ${lengths.noticeRadius} 0 ${lengths.noticeRadius} ${lengths.noticeRadius};
             transition-property: opacity;
-            transition-duration: 0.1s;
+            transition-duration: ${durations.instant};
             opacity: 0;
+
+            &:before {
+              content: "";
+              width: 0px;
+              height: 0px;
+              position: absolute;
+              border-left: 0;
+              border-right: 20px solid ${colors.text};
+              border-top: 10px solid transparent;
+              border-bottom: 15px solid transparent;
+              right: -4px;
+              top: -8px;
+              transform: rotate(15deg);
+            }
+            &:after {
+              content: "";
+              width: 0px;
+              height: 0px;
+              position: absolute;
+              border-left: 0;
+              border-right: 20px solid ${colors.white};
+              border-top: 10px solid transparent;
+              border-bottom: 15px solid transparent;
+              right: -3px;
+              top: -7px;
+              transform: rotate(15deg);
+            }
           }
           .notice-list.showing {
             opacity: 1;

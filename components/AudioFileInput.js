@@ -5,6 +5,7 @@ import propTypes from '../helpers/propTypes'
 
 import AudioFile from './AudioFile'
 
+import durations from '../styles/durations'
 import tfns from '../styles/timing-functions'
 
 const isServer = typeof window === 'undefined'
@@ -84,7 +85,7 @@ class AudioFileInput extends Component {
             height: 100%;
             padding: 15px;
             transition-property: opacity;
-            transition-duration: 0.2s;
+            transition-duration: ${durations.instant};
             transition-timing-function: ${tfns.easeInOutQuad};
             opacity: 1;
           }
