@@ -74,7 +74,7 @@ class Action extends Component {
             height: 32px;
             display: grid;
             grid-template-columns: 100px 1fr 50px;
-            grid-template-rows: 1fr;
+            grid-template-rows: 32px;
             grid-template-areas:
               "idx label icon"
           }
@@ -82,7 +82,7 @@ class Action extends Component {
             background: white;
           }
 
-          .idx, .label, .icon {
+          .idx, .label {
             line-height: 20px;
             padding: 5px;
           }
@@ -96,13 +96,13 @@ class Action extends Component {
 
           .label {
             grid-area: label;
-            border-bottom: 1px solid #ccc;
           }
 
           .icon {
             grid-area: icon;
             text-align: right;
-            padding-right: 7px;
+            padding: 7px;
+            width: 100%;
           }
 
           .icon svg.icon {

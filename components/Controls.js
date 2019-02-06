@@ -155,6 +155,7 @@ class Controls extends Component {
             opacity: 1;
           }
           .volume {
+            z-index: 2;
             border: 1px solid #333333;
             height: 150px;
             width: 5px;
@@ -192,7 +193,7 @@ class Controls extends Component {
         <style jsx>{`
           .controls {
             position: fixed;
-            z-index: 1;
+            z-index: 2;
             bottom: 0;
             left: 0;
             width: 100%;

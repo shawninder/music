@@ -7,7 +7,7 @@ import Action from './Action'
 
 class ActionList extends Component {
   render () {
-    const actions = Object.keys(this.props.actions).reduce((arr, key) => {
+    const actions = Object.keys(this.props.actions).reduce((arr, key, idx) => {
       const action = this.props.actions[key]
       if (!action.cdn || action.cdn(this.props.queueIndex)) {
         arr.push(

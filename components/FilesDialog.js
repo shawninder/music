@@ -141,14 +141,14 @@ class FilesDialog extends Component {
         <style jsx>{`
           .filesDialog {
             position: fixed;
-            bottom: 65px;
+            bottom: 72px;
             left: 0;
             width: 100%;
             max-width: 640px;
             border-radius: 4px;
             color: whitesmoke;
             background: #333333;
-            z-index: 2;
+            z-index: 1;
             transition-property: opacity;
             transition-duration: ${durations.instant};
             opacity: 0;

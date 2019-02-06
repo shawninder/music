@@ -1098,19 +1098,19 @@ class App extends Component {
               }}
               showingFiles={this.props.app.showFiles}
             />
+            <FilesDialog
+              items={this.props.fileInput.files}
+              state={state}
+              dispatch={this.dispatch}
+              actions={defaultActions}
+              attending={this.props.party.attending}
+              notify={this.props.notify}
+              getComponentProps={this.getComponentProps}
+              showFiles={this.props.app.showFiles}
+              getTrackEvents={this.getTrackEvents}
+              visibleFiles={visibleFiles}
+            />
           </div>
-          <FilesDialog
-            items={this.props.fileInput.files}
-            state={state}
-            dispatch={this.dispatch}
-            actions={defaultActions}
-            attending={this.props.party.attending}
-            notify={this.props.notify}
-            getComponentProps={this.getComponentProps}
-            showFiles={this.props.app.showFiles}
-            getTrackEvents={this.getTrackEvents}
-            visibleFiles={visibleFiles}
-          />
         </DragDropContext>
         <NoticeList
           key='notice-list'

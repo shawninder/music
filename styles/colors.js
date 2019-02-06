@@ -19,6 +19,7 @@ export const whitesmoke = 'whitesmoke'
 export const ghostwhite = 'ghostwhite'
 export const darkred = 'darkred'
 export const reddish = 'seashell'
+export const separator = '#cccccc'
 
 export default {
   opacity,
@@ -40,5 +41,6 @@ export default {
   primary,
   textPrimary,
   white,
-  whiteish
+  whiteish,
+  separator
 }

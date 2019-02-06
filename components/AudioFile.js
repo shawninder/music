@@ -6,6 +6,7 @@ import propTypes from '../helpers/propTypes'
 import Track from './Track'
 
 import get from 'lodash.get'
+import cleanFakePath from '../helpers/cleanFakePath'
 
 class AudioFile extends Track {
   render () {
@@ -36,6 +37,9 @@ class AudioFile extends Track {
         pending={this.props.pending}
       >
         <React.Fragment>
+          {!title ? (
+            <p className='uri'>{cleanFakePath(this.props.data.fakePath)}</p>
+          ) : null}
           {title ? (
             <p className='title'>{title}</p>
           ) : null}
@@ -44,7 +48,11 @@ class AudioFile extends Track {
           ) : null}
           {this.props.children}
           <style jsx>{`
-            .title {
+            .title, .artist, .uri {
+              padding: 5px;
+            }
+
+            .title, .uri {
               font-size: small;
               font-weight: bold;
             }
@@ -53,8 +61,9 @@ class AudioFile extends Track {
               font-size: x-small;
             }
 
-            .title, .artist {
-              padding: 5px;
+            .uri {
+              padding-top: 15px;
+              text-align: center;
             }
           `}</style>
         </React.Fragment>
