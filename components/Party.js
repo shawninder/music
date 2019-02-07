@@ -13,6 +13,9 @@ import colors from '../styles/colors'
 import durations from '../styles/durations'
 import tfns from '../styles/timing-functions'
 
+import stopIcon from './icons/dequeue'
+import leaveIcon from './icons/back'
+
 const isServer = typeof window === 'undefined'
 
 class Party extends Component {
@@ -551,6 +554,14 @@ class Party extends Component {
                   ? this.props.dict.get('party.leave')
                   : (this.props.hosting ? 'Hosting' : this.props.dict.get('party.join'))
               }
+              {this.props.attending
+                ? (
+                  <span className='buttonIcon'>
+                    {leaveIcon}
+                  </span>
+                )
+                : null
+              }
             </button>
             <button
               className={startBtnClasses.join(' ')}
@@ -563,16 +574,24 @@ class Party extends Component {
                   ? this.props.dict.get('party.stop')
                   : (this.props.attending ? 'Attending' : this.props.dict.get('party.start'))
               }
+              {this.props.hosting
+                ? (
+                  <span className='buttonIcon'>
+                    {stopIcon}
+                  </span>
+                )
+                : null
+              }
             </button>
           </form>
         }
         <style jsx>{`
-          .autoparty {
+          div {
             max-width: 640px;
             margin: 0 auto;
           }
 
-          .autoparty input {
+          input {
             display: block;
             width: 100%;
             padding: 5px;
@@ -583,7 +602,7 @@ class Party extends Component {
             background-color: white;
           }
 
-          .autoparty.hosting input, .autoparty.attending input {
+          .hosting input, .attending input {
             background-color: transparent;
             border-width: 0;
             &:disabled {
@@ -591,24 +610,27 @@ class Party extends Component {
             }
           }
 
-          .autoparty button {
+          button {
             padding: 5px;
             font-size: medium;
             line-height: 1.5em;
             color: ${colors.text};
             background-color: ${colors.textBg};
             &.enabled {
+              color: ${colors.primaryText};
               background-color: ${colors.primaryBg};
+              border-color: ${colors.primaryText};
             }
           }
 
-          .autoparty.hosting button.enabled, .autoparty.attending button.enabled {
+          .hosting button.enabled, .attending button.enabled {
             background-color: ${colors.textBg};
           }
 
           .hosting .startBtn, .attending .joinBtn {
             background-color: ${colors.dangerousBg};
             color: ${colors.dangerousText};
+            border-color: ${colors.dangerousText};
           }
 
           .hosting .joinBtn, .attending .startBtn {
@@ -618,6 +640,7 @@ class Party extends Component {
           }
 
           .joinBtn, .startBtn {
+            position: relative;
             width: 50%;
             cursor: pointer;
             opacity: 1;
@@ -625,17 +648,19 @@ class Party extends Component {
             transition-duration: ${durations.instant};
             transition-timing-function: ${tfns.easeInOutQuad};
           }
-          .attending .joinBtn {
-            background-image: url("/static/back.svg");
-            background-repeat: no-repeat;
-            background-position: left 5px center;
-            background-size: 30px;
+          .joinBtn .buttonIcon {
+            position: absolute;
+            left: 5px;
+            top: 3px;
+            width: 30px;
+            height: 30px;
           }
-          .hosting .startBtn {
-            background-image: url("/static/x.svg");
-            background-repeat: no-repeat;
-            background-position: right 5px center;
-            background-size: 20px;
+          .startBtn .buttonIcon {
+            position: absolute;
+            right: 5px;
+            top: 3px;
+            width: 20px;
+            height: 20px;
           }
         `}</style>
       </div>

@@ -943,7 +943,6 @@ class App extends Component {
                 notify={this.props.notify}
               />
               <Party
-                className={'autoparty'}
                 placeholder={this.dict.get('party.placeholder')}
                 dict={this.dict}
                 registerMiddleware={this.props.registerMiddleware}
@@ -1336,16 +1335,17 @@ class App extends Component {
           }
 
           .upNext ol, .history ol, .playingNow ol {
+            min-height: 1px; /* Necessary for inserting into empty lists */
             transition-property: background-color;
-            transition-duration: .75s
+            transition-duration: ${durations.moment};
           }
 
           .App.dragging .history ol, .App.dragging .upNext ol {
-            background: rgba(255, 255, 255, 0.5);
+            background: ${alpha(colors.textBg, colors.opacity)};
           }
 
           .App.dragging .playingNow ol {
-            background: rgba(0, 0, 0, 0.5);
+            background: ${alpha(colors.text, 1 - colors.opacity)};
           }
 
           .App.disconnected.attending .controls button, .App.disconnected.attending .controls input, .App.disconnected.attending .controls label {
