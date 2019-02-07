@@ -260,7 +260,10 @@ class Party extends Component {
         type: 'Party:connected',
         value: true
       })
-      this.checkPartyName()
+      // Timeout helps failing `connected` guard in checkPartyName
+      setTimeout(() => {
+        this.checkPartyName()
+      }, 10)
     })
 
     this.props.socket.on('connect_error', () => {
@@ -593,24 +596,24 @@ class Party extends Component {
             font-size: medium;
             line-height: 1.5em;
             color: ${colors.text};
-            background-color: ${colors.white};
+            background-color: ${colors.textBg};
             &.enabled {
-              background-color: ${colors.aqua};
+              background-color: ${colors.primaryBg};
             }
           }
 
           .autoparty.hosting button.enabled, .autoparty.attending button.enabled {
-            background-color: ${colors.white};
+            background-color: ${colors.textBg};
           }
 
           .hosting .startBtn, .attending .joinBtn {
-            background-color: ${colors.reddish};
-            color: ${colors.darkred};
+            background-color: ${colors.dangerousBg};
+            color: ${colors.dangerousText};
           }
 
           .hosting .joinBtn, .attending .startBtn {
             opacity: 0.4;
-            background-color: ${colors.white};
+            background-color: ${colors.textBg};
             font-weight: bold;
           }
 

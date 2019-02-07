@@ -48,7 +48,7 @@ class Field extends Component {
             padding: 5px 80px 5px 60px;
             z-index: 4;
             border: 0;
-            color: ${colors.white};
+            color: ${colors.textBg};
             background: ${colors.text};
             border-radius: 0;
             box-shadow: 0px 5px 5px 0px rgb(0,0,0,0.25);

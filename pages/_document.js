@@ -28,6 +28,11 @@ export default class MyDocument extends Document {
           <meta name='theme-color' content='#333333' />
           <link rel='manifest' href='/static/manifest/manifest.json' />
           <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' />
+          <meta property='og:title' content="Crowd's Play" />
+          <meta property='og:type' content='website' />
+          <meta property='og:url' content='https://shawninder.github.io/music' />
+          <meta property='og:image' content='https://crowds-play.com/mrJingles.png' />
+          <meta property='og:description' content='Let the crows into your playlist' />
         </Head>
         <body tabIndex='-1'>
           <noscript>

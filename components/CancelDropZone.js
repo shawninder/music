@@ -20,7 +20,7 @@ class CancelDropZone extends Component {
             padding: 5px 80px 5px 60px;
             z-index: 1;
             border: 0;
-            color: ${colors.white};
+            color: ${colors.textBg};
             background: rgba(254, 70, 70, 0.8);
             border-radius: 0;
             transition-property: opacity;

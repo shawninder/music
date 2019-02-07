@@ -73,7 +73,7 @@ class Figure extends Component {
             font-size: large;
             z-index: 4;
             cursor: pointer;
-            background-color: ${colors.aqua};
+            background-color: ${colors.primary};
             transition-property: background-color;
             transition-duration: ${durations.moment};
             .face {
@@ -85,10 +85,10 @@ class Figure extends Component {
               background-image: url('/static/sad.svg');
             }
             &.attending {
-              background-color: ${colors.green};
+              background-color: ${colors.attendingBg};
             }
             &.hosting {
-              background-color: ${colors.midOrange};
+              background-color: ${colors.hosting};
             }
           }
         `}</style>

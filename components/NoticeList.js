@@ -44,7 +44,7 @@ class NoticeList extends Component {
             max-width: 450px;
             z-index: 5;
             list-style: none;
-            background-color: ${colors.white};
+            background-color: ${colors.textBg};
             padding: 7px;
             border: 1px solid ${colors.text};
             border-radius: ${lengths.noticeRadius} 0 ${lengths.noticeRadius} ${lengths.noticeRadius};
@@ -71,7 +71,7 @@ class NoticeList extends Component {
               height: 0px;
               position: absolute;
               border-left: 0;
-              border-right: 20px solid ${colors.white};
+              border-right: 20px solid ${colors.textBg};
               border-top: 10px solid transparent;
               border-bottom: 15px solid transparent;
               right: -3px;

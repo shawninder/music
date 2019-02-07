@@ -277,22 +277,23 @@ class Bar extends Component {
             width: 100%;
             .bar-menu {
               cursor: pointer;
-              color: ${colors.white};
+              color: ${colors.textBg};
               position: fixed;
               z-index: 5;
               padding: 15px;
               height: ${lengths.rowHeight};
               &:focus, &:hover {
-                color: ${colors.primary};
+                color: ${colors.primaryBg};
               }
             }
             .bar-dismiss {
+              cursor: pointer;
               position: fixed;
               right: 50px;
               font-size: large;
               z-index: 4;
               padding: 17px 13px 13px 13px;
-              color: ${colors.white};
+              color: ${colors.textBg};
             }
             .bar-list {
               display: grid;

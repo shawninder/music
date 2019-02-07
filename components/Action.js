@@ -67,7 +67,7 @@ class Action extends Component {
           }
 
           .action:hover {
-            color: ${colors.primary};
+            color: ${colors.primaryBg};
           }
           .action {
             width: 100%;
@@ -106,7 +106,7 @@ class Action extends Component {
           }
 
           .icon svg.icon {
-            color: dimgrey;
+            color: ${colors.text2};
           }
         `}</style>
       </div>

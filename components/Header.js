@@ -26,8 +26,9 @@ class Header extends Component {
             h1 {
               font-size: xx-large;
               font-family: fantasy;
-              color: ${colors.white};
+              color: ${colors.textBg};
               cursor: text;
+              margin-bottom: 0;
             }
             p {
               padding: 0 5px;

@@ -9,6 +9,7 @@ import fileToKey from '../helpers/fileToKey'
 import getFileMeta from '../features/fileInput/getFileMeta'
 
 import durations from '../styles/durations'
+import colors from '../styles/colors'
 
 class FilesDialog extends Component {
   constructor (props) {
@@ -146,7 +147,7 @@ class FilesDialog extends Component {
             width: 100%;
             max-width: 640px;
             border-radius: 4px;
-            color: whitesmoke;
+            color: ${colors.textBg};
             background: #333333;
             z-index: 1;
             transition-property: opacity;

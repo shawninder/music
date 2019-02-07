@@ -10,6 +10,7 @@ import Log from '../components/Log'
 import AuthForm from '../components/AuthForm'
 
 import tfns from '../styles/timing-functions'
+import colors from '../styles/colors'
 
 // const isServer = typeof window === 'undefined'
 
@@ -111,7 +112,7 @@ class Logs extends Component {
           }
 
           .bar-menu {
-            color: dimgrey;
+            color: ${colors.text2};
             position: fixed;
             top: 5px;
             left: 5px;

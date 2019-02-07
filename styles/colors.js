@@ -1,46 +1,43 @@
 export const opacity = 0.7
 
+export const textBg = '#fffff0'
+export const textBgEven = 'ghostwhite'
+export const textBgOdd = 'whitesmoke'
 export const text = '#111111'
-export const textPrimary = '#001f3f'
-export const primary = '#7FDBFF'
+export const text2 = 'dimgrey'
 export const link = '#001f3f'
-export const eee = '#eeeeee'
 export const placeholder = '#aaaaaa'
-export const aqua = '#7fdbff'
-export const green = 'green'
-export const sand = '#e0b01d'
-export const midOrange = '#f09b1c'
-export const orange = '#ff851b'
-export const orangeish = `rgb(255, 165, 0, ${opacity})`
-export const dimgrey = 'dimgrey'
-export const white = 'ivory'
-export const whiteish = `rgba(255, 255, 240, ${opacity})`
-export const whitesmoke = 'whitesmoke'
-export const ghostwhite = 'ghostwhite'
-export const darkred = 'darkred'
-export const reddish = 'seashell'
-export const separator = '#cccccc'
 
+export const primary = '#7fdbff'
+export const primaryBg = '#7fdbff'
+export const primaryText = link
+
+export const hosting = '#f09b1c'
+export const hostingBg = '#e0b01d'
+
+export const attending = '#2ecc40'
+export const attendingBg = 'green'
+
+export const dangerousBg = 'seashell'
+export const dangerousText = 'darkred'
+
+// Order considered "important" because it's used in /branding for showcasing color palette
 export default {
   opacity,
+  textBg,
+  textBgEven,
+  textBgOdd,
   text,
+  text2,
   link,
-  eee,
   placeholder,
-  aqua,
-  green,
-  orange,
-  sand,
-  midOrange,
-  orangeish,
-  dimgrey,
-  whitesmoke,
-  ghostwhite,
-  darkred,
-  reddish,
   primary,
-  textPrimary,
-  white,
-  whiteish,
-  separator
+  primaryBg,
+  primaryText,
+  hosting,
+  hostingBg,
+  attending,
+  attendingBg,
+  dangerousBg,
+  dangerousText
 }

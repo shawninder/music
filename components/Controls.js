@@ -198,7 +198,6 @@ class Controls extends Component {
             left: 0;
             width: 100%;
             font-size: medium;
-            /* background: whitesmoke; */
             /* box-shadow: 0px -2px 5px 0px rgba(0,0,0,0.25); */
           }
           .controls-buttons {
@@ -214,7 +213,7 @@ class Controls extends Component {
             width: 20px;
           }
           .controls button:hover {
-            color: ${colors.primary};
+            color: ${colors.primaryBg};
           }
           .controls-newFile {
             grid-area: addMedia;
@@ -266,7 +265,7 @@ class Controls extends Component {
           button, input {
             border: 0;
             background: transparent;
-            color: whitesmoke;
+            color: ${colors.textBgEven};
             transition-property: color;
             transition-duration: ${durations.moment};
             cursor: pointer;

@@ -97,8 +97,8 @@ class Feedback extends Component {
               margin: 0 auto;
               text-align: left;
               line-height: 1.5em;
-              color: ${colors.whitesmoke};
-              text-shadow: 0 0 30px black;
+              color: ${colors.textBg};
+              text-shadow: 0 0 3px ${colors.text};
             }
             h2 {
               font-size: x-large;
@@ -118,11 +118,14 @@ class Feedback extends Component {
             }
             [type=submit] {
               float: right;
-              border-color: ${colors.aqua};
-              background: ${colors.aqua};
+              padding: 5px;
+              border-radius: 5px;
+              color: ${colors.primaryText};
+              border-color: ${colors.primaryText};
+              background: ${colors.primaryBg};
             }
             .submitting [type=submit], .submitted [type=submit] {
-              color: ${colors.white};
+              color: ${colors.textBg};
               background: rgba(200, 200, 200, 20%);
               border-color: rgba(200, 200, 200, 20%);
             }

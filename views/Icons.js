@@ -22,6 +22,8 @@ import addIcon from '../components/icons/add'
 import engine from '../components/icons/engine'
 // const isServer = typeof window === 'undefined'
 
+import colors from '../styles/colors'
+
 class Icons extends Component {
   render () {
     return (
@@ -40,7 +42,7 @@ class Icons extends Component {
             clear: both;
           }
           .iconPage li {
-            color: whitesmoke;
+            color: ${colors.textBg};
             margin: 10px;
             width: 150px;
             float: left;
@@ -52,14 +54,14 @@ class Icons extends Component {
             vertical-align: middle;
           }
           .iconPage svg {
-            color: whitesmoke;
+            color: ${colors.textBg};
             width: 48px;
             height: 48px;
             fill: currentColor;
           }
 
           .iconPage img {
-            background: whitesmoke;
+            background: ${colors.textBg};
             width: 100px;
             height: 100px;
           }

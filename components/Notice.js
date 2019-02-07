@@ -5,6 +5,8 @@ import propTypes from '../helpers/propTypes'
 
 import Range from './Range'
 
+import colors from '../styles/colors'
+
 class Notice extends Component {
   render () {
     const classes = this.props.className ? this.props.className.split(' ') : []
@@ -32,7 +34,7 @@ class Notice extends Component {
         {btns}
         <style global jsx>{`
           .file-progress {
-            background: whitesmoke;
+            background: ${colors.textBgEven};
             border: 1px solid #333333;
             height: 10px;
             width: 100px;

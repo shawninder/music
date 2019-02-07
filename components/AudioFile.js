@@ -38,7 +38,7 @@ class AudioFile extends Track {
       >
         <React.Fragment>
           {!title ? (
-            <p className='uri'>{cleanFakePath(this.props.data.fakePath)}</p>
+            <p className='uri'>{cleanFakePath(this.props.data.fakePath || '')}</p>
           ) : null}
           {title ? (
             <p className='title'>{title}</p>

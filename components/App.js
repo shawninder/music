@@ -39,9 +39,10 @@ import nextIcon from './icons/next'
 import dequeueIcon from './icons/dequeue'
 
 import colors from '../styles/colors'
+import alpha from '../helpers/alpha'
 import tfns from '../styles/timing-functions'
 import durations from '../styles/durations'
-import alpha from '../helpers/alpha'
+import lengths from '../styles/lengths'
 
 import resetStyles from '../styles/reset'
 import baseStyles from '../styles/base'
@@ -755,10 +756,6 @@ class App extends Component {
     const cdnQueued = (queueIndex) => {
       return queueIndex === 0 || !!queueIndex
     }
-    const socketConnected = this.props.socket && this.props.socket.connected
-    const hosting = this.props.party.hosting
-    const attending = this.props.party.attending
-    const dragging = this.props.app.dragging
     const appClasses = ['App']
 
     if (this.props.socket) {
@@ -1133,7 +1130,7 @@ class App extends Component {
           .App {
             padding: 0;
             position: relative;
-            background-color: ${colors.aqua};
+            background-color: ${colors.primaryBg};
             background-image: url("/static/bg.svg");
             background-repeat: no-repeat;
             background-position: left top;
@@ -1144,15 +1141,15 @@ class App extends Component {
           }
 
           .App.connected, .App.connected .figure {
-            background-color: ${colors.aqua};
+            background-color: ${colors.primary};
           }
 
           .App.hosting  {
-            background-color: ${colors.sand};
+            background-color: ${colors.hostingBg};
           }
 
           .App.disconnected, .App.disconnected .figure {
-            background-color: ${colors.white};
+            background-color: ${colors.textBg};
           }
 
           .App.dragging .cancelDropZone {
@@ -1169,7 +1166,7 @@ class App extends Component {
             max-height: 100vh;
             overflow-y: scroll;
             position: fixed;
-            top: 0;
+            top: ${lengths.rowHeight};
             left: 0;
             z-index: 2;
           }
@@ -1179,11 +1176,11 @@ class App extends Component {
           }
 
           .App .bar-list.list > ol > li:nth-child(odd) {
-            background: ${colors.whitesmoke};
+            background: ${colors.textBgOdd};
           }
 
           .App .bar-list.list > ol > li:nth-child(even) {
-            background: ${colors.ghostwhite};
+            background: ${colors.textBgEven};
           }
 
           .App.dragging .bar-list {
@@ -1260,7 +1257,7 @@ class App extends Component {
           }
 
           .bar-list .toggle .idx {
-            color: ${colors.dimgrey};
+            color: ${colors.text2};
           }
           .bar-list .track .toggle .art {
             transition-duration: ${durations.instant};
@@ -1277,11 +1274,11 @@ class App extends Component {
           }
 
           li:nth-child(odd) .actions {
-            background-color: ${colors.ghostwhite};
+            background-color: ${colors.textBgOdd};
           }
 
           li:nth-child(even) .actions {
-            background-color: ${colors.whitesmoke};
+            background-color: ${colors.textBgEven};
           }
 
           .history>h3 {
@@ -1315,11 +1312,11 @@ class App extends Component {
             max-width: 640px;
           }
           .history, .upNext {
-            background: ${colors.whiteish};
+            background: ${alpha(colors.textBg, colors.opacity)};
           }
           .playingNow {
             background: ${alpha(colors.text, 1 - colors.opacity)};
-            color: ${colors.white};
+            color: ${colors.textBg};
             height: 64px;
             .art {
               .idx {
@@ -1352,11 +1349,11 @@ class App extends Component {
           }
 
           .App.disconnected.attending .controls button, .App.disconnected.attending .controls input, .App.disconnected.attending .controls label {
-            color: ${colors.dimgrey};
+            color: ${colors.text2};
           }
 
           .App.disconnected .seek-bar--current {
-            background-color: ${colors.darkred};
+            background-color: ${colors.dangerousText};
           }
 
           .history, .history .icon, .upNext, .upNext .icon {
@@ -1364,7 +1361,7 @@ class App extends Component {
           }
 
           .playingNow .icon {
-            color: ${colors.whitesmoke};
+            color: ${colors.textBg};
           }
 
           .App.attending .copyButton, .App.hosting .copyButton {

@@ -5,6 +5,8 @@ import propTypes from '../helpers/propTypes'
 
 import Action from './Action'
 
+import colors from '../styles/colors'
+
 class ActionList extends Component {
   render () {
     const actions = Object.keys(this.props.actions).reduce((arr, key, idx) => {
@@ -64,8 +66,8 @@ class ActionList extends Component {
           .action-list {
             width: 90%;
             position: absolute;
-            color: dimgrey;
-            background: whitesmoke;
+            color: ${colors.text2};
+            background: ${colors.textBg};
             z-index: 5;
           }
           .action-list.hidden {

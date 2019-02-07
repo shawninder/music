@@ -35,7 +35,7 @@ class Links extends Component {
             transition-timing-function: ${tfns.easeInOutQuad};
           }
           a:hover {
-            color: ${colors.aqua};
+            color: ${colors.primary};
           }
         `}</style>
       </footer>
