@@ -18,8 +18,6 @@ class SvgSkeleton extends Component {
           textRendering: 'geometricPrecision'
         }}
         viewBox={this.props.viewBox}
-        title={this.props.title}
-        alt={this.props.alt}
         className={this.props.className}
       >
         {this.props.children}
@@ -30,8 +28,6 @@ class SvgSkeleton extends Component {
 
 const props = [
   { name: 'viewBox', type: PropTypes.string.isRequired },
-  { name: 'title', type: PropTypes.string.isRequired },
-  { name: 'alt', type: PropTypes.string.isRequired },
   { name: 'className', type: PropTypes.string, val: '' }
 ]
 
