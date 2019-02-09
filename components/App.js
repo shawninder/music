@@ -1340,11 +1340,6 @@ class App extends Component {
             }
           }
 
-          .emptyDropZone {
-            line-height: 60px;
-            text-align: center;
-          }
-
           .upNext ol, .history ol, .playingNow ol {
             min-height: 1px; /* Necessary for inserting into empty lists */
             transition-property: background-color;
