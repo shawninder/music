@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
-import MusicFont from './musicFont'
 import CopyButton from './CopyButton'
 import colors from '../styles/colors'
 
@@ -11,8 +10,6 @@ class Header extends Component {
   render () {
     return (
       <header>
-        <h1><MusicFont>Crowd's Play</MusicFont></h1>
-        <p>{this.props.dict.get('header.tagline')}</p>
         <CopyButton
           className='copyButton'
           dict={this.props.dict}
