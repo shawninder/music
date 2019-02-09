@@ -36,8 +36,8 @@
     "fr": "Affinez votre recherche"
   },
   "header.tagline": {
-    "en": "Let the crowd into your playlist",
-    "fr": "Invitez la foule à collaborer sur votre playlist"
+    "en": "Invite the crowd into your playlist!",
+    "fr": "Invite la foule à jouer avec ta playlist!"
   },
   "party.placeholder": {
     "en": "Playlist name",
@@ -100,8 +100,8 @@
     "fr": "En Cours"
   },
   "queue.playingNow.emptyZone": {
-    "en": "empty",
-    "fr": "vide"
+    "en": "Playlist empty.",
+    "fr": "Playlist vide"
   },
   "queue.upNext.emptyZone": {
     "en": "",
