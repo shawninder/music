@@ -5,8 +5,6 @@ import durations from '../../styles/durations'
 export default (
   <SvgSkeleton
     viewBox='0 0 512 512'
-    title='Start/Stop'
-    alt='Start/Stop'
     className='round'
   >
     <path

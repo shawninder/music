@@ -6,8 +6,6 @@ export default (props) => {
   return (
     <SvgSkeleton
       viewBox='0 0.126 99.999998 100'
-      title='sad'
-      alt='Sad face'
       key='sad'
       className={classes.join(' ')}
     >

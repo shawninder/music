@@ -3,8 +3,6 @@ import SvgSkeleton from '../SvgSkeleton'
 export default (
   <SvgSkeleton
     viewBox='0 0 2199.9999 2199.9999'
-    title='next'
-    alt='next'
     className='icon'
   >
     <path

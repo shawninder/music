@@ -3,8 +3,6 @@ import SvgSkeleton from '../SvgSkeleton'
 export default (
   <SvgSkeleton
     viewBox='0 0 2839.7594 2839.7594'
-    title='enqueue'
-    alt='enqueue'
     className='icon'
   >
     <g
