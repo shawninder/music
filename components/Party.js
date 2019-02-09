@@ -606,7 +606,7 @@ class Party extends Component {
             background-color: transparent;
             border-width: 0;
             &:disabled {
-              color: ${colors.black};
+              color: ${colors.placeholder};
             }
           }
 

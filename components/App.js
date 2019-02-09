@@ -805,7 +805,14 @@ class App extends Component {
           {(droppableProvided, snapshot) => {
             return (
               <ol ref={droppableProvided.innerRef} key='playingNow-droppable'>
-                <li className='emptyDropZone' key='playingNow-emptyDropZone'>{this.dict.get('queue.playingNow.emptyZone')}</li>
+                <li className='emptyDropZone' key='playingNow-emptyDropZone'>
+                  <img
+                    className='emptyImage'
+                    src='/static/ogImage.png'
+                    alt={this.dict.get('header.tagline')}
+                    title={this.dict.get('queue.playingNow.emptyZone')}
+                  />
+                </li>
                 {droppableProvided.placeholder}
               </ol>
             )
@@ -1114,6 +1121,10 @@ class App extends Component {
 
           ${baseStyles}
 
+          .emptyImage {
+            width: 100%;
+          }
+
           .controls-buttons button svg {
             width: 20px;
           }
@@ -1217,7 +1228,7 @@ class App extends Component {
             &.mini {
               margin-bottom: 0;
               .Player {
-                top: -62px;
+                top: 0;
                 left: 5px;
               }
               .Artwork {
@@ -1228,7 +1239,7 @@ class App extends Component {
             &.medium {
               margin-bottom: 360px;
               .Player {
-                top: 0;
+                top: 64px;
                 left: 0;
               }
               .Artwork {
@@ -1312,7 +1323,6 @@ class App extends Component {
           .playingNow {
             background: ${alpha(colors.text, 1 - colors.opacity)};
             color: ${colors.textBg};
-            height: 64px;
             .art {
               .idx {
                 width: 0;
