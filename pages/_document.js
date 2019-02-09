@@ -23,7 +23,6 @@ export default class MyDocument extends Document {
       <html lang={lang}>
         <Head>
           <link rel='shotcut icon' href='static/favicon.ico' />
-          <meta httpEquiv='Content-Language' content={lang} />
           <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0' />
           <meta name='theme-color' content='#333333' />
           <link rel='manifest' href='/static/manifest/manifest.json' />
