@@ -71,7 +71,7 @@ class Player extends Component {
           .Player {
             width: ${this.props.width};
             height: ${this.props.height};
-            position: relative;
+            position: absolute;
             z-index: 0;
           }
         `}</style>
