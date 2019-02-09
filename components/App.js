@@ -1146,7 +1146,7 @@ class App extends Component {
             overflow: scroll;
           }
 
-          .App.connected, .App.connected .figure {
+          .App.connected {
             background-color: ${colors.primary};
           }
 
@@ -1154,7 +1154,7 @@ class App extends Component {
             background-color: ${colors.hostingBg};
           }
 
-          .App.disconnected, .App.disconnected .figure {
+          .App.disconnected {
             background-color: ${colors.textBg};
           }
 

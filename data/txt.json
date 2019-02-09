@@ -24,8 +24,8 @@
     "fr": "retirer"
   },
   "bar.placeholder": {
-    "en": "Find music (YouTube)",
-    "fr": "Rechercher (YouTube)"
+    "en": "Search",
+    "fr": "Rechercher"
   },
   "bar.loading": {
     "en": "Loading...",

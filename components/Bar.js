@@ -280,7 +280,7 @@ class Bar extends Component {
               color: ${colors.textBg};
               position: fixed;
               z-index: 5;
-              padding: 15px;
+              padding: 12px;
               height: ${lengths.rowHeight};
               &:focus, &:hover {
                 color: ${colors.primaryBg};

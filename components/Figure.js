@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 
 import colors from '../styles/colors'
-import lengths from '../styles/lengths'
 import durations from '../styles/durations'
 
 import Happy from './icons/Happy'
@@ -62,27 +61,46 @@ class Figure extends Component {
         onKeyDown={this.figureKeyDown}
         tabIndex='0'
       >
+        <span className='branding'>Crowd's Play</span>
+        <span className='status'>{this.props.socket.connected ? 'connected' : 'disconnected'}</span>
         <Image className='face' />
         <style jsx>{`
           .figure {
             position: fixed;
             top: 0;
             right: 0;
-            width: ${lengths.rowHeight};
-            height: ${lengths.rowHeight};
-            font-size: large;
+            width: 160px;
+            height: 53px;
+            padding: 5px;
+            border-radius: 0 0 0 3px;
+            font-size: medium;
             z-index: 4;
             cursor: pointer;
-            background-color: ${colors.primary};
+            color: ${colors.text};
+            background-color: ${colors.textBg};
             transition-property: background-color;
             transition-duration: ${durations.moment};
+            font-family: palatino;
+            .branding {
+              float: left;
+              font-weight: bold;
+              position: absolute;
+              padding: 5px;
+              top: 0;
+              left: 0;
+            }
+            .status {
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              padding: 5px;
+              font-size: small;
+            }
             .face {
-              margin: 10px;
+              margin: 5px;
               width: 30px;
               height: 30px;
-            }
-            &.disconnected {
-              background-image: url('/static/sad.svg');
+              float: right;
             }
             &.attending {
               background-color: ${colors.attendingBg};
