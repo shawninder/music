@@ -24,7 +24,6 @@ import Smart from './Smart'
 import NoticeList from './NoticeList'
 import Artwork from './Artwork'
 import Figure from './Figure'
-import Links from './Links'
 import FilesDialog from './FilesDialog'
 import CancelDropZone from './CancelDropZone'
 
@@ -1051,9 +1050,6 @@ class App extends Component {
               <Feedback
                 dispatch={this.dispatch}
                 notify={this.props.notify}
-                dict={this.dict}
-              />
-              <Links
                 dict={this.dict}
               />
             </main>

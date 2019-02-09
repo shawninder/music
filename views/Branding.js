@@ -17,6 +17,10 @@ import searchIcon from '../components/icons/search'
 import volumeHighIcon from '../components/icons/volumeHigh'
 import addIcon from '../components/icons/add'
 import engine from '../components/icons/engine'
+import OgImage from '../components/OgImage'
+
+import baseStyles from '../styles/base'
+import resetStyles from '../styles/reset'
 
 import colors from '../styles/colors'
 
@@ -51,6 +55,7 @@ class Branding extends Component {
         <h2>OG images</h2>
         <ul>
           <li><img src='/static/mrJingles.png' /><span className='label'>Mr. Jingles</span></li>
+          <li><div className='ogImageContainer'><OgImage className='ogImage' /></div><span className='label'>og:image</span></li>
         </ul>
         <h2>Iconography</h2>
         <ul className='iconList'>
@@ -84,14 +89,7 @@ class Branding extends Component {
           <li><img src='/static/manga-skewed.svg' /><span className='label'>manga-skewed</span></li>
           <li><img src='/static/manga.svg' /><span className='label'>manga</span></li>
         </ul>
-        <style jsx global>{`
-          body {
-            background-color: #33333;
-            background-image: url('/static/bg.svg');
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: 100% 100% !important;
-          }
+        <style jsx>{`
           h2 {
             clear: both;
           }
@@ -99,23 +97,9 @@ class Branding extends Component {
             list-style: none;
             clear: both;
           }
-          li {
-            color: ${colors.textBg};
-            margin: 10px;
-            width: 150px;
-            float: left;
-          }
-          .label {
-            display: block;
-          }
+
           li svg, img {
             vertical-align: middle;
-          }
-          svg {
-            color: ${colors.textBg};
-            width: 48px;
-            height: 48px;
-            fill: currentColor;
           }
 
           img {
@@ -124,13 +108,27 @@ class Branding extends Component {
             height: 100px;
           }
 
+          button {
+            border: 1px solid;
+            border-radius: 5px;
+            padding: 5px;
+          }
+
+          .label {
+            display: block;
+          }
+
           .iconList li:hover {
             color: ${colors.primaryBg};
           }
 
           .swatch {
-            padding: 15px;
+            color: ${colors.textBg};
+            width: 150px;
             height: 60px;
+            margin: 10px;
+            padding: 15px;
+            float: left;
           }
           .colorName, .colorHex {
             display: block;
@@ -138,13 +136,6 @@ class Branding extends Component {
             text-align: center;
             text-shadow: 0 0 3px #000000;
           }
-
-          button {
-            border: 1px solid;
-            border-radius: 5px;
-            padding: 5px;
-          }
-
           .primary {
             border-color: ${colors.primaryText};
             color: ${colors.primaryText};
@@ -155,6 +146,26 @@ class Branding extends Component {
             border-color: ${colors.dangerousText};
             color: ${colors.dangerousText};
             background: ${colors.dangerousBg};
+          }
+        `}</style>
+        <style jsx global>{`
+          ${resetStyles}
+
+          ${baseStyles}
+
+          body {
+            background-color: #33333;
+            background-image: url('/static/bg.svg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100% !important;
+          }
+
+          svg {
+            color: ${colors.textBg};
+            width: 48px;
+            height: 48px;
+            fill: currentColor;
           }
         `}</style>
       </div>

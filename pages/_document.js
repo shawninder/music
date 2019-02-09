@@ -31,7 +31,7 @@ export default class MyDocument extends Document {
           <meta property='og:title' content="Crowd's Play" />
           <meta property='og:type' content='website' />
           <meta property='og:url' content='https://shawninder.github.io/music' />
-          <meta property='og:image' content='https://crowds-play.com/mrJingles.png' />
+          <meta property='og:image' content='/static/ogImage.png' />
           <meta property='og:description' content='Let the crows into your playlist' />
         </Head>
         <body tabIndex='-1'>

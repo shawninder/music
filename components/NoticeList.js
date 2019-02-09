@@ -38,15 +38,17 @@ class NoticeList extends Component {
         {notices.length > 0 ? notices : null}
         <style jsx>{`
           .notice-list {
-            position: fixed;
+            position: absolute;
             top: 45px;
             right: 45px;
             max-width: 450px;
             z-index: 5;
             list-style: none;
-            background-color: ${colors.textBg};
-            padding: 7px;
-            border: 1px solid ${colors.text};
+            font-family: palatino;
+            font-size: x-large;
+            background-color: ${colors.warnBg};
+            padding: 15px;
+            border: 2px solid ${colors.text};
             border-radius: ${lengths.noticeRadius} 0 ${lengths.noticeRadius} ${lengths.noticeRadius};
             transition-property: opacity;
             transition-duration: ${durations.instant};
@@ -58,7 +60,7 @@ class NoticeList extends Component {
               height: 0px;
               position: absolute;
               border-left: 0;
-              border-right: 20px solid ${colors.text};
+              border-right: 25px solid ${colors.text};
               border-top: 10px solid transparent;
               border-bottom: 15px solid transparent;
               right: -4px;
@@ -71,7 +73,7 @@ class NoticeList extends Component {
               height: 0px;
               position: absolute;
               border-left: 0;
-              border-right: 20px solid ${colors.textBg};
+              border-right: 20px solid ${colors.warnBg};
               border-top: 10px solid transparent;
               border-bottom: 15px solid transparent;
               right: -3px;
