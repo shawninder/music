@@ -885,6 +885,7 @@ class App extends Component {
         <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
           <Head title="Crowd's Play" />
           <div className={appClasses.join(' ')}>
+            <img className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
             <Bar
               dispatch={this.dispatch}
               placeholder={this.dict.get('bar.placeholder')}
@@ -1137,10 +1138,6 @@ class App extends Component {
             padding: 0;
             position: relative;
             background-color: ${colors.primaryBg};
-            background-image: url("/static/bg.svg");
-            background-repeat: no-repeat;
-            background-position: left top;
-            background-size: 100% 100%;
             transition-property: background-color;
             transition-duration: ${durations.moment};
             overflow: scroll;
@@ -1200,6 +1197,14 @@ class App extends Component {
 
           .App.dragging .bar-list li.dragging {
             opacity: 1.01;
+          }
+
+          .bgImg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
           }
 
           main {
