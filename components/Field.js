@@ -45,7 +45,7 @@ class Field extends Component {
             width: 100%;
             font-size: large;
             font-weight: bold;
-            padding: 5px 80px 5px 60px;
+            padding: 5px 165  px 5px 60px;
             z-index: 4;
             border: 0;
             color: ${colors.textBg};
