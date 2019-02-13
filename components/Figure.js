@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 
 import colors from '../styles/colors'
 import durations from '../styles/durations'
+import lengths from '../styles/lengths'
 
 import Happy from './icons/Happy'
 import Sad from './icons/Sad'
@@ -69,7 +70,7 @@ class Figure extends Component {
             position: fixed;
             top: 0;
             right: 0;
-            width: 160px;
+            width: ${lengths.menuWidth};
             height: 53px;
             padding: 5px;
             border-radius: 0 0 0 3px;

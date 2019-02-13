@@ -15,7 +15,7 @@ import playNowIcon from '../components/icons/playNow'
 import prevIcon from '../components/icons/prev'
 import searchIcon from '../components/icons/search'
 import volumeHighIcon from '../components/icons/volumeHigh'
-import addIcon from '../components/icons/add'
+import AddIcon from '../components/icons/AddWink'
 import engine from '../components/icons/engine'
 import OgImage from '../components/OgImage'
 
@@ -60,7 +60,7 @@ class Branding extends Component {
         <h2>Iconography</h2>
         <ul className='iconList'>
           <li>{searchIcon}<span className='label'>search</span></li>
-          <li>{addIcon}<span className='label'>add</span></li>
+          <li><AddIcon /><span className='label'>add</span></li>
           <li>{prevIcon}<span className='label'>prev</span></li>
           <li>{pauseIcon}<span className='label'>pause</span></li>
           <li>{playIcon}<span className='label'>play</span></li>
@@ -92,6 +92,9 @@ class Branding extends Component {
         <style jsx>{`
           h2 {
             clear: both;
+            font-weight: bold;
+            font-size: large;
+            margin: 30px;
           }
           ul {
             list-style: none;

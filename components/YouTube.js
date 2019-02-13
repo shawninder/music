@@ -27,6 +27,7 @@ class YouTube extends Component {
         isPlaying={this.props.isPlaying}
         actionsAbove={this.props.actionsAbove}
         pending={this.props.pending}
+        trackId={trackId}
       >
         <p className='title'>{this.props.data.snippet.title}</p>
         <p className='channel'>{this.props.data.snippet.channelTitle}</p>

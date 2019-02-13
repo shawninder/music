@@ -140,7 +140,7 @@ class OgImage extends Component {
             .fakeBar {
               grid-area: fakeBar;
               display: grid;
-              grid-template-columns: 440px 160px;
+              grid-template-columns: 440px ${lengths.menuWidth};
               grid-template-rows: ${lengths.rowHeight};
               grid-template-areas: "name face";
               .name, .face {

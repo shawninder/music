@@ -273,26 +273,29 @@ class Bar extends Component {
           .bar {
             position: relative;
             z-index: 3;
-            height: ${lengths.rowHeight};
+            height: 100%;
             width: 100%;
+            display: grid;
+            grid-template-columns: ${lengths.rowHeight} 1fr ${lengths.rowHeight} ${lengths.menuWidth};
+            grid-template-rows: ${lengths.rowHeight};
+            grid-template-areas:
+              "bar-menu bar-field bar-dismiss menu";
+
             .bar-menu {
+              grid-area: bar-menu;
               cursor: pointer;
               color: ${colors.textBg};
-              position: fixed;
               z-index: 5;
               padding: 12px;
-              height: ${lengths.rowHeight};
               &:focus, &:hover {
                 color: ${colors.primaryBg};
               }
             }
             .bar-dismiss {
+              grid-area: bar-dismiss;
               cursor: pointer;
-              position: fixed;
-              right: 50px;
-              font-size: large;
               z-index: 4;
-              padding: 17px 13px 13px 13px;
+              padding: 12px;
               color: ${colors.textBg};
             }
             .bar-list {

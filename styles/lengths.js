@@ -1,9 +1,15 @@
 export const rowHeight = '50px'
 export const noticeRadius = '10px'
 export const iconWidth = '40px'
+export const menuWidth = '160px'
+export const toggleWidth = '88px'
+export const toggleHeight = '60px'
 
 export default {
   rowHeight,
   noticeRadius,
-  iconWidth
+  iconWidth,
+  menuWidth,
+  toggleWidth,
+  toggleHeight
 }

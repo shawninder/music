@@ -112,6 +112,7 @@ class Track extends Component {
       <div
         className={trackClasses.join(' ')}
         onClick={this.onClick}
+        key={`track-${this.props.trackId}`}
       >
         <div
           className={toggleClasses.join(' ')}
@@ -236,6 +237,7 @@ class Track extends Component {
 }
 
 const props = [
+  { name: 'trackId', type: PropTypes.string.isRequired },
   { name: 'className', type: PropTypes.string, val: '' },
   { name: 'toggleClasses', type: PropTypes.string, val: '' },
   { name: 'data', type: PropTypes.object.isRequired },

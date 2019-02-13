@@ -35,6 +35,7 @@ class AudioFile extends Track {
         isPlaying={this.props.isPlaying}
         actionsAbove={this.props.actionsAbove}
         pending={this.props.pending}
+        trackId={trackId}
       >
         <React.Fragment>
           {!title ? (

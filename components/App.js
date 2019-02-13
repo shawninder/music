@@ -36,6 +36,9 @@ import jumpBackToIcon from './icons/jumpBackTo'
 import enqueueIcon from './icons/enqueue'
 import nextIcon from './icons/next'
 import dequeueIcon from './icons/dequeue'
+import AddIcon from './icons/AddWink'
+import PlayRandom from './icons/PlayRandom'
+import TrackButton from './TrackButton'
 
 import colors from '../styles/colors'
 import alpha from '../helpers/alpha'
@@ -806,12 +809,11 @@ class App extends Component {
             return (
               <ol ref={droppableProvided.innerRef} key='playingNow-droppable'>
                 <li className='emptyDropZone' key='playingNow-emptyDropZone'>
-                  <img
-                    className='emptyImage'
+                  {/* <img
                     src='/static/ogImage.png'
                     alt={this.dict.get('header.tagline')}
                     title={this.dict.get('queue.playingNow.emptyZone')}
-                  />
+                  /> */}
                 </li>
                 {droppableProvided.placeholder}
               </ol>
@@ -882,278 +884,10 @@ class App extends Component {
     }
     return (
       <React.Fragment>
-        <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
-          <Head title="Crowd's Play" />
-          <div className={appClasses.join(' ')}>
-            <img className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
-            <Bar
-              dispatch={this.dispatch}
-              placeholder={this.dict.get('bar.placeholder')}
-              query={this.props.bar.query}
-              items={this.props.bar.items}
-              hasMore={this.props.bar.hasMore}
-              loadMore={this.debouncedLoadMore}
-              areCommands={this.props.bar.areCommands}
-              go={(query) => {
-                return this.props.findMusic(query)
-                  .then((results) => {
-                    if (results.items.length > 0) {
-                      const newItems = results.items.map(this.decorateItem)
-                      results.items = newItems
-                    }
-                    return results
-                  })
-              }}
-              componentProps={{
-                ...this.getComponentProps(state),
-                actions: defaultActions
-              }}
-              ResultComponent={YouTube}
-              onResult={this.getTrackEvents()}
-              commands={{
-                clearHistory: this.clearHistory,
-                clearPlayingNow: this.clearPlayingNow,
-                clearUpNext: this.clearUpNext,
-                clearAll: this.clearAll,
-                toggleShowHistory: this.toggleShowHistory,
-                toggleShowUpNext: this.toggleShowUpNext,
-                inspectPartyServer: this.inspectPartyServer,
-                file: this.file
-              }}
-              filters={{
-                // TODO
-                // Component:
-                // history: this.props.queue.history,
-                // upNext: this.props.queue.upNext,
-                // artist: this.props.findArtist
-                // track: this.props.findTracks
-                // collection: this.props.collection
-                // playlist: this.props.collection.playlists
-                //
-              }}
-              onRef={(ref) => {
-                this.bar = ref
-              }}
-              decorateItem={this.decorateItem}
-              loadingTxt={this.dict.get('bar.loading')}
-              maxReachedTxt={this.dict.get('bar.maxReached')}
-            />
-            <CancelDropZone />
-            <Figure
-              socket={this.props.socket}
-              partyState={state}
-              dispatch={this.dispatch}
-            />
-            <main>
-              <Header
-                dict={this.dict}
-                notify={this.props.notify}
-              />
-              <Party
-                placeholder={this.dict.get('party.placeholder')}
-                dict={this.dict}
-                registerMiddleware={this.props.registerMiddleware}
-                unregisterMiddleware={this.props.unregisterMiddleware}
-                dispatch={this.dispatch}
-                player={this.props.player}
-                queue={this.props.queue}
-                socketKey={this.props.socketKey}
-                socket={this.props.socket}
-                {...this.props.party} // state
-                linkedPartyName={this.props.linkedPartyName}
-                gotState={this.gotState}
-                gotSlice={this.gotSlice}
-                gotDispatch={this.gotDispatch}
-                collapsed={this.props.app.partyCollapsed}
-                onFieldRef={(el) => {
-                  this.partyField = el
-                }}
-                pending={this.props.ack.pending}
-                notify={this.props.notify}
-                gotFileChunk={this.gotFileChunk}
-                autoFocus
-              />
-              <List
-                showLabel={`${this.dict.get('queue.history.show')} (${state.queue.history.length})`}
-                hideLabel={`${this.dict.get('queue.history.hide')} (${state.queue.history.length})`}
-                className={historyClasses.join(' ')}
-                items={state.queue.history}
-                componentProps={{
-                  ...this.getComponentProps(state),
-                  actions: {
-                    jumpTo: {
-                      targetIdx: 0,
-                      go: this.jumpBackTo,
-                      txt: this.dict.get('actions.jumpBackTo'),
-                      icon: jumpBackToIcon
-                    },
-                    remove: {
-                      targetIdx: null,
-                      go: this.dequeue,
-                      txt: this.dict.get('actions.remove'),
-                      icon: dequeueIcon
-                    }
-                  }
-                }}
-                defaultComponent={Smart}
-                onItem={{
-                  space: this.jumpBackTo
-                }}
-                startsCollapsed
-                collapsible
-                areDraggable
-                hidden={state.queue.history.length === 0}
-              />
-              <div className={playingNowClasses.join(' ')} key='playingNow'>
-                {playingNowZone}
-                {(state.queue.now.key && !this.props.party.attending)
-                  ? (
-                    <Player
-                      onRef={(playerEl) => {
-                        this.playerEl = playerEl
-                      }}
-                      playingNow={state.queue.now}
-                      playing={state.player.playing}
-                      dispatch={this.dispatch}
-                      onEnded={this.onTrackEnd}
-                      width={playerWidth}
-                      height={playerHeight}
-                      controls
-                    />
-                  ) : null}
-                {(state.queue.now.key && this.props.party.attending)
-                  ? (
-                    <Artwork
-                      playingNow={state.queue.now}
-                      isPlaying={state.player.playing}
-                      dispatch={this.dispatch}
-                      className='Artwork'
-                    />
-                  ) : null}
-              </div>
-              <List
-                className={upNextClasses.join(' ')}
-                items={state.queue.upNext}
-                componentProps={{
-                  ...this.getComponentProps(state),
-                  actions: {
-                    jumpTo: {
-                      targetIdx: 0,
-                      go: this.jumpTo,
-                      txt: this.dict.get('actions.jumpTo'),
-                      icon: jumpToIcon
-                    },
-                    remove: {
-                      targetIdx: null,
-                      go: this.dequeue,
-                      txt: this.dict.get('actions.remove'),
-                      icon: dequeueIcon
-                    }
-                  }
-                }}
-                defaultComponent={Smart}
-                areDraggable
-                emptyComponent={<li key='upNext-emptyDropZone'><div className='emptyDropZone'>{this.dict.get('queue.upNext.emptyZone')}</div></li>}
-              />
-              <Feedback
-                dispatch={this.dispatch}
-                notify={this.props.notify}
-                dict={this.dict}
-              />
-            </main>
-            <Controls
-              f={state.player.f}
-              t={state.player.t}
-              history={state.queue.history}
-              upNext={state.queue.upNext}
-              restartTrack={this.restartTrack}
-              playing={state.player.playing}
-              dispatch={this.dispatch}
-              collection={this.props.collection}
-              toggleShowHistory={this.toggleShowHistory}
-              toggleShowUpNext={this.toggleShowUpNext}
-              seekTo={this.seekTo}
-              setVolume={this.setVolume}
-              volume={this.props.party.attending ? this.props.party.state.player.v : this.props.player.v}
-              nbFiles={this.props.fileInput.files.length}
-              toggleShowFiles={() => {
-                this.toggleShowFiles()
-              }}
-              newFileInput={() => {
-                // if (this.props.party.attending) {
-                //   this.props.notify({
-                //     id: Math.random().toString().slice(2),
-                //     body: 'Still working on this feature, stay tuned!',
-                //     duration: 5000
-                //   })
-                // } else {
-                this.dispatch({
-                  type: 'FileInput:new',
-                  idx: this.props.fileInput.files.length > 0 ? this.props.fileInput.files.length - 1 : 0
-                })
-                if (!this.props.app.showFiles) {
-                  this.toggleShowFiles()
-                }
-                // }
-              }}
-              showingFiles={this.props.app.showFiles}
-            />
-            <FilesDialog
-              items={this.props.fileInput.files}
-              state={state}
-              dispatch={this.dispatch}
-              actions={defaultActions}
-              attending={this.props.party.attending}
-              notify={this.props.notify}
-              getComponentProps={this.getComponentProps}
-              showFiles={this.props.app.showFiles}
-              getTrackEvents={this.getTrackEvents}
-              visibleFiles={visibleFiles}
-            />
-          </div>
-        </DragDropContext>
-        <NoticeList
-          key='notice-list'
-          showing={this.props.notice.showing.length > 0}
-          notices={this.props.notice.showing}
-        />
         <style jsx global>{`
           ${resetStyles}
 
           ${baseStyles}
-
-          .emptyImage {
-            width: 100%;
-          }
-
-          .controls-buttons button svg {
-            width: 20px;
-          }
-
-          .App {
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
-          .App {
-            padding: 0;
-            position: relative;
-            background-color: ${colors.primaryBg};
-            transition-property: background-color;
-            transition-duration: ${durations.moment};
-            overflow: scroll;
-          }
-
-          .App.connected {
-            background-color: ${colors.primary};
-          }
-
-          .App.hosting  {
-            background-color: ${colors.hostingBg};
-          }
-
-          .App.disconnected {
-            background-color: ${colors.textBg};
-          }
 
           .App.dragging .cancelDropZone {
             opacity: 1;
@@ -1197,28 +931,6 @@ class App extends Component {
 
           .App.dragging .bar-list li.dragging {
             opacity: 1.01;
-          }
-
-          .bgImg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-          }
-
-          main {
-            position: relative;
-            width: 100%;
-            min-width: 250px;
-            overflow: scroll;
-          }
-
-          @media screen and (min-width: 640px) {
-            main {
-              max-width: 640px;
-              margin: auto auto;
-            }
           }
 
           .Artwork {
@@ -1374,6 +1086,318 @@ class App extends Component {
             opacity: 1;
           }
         `}</style>
+        <style jsx>{`
+          .App {
+            padding: 0;
+            position: relative;
+            background-color: ${colors.primaryBg};
+            transition-property: background-color;
+            transition-duration: ${durations.moment};
+            transition-timing-function: ${tfns.easeInOutQuad};
+            display: grid;
+            grid-template-columns: 100%;
+            grid-template-rows: ${lengths.rowHeight} 1fr 64px;
+            grid-template-areas:
+              "bar"
+              "main"
+              "controls";
+
+            &.connected {
+              background-color: ${colors.primary};
+            }
+            &.hosting  {
+              background-color: ${colors.hostingBg};
+            }
+            &.disconnected {
+              background-color: ${colors.textBg};
+            }
+          }
+
+          .bgImg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          }
+
+          .bar {
+            grid-area: bar;
+          }
+
+          main {
+            grid-area: main;
+            position: relative;
+            width: 100%;
+            min-width: 250px;
+            overflow: scroll;
+            padding-bottom: 100px;
+            .postQueue {
+              margin: ${lengths.rowHeight} 0;
+            }
+          }
+
+          .controls {
+            grid-area: controls;
+          }
+        `}</style>
+        <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
+          <Head title="Crowd's Play" />
+          <div className={appClasses.join(' ')}>
+            <img className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
+            <Bar
+              dispatch={this.dispatch}
+              placeholder={this.dict.get('bar.placeholder')}
+              query={this.props.bar.query}
+              items={this.props.bar.items}
+              hasMore={this.props.bar.hasMore}
+              loadMore={this.debouncedLoadMore}
+              areCommands={this.props.bar.areCommands}
+              go={(query) => {
+                return this.props.findMusic(query)
+                  .then((results) => {
+                    if (results.items.length > 0) {
+                      const newItems = results.items.map(this.decorateItem)
+                      results.items = newItems
+                    }
+                    return results
+                  })
+              }}
+              componentProps={{
+                ...this.getComponentProps(state),
+                actions: defaultActions
+              }}
+              ResultComponent={YouTube}
+              onResult={this.getTrackEvents()}
+              commands={{
+                clearHistory: this.clearHistory,
+                clearPlayingNow: this.clearPlayingNow,
+                clearUpNext: this.clearUpNext,
+                clearAll: this.clearAll,
+                toggleShowHistory: this.toggleShowHistory,
+                toggleShowUpNext: this.toggleShowUpNext,
+                inspectPartyServer: this.inspectPartyServer,
+                file: this.file
+              }}
+              filters={{
+                // TODO
+                // Component:
+                // history: this.props.queue.history,
+                // upNext: this.props.queue.upNext,
+                // artist: this.props.findArtist
+                // track: this.props.findTracks
+                // collection: this.props.collection
+                // playlist: this.props.collection.playlists
+                //
+              }}
+              onRef={(ref) => {
+                this.bar = ref
+              }}
+              decorateItem={this.decorateItem}
+              loadingTxt={this.dict.get('bar.loading')}
+              maxReachedTxt={this.dict.get('bar.maxReached')}
+            />
+            <CancelDropZone className='cancelDropZone' />
+            <Figure
+              socket={this.props.socket}
+              partyState={state}
+              dispatch={this.dispatch}
+            />
+            <main>
+              <Header
+                dict={this.dict}
+                notify={this.props.notify}
+              />
+              <Party
+                placeholder={this.dict.get('party.placeholder')}
+                dict={this.dict}
+                registerMiddleware={this.props.registerMiddleware}
+                unregisterMiddleware={this.props.unregisterMiddleware}
+                dispatch={this.dispatch}
+                player={this.props.player}
+                queue={this.props.queue}
+                socketKey={this.props.socketKey}
+                socket={this.props.socket}
+                {...this.props.party} // state
+                linkedPartyName={this.props.linkedPartyName}
+                gotState={this.gotState}
+                gotSlice={this.gotSlice}
+                gotDispatch={this.gotDispatch}
+                collapsed={this.props.app.partyCollapsed}
+                onFieldRef={(el) => {
+                  this.partyField = el
+                }}
+                pending={this.props.ack.pending}
+                notify={this.props.notify}
+                gotFileChunk={this.gotFileChunk}
+                autoFocus
+              />
+              <List
+                showLabel={`${this.dict.get('queue.history.show')} (${state.queue.history.length})`}
+                hideLabel={`${this.dict.get('queue.history.hide')} (${state.queue.history.length})`}
+                className={historyClasses.join(' ')}
+                items={state.queue.history}
+                componentProps={{
+                  ...this.getComponentProps(state),
+                  actions: {
+                    jumpTo: {
+                      targetIdx: 0,
+                      go: this.jumpBackTo,
+                      txt: this.dict.get('actions.jumpBackTo'),
+                      icon: jumpBackToIcon
+                    },
+                    remove: {
+                      targetIdx: null,
+                      go: this.dequeue,
+                      txt: this.dict.get('actions.remove'),
+                      icon: dequeueIcon
+                    }
+                  }
+                }}
+                defaultComponent={Smart}
+                onItem={{
+                  space: this.jumpBackTo
+                }}
+                startsCollapsed
+                collapsible
+                areDraggable
+                hidden={state.queue.history.length === 0}
+              />
+              <div className={playingNowClasses.join(' ')} key='playingNow'>
+                {playingNowZone}
+                {(state.queue.now.key && !this.props.party.attending)
+                  ? (
+                    <Player
+                      onRef={(playerEl) => {
+                        this.playerEl = playerEl
+                      }}
+                      playingNow={state.queue.now}
+                      playing={state.player.playing}
+                      dispatch={this.dispatch}
+                      onEnded={this.onTrackEnd}
+                      width={playerWidth}
+                      height={playerHeight}
+                      controls
+                    />
+                  ) : null}
+                {(state.queue.now.key && this.props.party.attending)
+                  ? (
+                    <Artwork
+                      playingNow={state.queue.now}
+                      isPlaying={state.player.playing}
+                      dispatch={this.dispatch}
+                      className='Artwork'
+                    />
+                  ) : null}
+              </div>
+              <List
+                className={upNextClasses.join(' ')}
+                items={state.queue.upNext}
+                componentProps={{
+                  ...this.getComponentProps(state),
+                  actions: {
+                    jumpTo: {
+                      targetIdx: 0,
+                      go: this.jumpTo,
+                      txt: this.dict.get('actions.jumpTo'),
+                      icon: jumpToIcon
+                    },
+                    remove: {
+                      targetIdx: null,
+                      go: this.dequeue,
+                      txt: this.dict.get('actions.remove'),
+                      icon: dequeueIcon
+                    }
+                  }
+                }}
+                defaultComponent={Smart}
+                areDraggable
+                emptyComponent={<li key='upNext-emptyDropZone'><p className='emptyDropZone'>{this.dict.get('queue.upNext.emptyZone')}</p></li>}
+              />
+              {/* <section className='postQueue'>
+                <TrackButton
+                  icon={PlayRandom}
+                  caption={(state.queue.now.key || state.queue.upNext.length > 0)
+                    ? 'Add random track'
+                    : 'Play random track'}
+                  onClick={() => {
+                    if (state.queue.now.key || state.queue.upNext.length > 0) {
+                      this.addRandom()
+                    } else {
+                      this.playRandom()
+                    }
+                  }}
+                />
+                <TrackButton
+                  icon={AddIcon}
+                  caption='Add a track from your device'
+                  onClick={() => {
+                    console.log('+track')
+                  }}
+                />
+              </section> */}
+              <Feedback
+                dispatch={this.dispatch}
+                notify={this.props.notify}
+                dict={this.dict}
+              />
+            </main>
+            <Controls
+              f={state.player.f}
+              t={state.player.t}
+              history={state.queue.history}
+              upNext={state.queue.upNext}
+              restartTrack={this.restartTrack}
+              playing={state.player.playing}
+              dispatch={this.dispatch}
+              collection={this.props.collection}
+              toggleShowHistory={this.toggleShowHistory}
+              toggleShowUpNext={this.toggleShowUpNext}
+              seekTo={this.seekTo}
+              setVolume={this.setVolume}
+              volume={this.props.party.attending ? this.props.party.state.player.v : this.props.player.v}
+              nbFiles={this.props.fileInput.files.length}
+              toggleShowFiles={() => {
+                this.toggleShowFiles()
+              }}
+              newFileInput={() => {
+                // if (this.props.party.attending) {
+                //   this.props.notify({
+                //     id: Math.random().toString().slice(2),
+                //     body: 'Still working on this feature, stay tuned!',
+                //     duration: 5000
+                //   })
+                // } else {
+                this.dispatch({
+                  type: 'FileInput:new',
+                  idx: this.props.fileInput.files.length > 0 ? this.props.fileInput.files.length - 1 : 0
+                })
+                if (!this.props.app.showFiles) {
+                  this.toggleShowFiles()
+                }
+                // }
+              }}
+              showingFiles={this.props.app.showFiles}
+            />
+            <FilesDialog
+              items={this.props.fileInput.files}
+              state={state}
+              dispatch={this.dispatch}
+              actions={defaultActions}
+              attending={this.props.party.attending}
+              notify={this.props.notify}
+              getComponentProps={this.getComponentProps}
+              showFiles={this.props.app.showFiles}
+              getTrackEvents={this.getTrackEvents}
+              visibleFiles={visibleFiles}
+            />
+          </div>
+        </DragDropContext>
+        <NoticeList
+          key='notice-list'
+          showing={this.props.notice.showing.length > 0}
+          notices={this.props.notice.showing}
+        />
       </React.Fragment>
     )
   }
