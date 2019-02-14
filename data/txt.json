@@ -1,4 +1,12 @@
 {
+  "app.nojs": {
+    "en": "Unfortunately, you need to enable JavaScript to use this app :(",
+    "fr": "Malheureusement, vous devez activer JavaScript pour utiliser cette application :("
+  },
+  "app.cancelDrop": {
+    "en": "Drop here to cancel",
+    "fr": "Poser ici pour annuler"
+  },
   "actions.enqueue": {
     "en": "play last",
     "fr": "ajouter"
@@ -72,11 +80,11 @@
     "fr": "..."
   },
   "party.attending": {
-    "en": "Guest",
+    "en": "Attending",
     "fr": "Invité"
   },
   "party.hosting": {
-    "en": "Host",
+    "en": "Hosting",
     "fr": "Hôte"
   },
   "party.copyLinkPrefix": {
@@ -90,6 +98,10 @@
   "party.linkCopied": {
     "en": "Copied to your clipboard",
     "fr": "Copié dans votre presse-papier"
+  },
+  "party.exists": {
+    "en": "Playlist already exists...",
+    "fr": "Cette playlist existe déjà"
   },
   "queue.name": {
     "en": "Playlist name",

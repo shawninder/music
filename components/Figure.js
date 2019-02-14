@@ -63,14 +63,14 @@ class Figure extends Component {
         tabIndex='0'
       >
         <span className='branding'>Crowd's Play</span>
-        <span className='status'>{this.props.socket.connected ? 'connected' : 'disconnected'}</span>
+        <span className='status'>beta</span>
         <Image className='face' />
         <style jsx>{`
           .figure {
             position: fixed;
             top: 0;
             right: 0;
-            width: ${lengths.menuWidth};
+            width: ${lengths.rowHeight};
             height: 53px;
             padding: 5px;
             border-radius: 0 0 0 3px;
@@ -89,6 +89,7 @@ class Figure extends Component {
               padding: 5px;
               top: 0;
               left: 0;
+              opacity: 0;
             }
             .status {
               position: absolute;
@@ -96,6 +97,8 @@ class Figure extends Component {
               left: 0;
               padding: 5px;
               font-size: small;
+              opacity: 0;
+              text-transform: uppercase;
             }
             .face {
               margin: 5px;
@@ -108,6 +111,14 @@ class Figure extends Component {
             }
             &.hosting {
               background-color: ${colors.hosting};
+            }
+          }
+          @media (min-width: ${lengths.mediaWidth}) {
+            .figure {
+              width: ${lengths.menuWidth};
+              .branding, .status {
+                opacity: 1;
+              }
             }
           }
         `}</style>

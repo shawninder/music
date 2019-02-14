@@ -36,9 +36,9 @@ import jumpBackToIcon from './icons/jumpBackTo'
 import enqueueIcon from './icons/enqueue'
 import nextIcon from './icons/next'
 import dequeueIcon from './icons/dequeue'
-import AddIcon from './icons/AddWink'
-import PlayRandom from './icons/PlayRandom'
-import TrackButton from './TrackButton'
+// import AddIcon from './icons/AddWink'
+// import PlayRandom from './icons/PlayRandom'
+// import TrackButton from './TrackButton'
 
 import colors from '../styles/colors'
 import alpha from '../helpers/alpha'
@@ -860,7 +860,7 @@ class App extends Component {
       jumpTo: {
         targetIdx: 0,
         go: this.jumpTo,
-        txt: 'jump to this track',
+        txt: this.dict.get('actions.jumpTo'),
         icon: jumpToIcon,
         cdn: cdnPos
       },
@@ -966,7 +966,7 @@ class App extends Component {
             }
             .overlay {
               width: 88px;
-              height: 60px;
+              height: 64px;
               position: absolute;
               top: 2px;
               left: 5px;
@@ -1091,16 +1091,10 @@ class App extends Component {
             padding: 0;
             position: relative;
             background-color: ${colors.primaryBg};
+            min-width: ${lengths.minWidth};
             transition-property: background-color;
             transition-duration: ${durations.moment};
             transition-timing-function: ${tfns.easeInOutQuad};
-            display: grid;
-            grid-template-columns: 100%;
-            grid-template-rows: ${lengths.rowHeight} 1fr 64px;
-            grid-template-areas:
-              "bar"
-              "main"
-              "controls";
 
             &.connected {
               background-color: ${colors.primary};
@@ -1121,24 +1115,16 @@ class App extends Component {
             height: 100%;
           }
 
-          .bar {
-            grid-area: bar;
-          }
-
           main {
-            grid-area: main;
+            margin-top: ${lengths.rowHeight};
             position: relative;
             width: 100%;
-            min-width: 250px;
+            height: 100%;
             overflow: scroll;
             padding-bottom: 100px;
             .postQueue {
               margin: ${lengths.rowHeight} 0;
             }
-          }
-
-          .controls {
-            grid-area: controls;
           }
         `}</style>
         <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
@@ -1197,7 +1183,9 @@ class App extends Component {
               loadingTxt={this.dict.get('bar.loading')}
               maxReachedTxt={this.dict.get('bar.maxReached')}
             />
-            <CancelDropZone className='cancelDropZone' />
+            <CancelDropZone className='cancelDropZone'>
+              {this.dict.get('app.cancelDrop')}
+            </CancelDropZone>
             <Figure
               socket={this.props.socket}
               partyState={state}

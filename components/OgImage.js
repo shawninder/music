@@ -13,9 +13,13 @@ import lengths from '../styles/lengths'
 
 import alpha from '../helpers/alpha'
 
+import Dict from '../data/Dict'
+import txt from '../data/txt.json'
+
 const items = [
   {
     type: 'YouTube',
+    key: 'CTdg3uFZOsk',
     id: {
       videoId: 'CTdg3uFZOsk'
     },
@@ -33,6 +37,7 @@ const items = [
   },
   {
     type: 'YouTube',
+    key: 'velourTintinmp3',
     id: {
       videoId: 'velourTintinmp3'
     },
@@ -50,6 +55,7 @@ const items = [
   },
   {
     type: 'YouTube',
+    key: '3CKbrkT3CnE',
     id: {
       videoId: '3CKbrkT3CnE'
     },
@@ -67,6 +73,7 @@ const items = [
   },
   {
     type: 'YouTube',
+    key: '_jSyjWsMqFM',
     id: {
       videoId: '_jSyjWsMqFM'
     },
@@ -85,6 +92,16 @@ const items = [
 ]
 
 class OgImage extends Component {
+  static getInitialProps ({ renderPage, req }) {
+    // TODO remove everything except the headers and query string stuff, which are the only non-default things I'm trying to do
+    const headers = req ? req.headers : undefined
+    const acceptLanguage = headers ? headers['accept-language'] : ''
+    return { headers, acceptLanguage }
+  }
+  constructor (props) {
+    super(props)
+    this.dict = new Dict(txt, ['en', 'fr'], props.acceptLanguage, global.navigator)
+  }
   render () {
     const classes = this.props.className ? this.props.className.split(' ') : []
     classes.push('box')
@@ -101,7 +118,7 @@ class OgImage extends Component {
           className='tagline'
           notices={[{
             id: 'tagline',
-            body: 'Invite the crowd into your playlist!'
+            body: this.dict.get('header.tagline')
           }]}
           showing
         />

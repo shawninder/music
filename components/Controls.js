@@ -4,7 +4,7 @@ import Range from './Range'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
-import AddIcon from './icons/AddWink'
+// import AddIcon from './icons/AddWink'
 import prevIcon from './icons/prev'
 import playIcon from './icons/play'
 import pauseIcon from './icons/pause'
@@ -44,7 +44,9 @@ class Controls extends Component {
         />
 
         <div key='controls-buttons' className='controls-buttons'>
-          <button className='controls-newFile' onClick={this.props.newFileInput}>
+          <p className='controls-newFile'>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+          <p className='controls-toggleFiles'>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+          {/* <button className='controls-newFile' onClick={this.props.newFileInput}>
             <AddIcon />
           </button>
           <button
@@ -53,7 +55,7 @@ class Controls extends Component {
             onClick={this.props.toggleShowFiles}
           >
             ({this.props.nbFiles})
-          </button>
+          </button> */}
           <button
             key='controls-prev'
             className='controls-prev'

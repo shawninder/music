@@ -14,7 +14,7 @@ class CancelDropZone extends Component {
       : []
     return (
       <div className={classes.join(' ')}>
-        Drop here to cancel
+        {this.props.children}
         <style jsx>{`
           .cancelDropZone {
             position: fixed;

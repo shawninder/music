@@ -205,7 +205,7 @@ class Party extends Component {
       if (this.props.hosting) {
         this.stop(event)
       } else if (this.props.exists) {
-        this.props.notify({ id: Math.random().toString(), body: 'Party already exists...', duration: 5000 })
+        this.props.notify({ id: Math.random().toString(), body: this.props.dict.get('party.exists'), duration: 5000 })
       } else {
         this.start(event)
       }
@@ -552,7 +552,7 @@ class Party extends Component {
               {
                 this.props.attending
                   ? this.props.dict.get('party.leave')
-                  : (this.props.hosting ? 'Hosting' : this.props.dict.get('party.join'))
+                  : (this.props.hosting ? this.props.dict.get('party.hosting') : this.props.dict.get('party.join'))
               }
               {this.props.attending
                 ? (
@@ -572,7 +572,7 @@ class Party extends Component {
               {
                 this.props.hosting
                   ? this.props.dict.get('party.stop')
-                  : (this.props.attending ? 'Attending' : this.props.dict.get('party.start'))
+                  : (this.props.attending ? this.props.dict.get('party.attending') : this.props.dict.get('party.start'))
               }
               {this.props.hosting
                 ? (

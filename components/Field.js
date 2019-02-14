@@ -45,7 +45,7 @@ class Field extends Component {
             width: 100%;
             font-size: large;
             font-weight: bold;
-            padding: 5px 165px 5px 60px;
+            padding: 5px 100px 5px 60px;
             z-index: 4;
             border: 0;
             color: ${colors.textBg};
@@ -57,6 +57,9 @@ class Field extends Component {
             &::placeholder {
               color: ${colors.placeholder};
             }
+          }
+          @media (min-width: ${lengths.mediaWidth}) {
+            padding: 5px 215px 5px 60px;
           }
         `}</style>
       </React.Fragment>

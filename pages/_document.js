@@ -6,7 +6,8 @@ import '@babel/polyfill'
 import React from 'react'
 import Document, { Head, Main, NextScript } from 'next/document'
 import flush from 'styled-jsx/server'
-import { guessLang } from '../data/Dict'
+import Dict, { guessLang } from '../data/Dict'
+import txt from '../data/txt.json'
 
 export default class MyDocument extends Document {
   static getInitialProps ({ renderPage, req }) {
@@ -16,6 +17,10 @@ export default class MyDocument extends Document {
     const acceptLanguage = headers ? headers['accept-language'] : ''
     const styles = flush()
     return { html, head, errorHtml, chunks, headers, acceptLanguage, styles }
+  }
+  constructor (props) {
+    super(props)
+    this.dict = new Dict(txt, ['en', 'fr'], props.acceptLanguage, global.navigator)
   }
   render () {
     const lang = guessLang(['en', 'fr'], this.props.acceptLanguage, global.navigator)
@@ -30,12 +35,12 @@ export default class MyDocument extends Document {
           <meta property='og:url' content='https://crowds-play.com' />
           <meta property='og:type' content='website' />
           <meta property='og:title' content="Crowd's Play" />
-          <meta property='og:image' content='https://crowds-play.com/static/ogImage.png' />
-          <meta property='og:description' content='Invite the crowd into your playlist!' />
+          <meta property='og:image' content={`https://crowds-play.com/static/ogImage_${lang}.png`} />
+          <meta property='og:description' content={this.dict.get('header.tagline')} />
         </Head>
         <body tabIndex='-1'>
           <noscript>
-            <p>Unfortunately, you need to enable JavaScript to use this app :(</p>
+            <p>{this.dict.get('app.nojs')}</p>
           </noscript>
           <Main />
           <NextScript />

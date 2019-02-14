@@ -271,12 +271,14 @@ class Bar extends Component {
             background: transparent;
           }
           .bar {
-            position: relative;
+            position: fixed;
+            top: 0;
+            left: 0;
             z-index: 3;
-            height: 100%;
+            height: ${lengths.rowHeight};
             width: 100%;
             display: grid;
-            grid-template-columns: ${lengths.rowHeight} 1fr ${lengths.rowHeight} ${lengths.menuWidth};
+            grid-template-columns: ${lengths.rowHeight} 1fr ${lengths.rowHeight} ${lengths.rowHeight};
             grid-template-rows: ${lengths.rowHeight};
             grid-template-areas:
               "bar-menu bar-field bar-dismiss menu";
@@ -317,6 +319,11 @@ class Bar extends Component {
                 max-height: 100vh;
                 overflow: auto;
               }
+            }
+          }
+          @media (min-width: ${lengths.mediaWidth}) {
+            .bar {
+              grid-template-columns: ${lengths.rowHeight} 1fr ${lengths.rowHeight} ${lengths.menuWidth};
             }
           }
         `}</style>
