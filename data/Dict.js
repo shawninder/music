@@ -32,6 +32,9 @@ export function guessLang (avail, acceptLanguage, navigator) {
       }
     }
   }
+  if (!guess) {
+    guess = avail[0]
+  }
   // guess = 'fr'
   return guess
 }
