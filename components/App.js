@@ -1060,6 +1060,9 @@ class App extends Component {
             &.hosting  {
               background-color: ${colors.hostingBg};
             }
+            &.attending {
+              background-color: ${colors.attendingBg};
+            }
             &.disconnected {
               background-color: ${colors.textBg};
             }
