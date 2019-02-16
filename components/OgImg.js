@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
-import MrJingles from './icons/Happy'
+import Spotlight from './icons/Spotlight'
 import colors from '../styles/colors'
-import alpha from '../helpers/alpha'
 
 import Dict from '../data/Dict'
 import txt from '../data/txt.json'
@@ -33,10 +32,7 @@ class OgImg extends Component {
           <p className='name-two'>Play</p>
         </div>
         <div className='face'>
-          <div>
-            <MrJingles className='jingles' />
-            <MrJingles className='jingles-shadow' />
-          </div>
+          <Spotlight />
         </div>
         <style jsx>{`
           .box {
@@ -84,35 +80,7 @@ class OgImg extends Component {
               background: ${colors.text} url("/static/bg.svg") no-repeat top left;
               background-size: 100% 100%;
               z-index: 1;
-              div {
-                grid-area: face;
-                position: relative;
-                background: ${alpha(colors.textBg, colors.opacity)};
-                border-radius: 205px;
-                width: 205px;
-                height: 205px;
-                padding: ${2 * pad}px;
-                margin: ${2 * pad}px auto;
-              }
             }
-          }
-        `}</style>
-        <style jsx global>{`
-          .jingles {
-            max-height: 150px;
-            z-index: 2;
-            transform: translate(-20px, 10px);
-            color: ${colors.text};
-          }
-          .jingles-shadow {
-            color: #333333;
-            max-height: 140px;
-            position: absolute;
-            left: 35px;
-            top: 35px;
-            transform: skew(-10deg, 10deg) translate(-20px, 10px);
-            filter: blur(5px);
-            z-index: 2;
           }
         `}</style>
       </div>

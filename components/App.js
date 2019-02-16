@@ -26,6 +26,7 @@ import Artwork from './Artwork'
 import Figure from './Figure'
 import FilesDialog from './FilesDialog'
 import CancelDropZone from './CancelDropZone'
+import Spotlight from './icons/Spotlight'
 
 import Dict from '../data/Dict.js'
 import getDragAndDropActions from '../features/dragAndDrop/getActions'
@@ -802,6 +803,7 @@ class App extends Component {
             return (
               <ol ref={droppableProvided.innerRef} key='playingNow-droppable'>
                 <li className='emptyDropZone' key='playingNow-emptyDropZone'>
+                  <Spotlight />
                   {/* <img
                     src='/static/ogImage.png'
                     alt={this.dict.get('header.tagline')}
@@ -917,20 +919,17 @@ class App extends Component {
             opacity: 1.01;
           }
 
-          .Artwork {
-            max-width: ${lengths.mediaWidth};
-            max-height: ${lengths.mediaHeight};
-            width: 100%;
-            position: relative;
-            z-index: 0;
-          }
-
           .playingNow {
             position: relative;
             margin-bottom: 360px;
             .Artwork {
               top: 0;
               left: 0;
+              max-width: ${lengths.mediaWidth};
+              max-height: ${lengths.mediaHeight};
+              width: 100%;
+              position: relative;
+              z-index: 0;
             }
           }
 
