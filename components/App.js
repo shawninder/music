@@ -804,11 +804,6 @@ class App extends Component {
               <ol ref={droppableProvided.innerRef} key='playingNow-droppable'>
                 <li className='emptyDropZone' key='playingNow-emptyDropZone'>
                   <Spotlight />
-                  {/* <img
-                    src='/static/ogImage.png'
-                    alt={this.dict.get('header.tagline')}
-                    title={this.dict.get('queue.playingNow.emptyZone')}
-                  /> */}
                 </li>
                 {droppableProvided.placeholder}
               </ol>
@@ -1007,6 +1002,9 @@ class App extends Component {
                 height: 60px;
                 border-radius: 0;
               }
+            }
+            .emptyDropZone {
+              padding: 20px;
             }
           }
 

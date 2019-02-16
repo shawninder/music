@@ -80,6 +80,7 @@ class OgImg extends Component {
               background: ${colors.text} url("/static/bg.svg") no-repeat top left;
               background-size: 100% 100%;
               z-index: 1;
+              padding: 15px;
             }
           }
         `}</style>

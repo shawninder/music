@@ -23,6 +23,8 @@ export const dangerousText = 'darkred'
 
 export const warnBg = '#ffffcc'
 
+export const spotlight = '#ffe089'
+
 // Order considered "important" because it's used in /branding for showcasing color palette
 export default {
   opacity,
@@ -42,5 +44,6 @@ export default {
   attendingBg,
   dangerousBg,
   dangerousText,
-  warnBg
+  warnBg,
+  spotlight
 }

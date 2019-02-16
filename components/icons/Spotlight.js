@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 
 import MrJingles from './Happy'
 
-import alpha from '../../helpers/alpha'
 import colors from '../../styles/colors'
 
 class Spotlight extends Component {
@@ -13,7 +12,7 @@ class Spotlight extends Component {
           .jingles {
             max-height: 150px;
             z-index: 2;
-            transform: translate(-20px, 10px);
+            transform: translate(-35px, 10px);
             color: ${colors.text};
           }
           .jingles-shadow {
@@ -22,7 +21,7 @@ class Spotlight extends Component {
             position: absolute;
             left: 35px;
             top: 35px;
-            transform: skew(-10deg, 10deg) translate(-20px, 10px);
+            transform: skew(-10deg, 10deg) translate(-35px, 10px);
             filter: blur(5px);
             z-index: 2;
           }
@@ -31,7 +30,7 @@ class Spotlight extends Component {
           .spotlight {
             grid-area: face;
             position: relative;
-            background: ${alpha(colors.textBg, colors.opacity)};
+            background: ${colors.spotlight};
             border-radius: 205px;
             width: 205px;
             height: 205px;
