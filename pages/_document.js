@@ -37,6 +37,7 @@ export default class MyDocument extends Document {
           <meta property='og:title' content="Crowd's Play" />
           <meta property='og:image' content={`https://crowds-play.com/static/ogImage.png`} />
           <meta property='og:description' content={this.dict.get('header.tagline')} />
+          <meta property='fb:app_id' content='802539780107102' />
         </Head>
         <body tabIndex='-1'>
           <noscript>
