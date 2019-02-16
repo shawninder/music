@@ -35,7 +35,7 @@ export default class MyDocument extends Document {
           <meta property='og:url' content='https://crowds-play.com' />
           <meta property='og:type' content='website' />
           <meta property='og:title' content="Crowd's Play" />
-          <meta property='og:image' content={`https://crowds-play.com/static/ogImage_${lang}.png`} />
+          <meta property='og:image' content={`https://crowds-play.com/static/ogImage.png`} />
           <meta property='og:description' content={this.dict.get('header.tagline')} />
         </Head>
         <body tabIndex='-1'>

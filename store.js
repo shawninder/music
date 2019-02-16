@@ -36,8 +36,7 @@ const exampleInitialState = {
     showFiles: false,
     partyCollapsed: true,
     dragging: false,
-    pending: {},
-    playerMode: 'mini'
+    pending: {}
   },
   auth: {
     username: '',

@@ -780,27 +780,20 @@ class App extends Component {
     let playingNowZone
     if (state.queue.now.key) {
       playingNowZone = (
-        <React.Fragment>
-          <Smart
-            key='Playing-Now'
-            data={{
-              ...state.queue.now,
-              inQueue: true,
-              queueIndex: 0
-            }}
-            onClick={this.togglePlaying}
-            pending={this.props.ack.pending}
-            playingNow={state.queue.now.key}
-            isPlaying={state.player.playing}
-            idx={0}
-            queueIndex={0}
-          />
-          <div className='overlay' onClick={(event) => {
-            this.dispatch({
-              type: 'App:cyclePlayerMode'
-            })
-          }} />
-        </React.Fragment>
+        <Smart
+          key='Playing-Now'
+          data={{
+            ...state.queue.now,
+            inQueue: true,
+            queueIndex: 0
+          }}
+          onClick={this.togglePlaying}
+          pending={this.props.ack.pending}
+          playingNow={state.queue.now.key}
+          isPlaying={state.player.playing}
+          idx={0}
+          queueIndex={0}
+        />
       )
     } else {
       playingNowZone = (
@@ -873,15 +866,6 @@ class App extends Component {
       }
     }
 
-    let playerWidth
-    let playerHeight
-    if (this.props.app.playerMode === 'mini') {
-      playerWidth = '88px'
-      playerHeight = '60px'
-    } else if (this.props.app.playerMode === 'medium') {
-      playerWidth = '640px'
-      playerHeight = '360px'
-    }
     return (
       <React.Fragment>
         <style jsx global>{`
@@ -934,44 +918,18 @@ class App extends Component {
           }
 
           .Artwork {
-            width: ${playerWidth};
-            height: ${playerHeight};
+            width: ${lengths.mediaWidth};
+            height: ${lengths.mediaHeight};
             position: relative;
             z-index: 0;
           }
 
           .playingNow {
             position: relative;
-            &.mini {
-              margin-bottom: 0;
-              .Player {
-                top: 0;
-                left: 5px;
-              }
-              .Artwork {
-                top: -62px;
-                left: 5px;
-              }
-            }
-            &.medium {
-              margin-bottom: 360px;
-              .Player {
-                top: 64px;
-                left: 0;
-              }
-              .Artwork {
-                top: 0;
-                left: 0;
-              }
-            }
-            .overlay {
-              width: 88px;
-              height: 64px;
-              position: absolute;
-              top: 2px;
-              left: 5px;
-              cursor: pointer;
-              z-index: 1;
+            margin-bottom: 360px;
+            .Artwork {
+              top: 0;
+              left: 0;
             }
           }
 
@@ -1130,7 +1088,7 @@ class App extends Component {
         <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
           <Head title="Crowd's Play" />
           <div className={appClasses.join(' ')}>
-            <img className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
+            <img key='bgImg' className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
             <Bar
               dispatch={this.dispatch}
               placeholder={this.dict.get('bar.placeholder')}
@@ -1263,8 +1221,6 @@ class App extends Component {
                       playing={state.player.playing}
                       dispatch={this.dispatch}
                       onEnded={this.onTrackEnd}
-                      width={playerWidth}
-                      height={playerHeight}
                       controls
                     />
                   ) : null}

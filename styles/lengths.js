@@ -6,6 +6,7 @@ export const toggleWidth = '88px'
 export const toggleHeight = '60px'
 export const minWidth = '300px'
 export const mediaWidth = '640px'
+export const mediaHeight = '360px'
 
 export default {
   rowHeight,

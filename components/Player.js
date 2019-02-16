@@ -9,6 +9,8 @@ import toUrl from '../helpers/toUrl'
 import { IndexedDBPlayer } from './IndexedDBPlayer'
 import getFileArt from '../helpers/getFileArt'
 
+import lengths from '../styles/lengths'
+
 ReactPlayer.addCustomPlayer(IndexedDBPlayer)
 
 class Player extends Component {
@@ -19,8 +21,6 @@ class Player extends Component {
       <div className={classes.join(' ')}>
         <ReactPlayer
           ref={this.props.onRef}
-          width={this.props.width}
-          height={this.props.height}
           url={this.props.playingNow && this.props.playingNow.key && toUrl(this.props.playingNow)}
           playing={this.props.playing}
           controls={this.props.controls}
@@ -69,10 +69,10 @@ class Player extends Component {
         />
         <style jsx>{`
           .Player {
-            width: ${this.props.width};
-            height: ${this.props.height};
-            position: absolute;
             z-index: 0;
+            width: ${lengths.mediaWidth};
+            height: ${lengths.mediaHeight};
+            max-width: 100%;
           }
         `}</style>
       </div>
@@ -87,8 +87,6 @@ const props = [
   { name: 'dispatch', type: PropTypes.func.isRequired },
   { name: 'onEnded', type: PropTypes.func.isRequired },
   { name: 'className', type: PropTypes.string, val: '' },
-  { name: 'width', type: PropTypes.string, val: '640px' },
-  { name: 'height', type: PropTypes.string, val: '360px' },
   { name: 'controls', type: PropTypes.bool, val: false }
 ]
 

@@ -18,6 +18,7 @@ import volumeHighIcon from '../components/icons/volumeHigh'
 import AddIcon from '../components/icons/AddWink'
 import engine from '../components/icons/engine'
 import OgImage from '../components/OgImage'
+import OgImg from '../components/OgImg'
 
 import baseStyles from '../styles/base'
 import resetStyles from '../styles/reset'
@@ -53,10 +54,11 @@ class Branding extends Component {
           <li><button className='dangerous'>dangerous</button></li>
         </ul>
         <h2>OG images</h2>
-        <ul>
+        <ol>
           <li><img src='/static/mrJingles.png' /><span className='label'>Mr. Jingles</span></li>
           <li><div className='ogImageContainer'><OgImage className='ogImage' /></div><span className='label'>og:image</span></li>
-        </ul>
+          <li><OgImg class='ogImg' /></li>
+        </ol>
         <h2>Iconography</h2>
         <ul className='iconList'>
           <li>{searchIcon}<span className='label'>search</span></li>
@@ -164,7 +166,7 @@ class Branding extends Component {
             background-size: 100% 100% !important;
           }
 
-          svg {
+          .iconList svg {
             color: ${colors.textBg};
             width: 48px;
             height: 48px;

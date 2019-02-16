@@ -33,12 +33,6 @@ export default function appReducer (state = {}, action) {
     case 'App:dragging':
       newState.dragging = action.value
       break
-    case 'App:cyclePlayerMode':
-      if (newState.playerMode === 'mini') {
-        newState.playerMode = 'medium'
-      } else {
-        newState.playerMode = 'mini'
-      }
   }
   return newState
 }
