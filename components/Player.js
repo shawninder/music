@@ -66,12 +66,13 @@ class Player extends Component {
               }
             }
           }}
+          width='100%'
         />
         <style jsx>{`
           .Player {
             z-index: 0;
-            width: ${lengths.mediaWidth};
-            height: ${lengths.mediaHeight};
+            max-width: ${lengths.mediaWidth};
+            max-height: ${lengths.mediaHeight};
             max-width: 100%;
           }
         `}</style>

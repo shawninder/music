@@ -918,8 +918,9 @@ class App extends Component {
           }
 
           .Artwork {
-            width: ${lengths.mediaWidth};
-            height: ${lengths.mediaHeight};
+            max-width: ${lengths.mediaWidth};
+            max-height: ${lengths.mediaHeight};
+            width: 100%;
             position: relative;
             z-index: 0;
           }
