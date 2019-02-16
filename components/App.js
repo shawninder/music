@@ -883,6 +883,7 @@ class App extends Component {
             max-width: 640px;
             max-height: 100vh;
             overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
             position: fixed;
             top: ${lengths.rowHeight};
             left: 0;
@@ -1079,7 +1080,8 @@ class App extends Component {
             position: relative;
             width: 100%;
             height: 100%;
-            overflow: scroll;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
             padding-bottom: 100px;
             .postQueue {
               margin: ${lengths.rowHeight} 0;
