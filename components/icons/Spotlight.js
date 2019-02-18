@@ -6,14 +6,13 @@ import colors from '../../styles/colors'
 
 class Spotlight extends Component {
   render () {
-    const spotlightWidth = 410
+    const spotlightWidth = 205
     const spotlightHeight = spotlightWidth
     const mrJinglesWidth = Math.round(0.73 * spotlightWidth)
     const mrJinglesHeight = mrJinglesWidth
 
     const pad = Math.round(0.1 * spotlightWidth)
     const blur = Math.round(0.02 * spotlightWidth)
-    console.log('pad', pad)
 
     const tx = -Math.round(0.10 * spotlightWidth)
     const txs = -Math.round(0.05 * spotlightWidth)
