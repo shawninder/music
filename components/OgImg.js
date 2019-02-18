@@ -23,7 +23,9 @@ class OgImg extends Component {
   render () {
     const classes = this.props.className ? this.props.className.split(' ') : []
     classes.push('box')
-    const barHeight = 80
+    const totalWidth = 1200
+    const totalHeight = 630
+    const barHeight = 160
     const pad = 10
     return (
       <div className={classes.join(' ')}>
@@ -37,13 +39,13 @@ class OgImg extends Component {
         <style jsx>{`
           .box {
             position: relative;
-            width: 600px;
-            height: 315px;
+            width: ${totalWidth}px;
+            height: ${totalHeight}px;
             overflow: hidden;
             font-family: palatino;
             display: grid;
             grid-template-columns: 1fr;
-            grid-template-rows: ${barHeight}px ${315 - barHeight}px;
+            grid-template-rows: ${barHeight}px ${totalHeight - barHeight}px;
             grid-template-areas:
               "bar"
               "face";
@@ -51,7 +53,7 @@ class OgImg extends Component {
             .name {
               grid-area: bar;
               display: grid;
-              grid-template-columns: 360px 240px;
+              grid-template-columns: 60% 40%;
               grid-template-rows: ${barHeight}px;
               grid-template-areas: "name-one name-two";
               z-index: 2;
@@ -80,7 +82,7 @@ class OgImg extends Component {
               background: ${colors.text} url("/static/bg.svg") no-repeat top left;
               background-size: 100% 100%;
               z-index: 1;
-              padding: 15px;
+              padding: ${0.05 * totalHeight}px;
             }
           }
         `}</style>
