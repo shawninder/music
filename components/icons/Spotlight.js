@@ -9,9 +9,13 @@ class Spotlight extends Component {
     return (
       <div className='spotlight' key='spotlight'>
         <style jsx global>{`
+          .jingles, .jingles-shadow {
+            width: 150px;
+            height: 150px;
+          }
           .jingles {
             max-height: 150px;
-            z-index: 2;
+            z-index: 3;
             transform: translate(-35px, 10px);
             color: ${colors.text};
           }
@@ -21,7 +25,7 @@ class Spotlight extends Component {
             position: absolute;
             left: 35px;
             top: 35px;
-            transform: skew(-10deg, 10deg) translate(-35px, 10px);
+            transform: skew(-10deg, 10deg) translate(-15px, 10px);
             filter: blur(5px);
             z-index: 2;
           }
