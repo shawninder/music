@@ -38,7 +38,7 @@ class NoticeList extends Component {
         {notices.length > 0 ? notices : null}
         <style jsx>{`
           .notice-list {
-            position: absolute;
+            position: fixed;
             top: 45px;
             right: 45px;
             max-width: 450px;
