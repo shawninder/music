@@ -1,9 +1,9 @@
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import Events from '../data/Events'
 import Logs from '../views/Logs.js'
 
-const events = new Events()
+import findLogs from '../actionCreators/findLogs'
+import dispatch from '../actionCreators/dispatch'
 
 function mapStateToProps (state) {
   const { auth, bar } = state
@@ -11,21 +11,11 @@ function mapStateToProps (state) {
 }
 
 // TODO clean up nested `_dispatch`s
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (_dispatch) => {
   return bindActionCreators({
-    dispatch: (action) => {
-      return (_dispatch) => {
-        _dispatch(action)
-      }
-    },
-    findLogs: (query, nextPageToken) => {
-      return (_dispatch, getState) => {
-        const state = getState()
-        console.log(`events.search('${query}')`)
-        return events.search(query, nextPageToken, state.auth.username, state.auth.password)
-      }
-    }
-  }, dispatch)
+    dispatch,
+    findLogs
+  }, _dispatch)
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Logs)

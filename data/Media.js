@@ -10,7 +10,7 @@ class Media {
     return item && item.id && !!item.id.videoId
   }
 
-  search (query, nextPageToken) {
+  search ({ query }, nextPageToken) {
     // Look in memory
     // Look in local and session storage
     // Look in network

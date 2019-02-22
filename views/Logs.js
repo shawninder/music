@@ -10,7 +10,6 @@ import Log from '../components/Log'
 import AuthForm from '../components/AuthForm'
 
 import lengths from '../styles/lengths'
-import colors from '../styles/colors'
 
 import resetStyles from '../styles/reset'
 import baseStyles from '../styles/base'
@@ -24,7 +23,7 @@ class Logs extends Component {
     this.debouncedLoadMore = debounce(this.loadMore, 500, { maxWait: 750 }).bind(this) // TODO remove this debounce (possible when "loading" is implemented wherein a subsequent call would cancel, but only if calling with a different query or pageToken)
   }
   loadMore () {
-    this.props.findLogs(this.props.bar.query, this.props.bar.nextPageToken).then(({ items, hasMore, prevPageToken, nextPageToken }) => {
+    this.props.findLogs({ query: this.props.bar.query }, this.props.bar.nextPageToken).then(({ items, hasMore, prevPageToken, nextPageToken }) => {
       if (items.length > 0) {
         const newItems = items.map((item) => {
           const id = item._id
@@ -106,6 +105,12 @@ class Logs extends Component {
             left: 0;
             width: 100%;
             height: 100%;
+            z-index: 1;
+          }
+          .page {
+            position: relative;
+            border: 0;
+            z-index: 2;
           }
           .header {
             margin: 15px;
@@ -114,27 +119,29 @@ class Logs extends Component {
           }
         `}</style>
         <img key='bgImg' className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
-        <AuthForm dispatch={this.props.dispatch} className='authForm' />
-        <h2 className='header'>Logs</h2>
-        <div className='logsContainer'>
-          <Bar
-            className='logsBar'
-            dispatch={this.props.dispatch}
-            query={this.props.bar.query}
-            items={this.props.bar.items}
-            hasMore={this.props.bar.hasMore}
-            loadMore={this.debouncedLoadMore}
-            go={(query) => {
-              return this.props.findLogs(query)
-            }}
-            ResultComponent={Log}
-            onRef={(ref) => {
-              this.bar = ref
-            }}
-            autoFocus
-            loadingTxt={'Loading...'}
-            maxReachedTxt={'Max reached'}
-          />
+        <div className='page'>
+          <AuthForm dispatch={this.props.dispatch} className='authForm' />
+          <h2 className='header'>Logs</h2>
+          <div className='logsContainer'>
+            <Bar
+              className='logsBar'
+              dispatch={this.props.dispatch}
+              query={this.props.bar.query}
+              items={this.props.bar.items}
+              hasMore={this.props.bar.hasMore}
+              loadMore={this.debouncedLoadMore}
+              go={(query) => {
+                return this.props.findLogs({ query })
+              }}
+              ResultComponent={Log}
+              onRef={(ref) => {
+                this.bar = ref
+              }}
+              autoFocus
+              loadingTxt={'Loading...'}
+              maxReachedTxt={'Max reached'}
+            />
+          </div>
         </div>
       </div>
     )

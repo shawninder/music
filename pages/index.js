@@ -47,7 +47,7 @@ const mapDispatchToProps = (dispatch) => {
     findMusic: (query, nextPageToken) => {
       return (_dispatch, getState) => {
         console.log(`media.search('${query}')`)
-        return media.search(query, nextPageToken)
+        return media.search({ query }, nextPageToken)
       }
     },
     notify,
