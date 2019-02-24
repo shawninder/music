@@ -917,20 +917,6 @@ class App extends Component {
               opacity: 1.01;
             }
 
-            .playingNow {
-              position: relative;
-              margin-bottom: 360px;
-              .Artwork {
-                top: 0;
-                left: 0;
-                max-width: ${lengths.mediaWidth};
-                max-height: ${lengths.mediaHeight};
-                width: 100%;
-                position: relative;
-                z-index: 0;
-              }
-            }
-
             .hidden {
               opacity: 0;
             }
@@ -958,21 +944,6 @@ class App extends Component {
 
             li:nth-child(even) .actions {
               background-color: ${colors.textBgEven};
-            }
-
-            .history>h3 {
-              cursor: pointer;
-              font-size: medium;
-              padding: 10px;
-              transition-property: opacity, height;
-              transition-duration: ${durations.moment};
-              opacity: 1;
-            }
-
-            .history {
-              opacity: 1;
-              transition-property: opacity;
-              transition-duration: ${durations.moment};
             }
 
             .App.dragging .history>h3, .App.dragging .playingNow>h3, .App.dragging .upNext>h3 {
@@ -1068,9 +1039,6 @@ class App extends Component {
               overflow-y: scroll;
               -webkit-overflow-scrolling: touch;
               padding-bottom: 100px;
-              .postQueue {
-                margin: ${lengths.rowHeight} 0;
-              }
               :global(.spotlight) {
                 width: 205px;
                 height: 205px;
@@ -1085,21 +1053,47 @@ class App extends Component {
                   filter: blur(5px);
                 }
               }
-            }
-
-            .playingNow {
-              background: ${alpha(colors.text, 1 - colors.opacity)};
-              color: ${colors.textBg};
-              :global(.art .idx) {
-                width: 0;
+              .history {
+                opacity: 1;
+                transition-property: opacity;
+                transition-duration: ${durations.moment};
+                :global(&>h3) {
+                  cursor: pointer;
+                  font-size: medium;
+                  padding: 10px;
+                  transition-property: opacity, height;
+                  transition-duration: ${durations.moment};
+                  opacity: 1;
+                }
               }
-              :global(.art .art-img) {
-                width: 88px;
-                height: 60px;
-                border-radius: 0;
+              .playingNow {
+                background: ${alpha(colors.text, 1 - colors.opacity)};
+                color: ${colors.textBg};
+                position: relative;
+                margin-bottom: 360px;
+                :global(.Artwork) {
+                  top: 0;
+                  left: 0;
+                  max-width: ${lengths.mediaWidth};
+                  max-height: ${lengths.mediaHeight};
+                  width: 100%;
+                  position: relative;
+                  z-index: 0;
+                }
+                :global(.art .idx) {
+                  width: 0;
+                }
+                :global(.art .art-img) {
+                  width: 88px;
+                  height: 60px;
+                  border-radius: 0;
+                }
+                :global(.emptyDropZone) {
+                  padding: 20px;
+                }
               }
-              :global(.emptyDropZone) {
-                padding: 20px;
+              .postQueue {
+                margin: ${lengths.rowHeight} 0;
               }
             }
           `}</style>

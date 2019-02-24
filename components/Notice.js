@@ -32,16 +32,16 @@ class Notice extends Component {
         <p className={classes.join(' ')}>{this.props.body}</p>
         {progress}
         {btns}
-        <style global jsx>{`
+        <style jsx>{`
           .file-progress {
             background: ${colors.textBgEven};
             border: 1px solid #333333;
             height: 10px;
             width: 100px;
-          }
-          .file-progress--current {
-            height: 10px;
-            background-color: #333333;
+            :global(.current) {
+              height: 10px;
+              background-color: #333333;
+            }
           }
           button {
             margin: 15px 5px 0 0;

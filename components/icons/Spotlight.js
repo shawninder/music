@@ -17,7 +17,7 @@ class Spotlight extends Component {
             :global(.jingles) {
               position: relative;
               color: ${colors.text};
-              z-index: 3;
+              z-index: 2;
             }
             :global(.jingles) {
               transform: translate(-10%, 15%);
@@ -27,7 +27,7 @@ class Spotlight extends Component {
               position: absolute;
               left: 10%;
               top: 10%;
-              z-index: 2;
+              z-index: 1;
               transform: skew(-15deg, 20deg) translate(25%, 15%);
             }
           }
