@@ -1,12 +1,13 @@
 # Privacy Policy
 
 > Effective date: TBD
+> Last updated: Feb 22, 2019
 
-Crowd's Play ("us", "we", or "our") operates the Crowd's Play mobile application (the "Service").
+Crowd's Play ("us", "we", or "our") operates the https://crowds-play.com website and all of the accompanying apps and extensions (the "Service").
 
 This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
 
-We use your data to provide and improve the Service. By using the Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, terms used in this Privacy Policy have the same meanings as in our [Terms and Conditions](/terms).
+We use your data to provide and improve the Service. By using the Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, terms used in this Privacy Policy have the same meanings as in our [Terms and Conditions](/static/text/terms.en.md#terms).
 
 ## Information Collection And Use
 We collect several different types of information for various purposes to provide and improve our Service to you.
@@ -15,22 +16,21 @@ We collect several different types of information for various purposes to provid
 #### Personal Data
 While using our Service, we may ask you to provide us with certain personally identifiable information that can be used to contact or identify you ("Personal Data"). Personally identifiable information may include, but is not limited to:
 - Cookies and Usage Data
+- Your e-mail address
 
 #### Usage Data
 When you access the Service by or through a mobile device, we may collect certain information automatically, including, but not limited to, the type of mobile device you use, your mobile device unique ID, the IP address of your mobile device, your mobile operating system, the type of mobile Internet browser you use, unique device identifiers and other diagnostic data ("Usage Data").
 
-#### Tracking & Cookies Data
-We use cookies and similar tracking technologies to track the activity on our Service and hold certain information.
+#### Data stored on your device
+We use [cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies), [local storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage), [session storage](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage), the [Indexed DB API](https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API) and similar technologies to track the activity on our Service and hold certain information.
 
-Cookies are files with small amount of data which may include an anonymous unique identifier. Cookies are sent to your browser from a website and stored on your device. Tracking technologies also used are beacons, tags, and scripts to collect and track information and to improve and analyze our Service.
+You can instruct your browser to ignore any or all of these technologies, but you might get a degraded experience.
 
-You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Service.
+Examples of information we store:
 
-Examples of Cookies we use:
-
-- **Session Cookies.** We use Session Cookies to operate our Service.
-- **Preference Cookies.** We use Preference Cookies to remember your preferences and various settings.
-- **Security Cookies.** We use Security Cookies for security purposes.
+- **Session information.**
+- **Preferences and settings.**
+- **Security information.**
 
 ## Use of Data
 Crowd's Play uses the collected data for various purposes:
@@ -46,7 +46,7 @@ Crowd's Play uses the collected data for various purposes:
 ## Transfer Of Data
 Your information, including Personal Data, may be transferred to — and maintained on — computers located outside of your state, province, country or other governmental jurisdiction where the data protection laws may differ than those from your jurisdiction.
 
-If you are located outside the United States and choose to provide information to us, please note that we transfer the data, including Personal Data, to the United States and process it there.
+Please note that we may transfer the data to another country and process it there.
 
 Your consent to this Privacy Policy followed by your submission of such information represents your agreement to that transfer.
 
@@ -63,7 +63,7 @@ Crowd's Play may disclose your Personal Data in the good faith belief that such 
 - To protect against legal liability
 
 ## Security Of Data
-The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.
+The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use the latest technological means to protect your Personal Data, we cannot guarantee its absolute security.
 
 ## Service Providers
 We may employ third party companies and individuals to facilitate our Service ("Service Providers"), to provide the Service on our behalf, to perform Service-related services or to assist us in analyzing how our Service is used.
@@ -78,11 +78,6 @@ Our Service may contain links to other sites that are not operated by us. If you
 
 We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services.
 
-## Children's Privacy
-Our Service does not address anyone under the age of 18 ("Children").
-
-We do not knowingly collect personally identifiable information from anyone under the age of 18. If you are a parent or guardian and you are aware that your Children has provided us with Personal Data, please contact us. If we become aware that we have collected Personal Data from children without verification of parental consent, we take steps to remove that information from our servers.
-
 ## Changes To This Privacy Policy
 We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
 
@@ -91,7 +86,7 @@ We will let you know via email and/or a prominent notice on our Service, prior t
 You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.
 
 ## Contact Us
-If you have any questions about this Privacy Policy, please contact us:
+If you have any questions about this Privacy Policy, please [contact us](shawninder@gmail.com).
 
-By email: shawninder@gmail.com
-By visiting this page on our website: https://crowds-play.com/privacy
+- [faq](/static/texts/faq.en.md)
+- [terms](/static/texts/terms.en.md)

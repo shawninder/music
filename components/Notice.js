@@ -43,6 +43,10 @@ class Notice extends Component {
             height: 10px;
             background-color: #333333;
           }
+          button {
+            margin: 15px 5px 0 0;
+            cursor: pointer;
+          }
         `}</style>
       </React.Fragment>
     )

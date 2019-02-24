@@ -22,11 +22,7 @@ class OgImg extends Component {
   }
   render () {
     const classes = this.props.className ? this.props.className.split(' ') : []
-    classes.push('box')
-    const totalWidth = 1200
-    const totalHeight = 630
-    const barHeight = 160
-    const pad = 10
+    classes.push('ogImg')
     return (
       <div className={classes.join(' ')}>
         <div className='name'>
@@ -37,31 +33,32 @@ class OgImg extends Component {
           <Spotlight />
         </div>
         <style jsx>{`
-          .box {
+          .ogImg {
             position: relative;
-            width: ${totalWidth}px;
-            height: ${totalHeight}px;
             overflow: hidden;
             font-family: palatino;
+            width: 1200px;
+            height: 630px;
             display: grid;
             grid-template-columns: 1fr;
-            grid-template-rows: ${barHeight}px ${totalHeight - barHeight}px;
+            grid-template-rows: 150px 480px;
             grid-template-areas:
               "bar"
               "face";
 
             .name {
               grid-area: bar;
+              font-size: 130px;
+              line-height: 1em;
               display: grid;
-              grid-template-columns: 60% 40%;
-              grid-template-rows: ${barHeight}px;
+              grid-template-columns: 720px 480px;
+              grid-template-rows: 150px;
               grid-template-areas: "name-one name-two";
               z-index: 2;
               box-shadow: 0 5px 30px 3px #333333;
               .name-one, .name-two {
                 margin: 0;
-                padding: ${pad}px;
-                font-size: ${barHeight - (2 * pad)}px;
+                padding: 10px;
               }
               .name-one {
                 grid-area: name-one;
@@ -72,17 +69,32 @@ class OgImg extends Component {
               }
               .name-two {
                 grid-area: name-two;
+                height: 153px;
                 background: ${colors.textBg};
                 color: ${colors.text};
-                height: ${barHeight + 5}px;
                 border-radius: 0 0 0 5px;
               }
             }
             .face {
+              grid-area: face;
               background: ${colors.text} url("/static/bg.svg") no-repeat top left;
               background-size: 100% 100%;
               z-index: 1;
-              padding: ${0.05 * totalHeight}px;
+              padding: 30px;
+              :global(.spotlight) {
+                width: 410px;
+                height: 410px;
+                border-radius: 410px;
+                padding: 20px;
+                margin: 0 auto;
+                :global(.jingles, .jingles-shadow) {
+                  width: 300px;
+                  height: 300px;
+                }
+                :global(.jingles-shadow) {
+                  filter: blur(10px);
+                }
+              }
             }
           }
         `}</style>

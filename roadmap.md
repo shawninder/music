@@ -1,49 +1,34 @@
-# Roadmap
+# Roadmaps
 
-## v1 make something we can use on a daily basis
+## PR
+- [ ] Human sentence | Page of Legal Shit (Privacy, Terms of Use, wtv, wtv)
+- [ ] FAQ (Ask a Question)
+- [ ] How it works | Infrastructure | Monitoring
+- [ ] Pricing | Revenues | Expenses | Forecasts | Contributing
 
-- [x] Basic playlist with YouTube videos
-- [x] Minimal usability styling for Mobile, Tablet and Laptop
-- [x] Hosted online
-
-## v2 make something we can demo
-
-- [x] Collaborative Play Queue
-
-## v3 make something we can share
-
-- [ ] Monitoring and analytics
-- [ ] Feedback Strategy
-- [ ] Update Strategy
-
-## v4 make something we can build on
-
-- [ ] Long Term Storage
-- [ ] Security
-- [ ] Iteration Strategy
-- [ ] Quantity vs Quality balance strategy
-
-## v5 increase confidence
+## Robustness
 
 - [ ] Fully Automated Pipeline
 - [ ] Tests
 - [ ] Docs
 - [ ] Emergency Response Protocols
 
-## v6 advanced features
+## Features
 
 - [ ] Accounts
 - [ ] Collections
 
-## v7 make apps
+## Apps
 
 - [ ] Multiple devices
 - [ ] New features
 
-## v8 make something we can sell
+## Money
 
-- [ ] Legal
+- [ ] Additional Legal Shit
 - [ ] Transactions
 - [ ] Meet Store Guidelines
 
-## v9 make roadmap to passive income
+## Passive Income
+
+*hay bales*

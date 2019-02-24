@@ -23,7 +23,7 @@ import YouTube from './YouTube'
 import Smart from './Smart'
 import NoticeList from './NoticeList'
 import Artwork from './Artwork'
-import Figure from './Figure'
+import Menu from './Menu'
 import FilesDialog from './FilesDialog'
 import CancelDropZone from './CancelDropZone'
 import Spotlight from './icons/Spotlight'
@@ -865,231 +865,244 @@ class App extends Component {
 
     return (
       <React.Fragment>
-        <style jsx global>{`
-          ${resetStyles}
+        <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
+          <Head title="Crowd's Play" />
+          <style jsx global>{`
+            ${resetStyles}
 
-          ${baseStyles}
+            ${baseStyles}
 
-          .App.dragging .cancelDropZone {
-            opacity: 1;
-            z-index: 3;
-          }
+            .App.dragging .cancelDropZone {
+              opacity: 1;
+              z-index: 3;
+            }
 
-          .bar-dismiss svg {
-            width: 15px;
-          }
+            .bar-dismiss svg {
+              width: 15px;
+            }
 
-          .App .bar-list {
-            max-width: 640px;
-            max-height: 100vh;
-            overflow-y: scroll;
-            -webkit-overflow-scrolling: touch;
-            position: fixed;
-            top: ${lengths.rowHeight};
-            left: 0;
-            z-index: 2;
-          }
+            .App .bar-list {
+              max-width: 640px;
+              max-height: 100vh;
+              overflow-y: scroll;
+              -webkit-overflow-scrolling: touch;
+              position: fixed;
+              top: ${lengths.rowHeight};
+              left: 0;
+              z-index: 2;
+            }
 
-          .App .bar-list {
-            background: ${colors.text};
-          }
+            .App .bar-list {
+              background: ${colors.text};
+            }
 
-          .App .bar-list.list > ol > li:nth-child(odd) {
-            background: ${colors.textBgOdd};
-          }
+            .App .bar-list.list > ol > li:nth-child(odd) {
+              background: ${colors.textBgOdd};
+            }
 
-          .App .bar-list.list > ol > li:nth-child(even) {
-            background: ${colors.textBgEven};
-          }
+            .App .bar-list.list > ol > li:nth-child(even) {
+              background: ${colors.textBgEven};
+            }
 
-          .App.dragging .bar-list {
-            box-shadow: 0px 12px 15px 0px rgb(0,0,0,0.0);
-            background: rgba(50, 50, 50, 0);
-          }
+            .App.dragging .bar-list {
+              box-shadow: 0px 12px 15px 0px rgb(0,0,0,0.0);
+              background: rgba(50, 50, 50, 0);
+            }
 
-          .App.dragging .bar-list li {
-            opacity: 0.05;
-          }
+            .App.dragging .bar-list li {
+              opacity: 0.05;
+            }
 
-          .App.dragging .bar-list li.dragging {
-            opacity: 1.01;
-          }
+            .App.dragging .bar-list li.dragging {
+              opacity: 1.01;
+            }
 
-          .playingNow {
-            position: relative;
-            margin-bottom: 360px;
-            .Artwork {
+            .playingNow {
+              position: relative;
+              margin-bottom: 360px;
+              .Artwork {
+                top: 0;
+                left: 0;
+                max-width: ${lengths.mediaWidth};
+                max-height: ${lengths.mediaHeight};
+                width: 100%;
+                position: relative;
+                z-index: 0;
+              }
+            }
+
+            .hidden {
+              opacity: 0;
+            }
+
+            .bar-list .toggle .idx {
+              color: ${colors.text2};
+            }
+            .bar-list .track .toggle .art {
+              transition-duration: ${durations.instant};
+              transition-timing-function: ${tfns.easeInOutQuad};
+            }
+
+            .bar-list .track .toggle .art-img {
+              transition-duration: ${durations.instant};
+              transition-timing-function: ${tfns.easeInOutQuad};
+            }
+
+            .track .icon {
+              width: 15px;
+            }
+
+            li:nth-child(odd) .actions {
+              background-color: ${colors.textBgOdd};
+            }
+
+            li:nth-child(even) .actions {
+              background-color: ${colors.textBgEven};
+            }
+
+            .history>h3 {
+              cursor: pointer;
+              font-size: medium;
+              padding: 10px;
+              transition-property: opacity, height;
+              transition-duration: ${durations.moment};
+              opacity: 1;
+            }
+
+            .history {
+              opacity: 1;
+              transition-property: opacity;
+              transition-duration: ${durations.moment};
+            }
+
+            .App.dragging .history>h3, .App.dragging .playingNow>h3, .App.dragging .upNext>h3 {
+              opacity: 1;
+            }
+
+            .collapsed>ol {
+              opacity: 0;
+              position: absolute;
+            }
+
+            .upNext, .history, .playingNow {
+              text-align: left;
+              margin: 0 auto;
+              width: 100%;
+              max-width: 640px;
+            }
+            .history, .upNext {
+              background: ${alpha(colors.textBg, colors.opacity)};
+            }
+
+            .upNext ol, .history ol, .playingNow ol {
+              min-height: 1px; /* Necessary for inserting into empty lists */
+              transition-property: background-color;
+              transition-duration: ${durations.moment};
+            }
+
+            .App.dragging .history ol, .App.dragging .upNext ol {
+              background: ${alpha(colors.textBg, colors.opacity)};
+            }
+
+            .App.dragging .playingNow ol {
+              background: ${alpha(colors.text, 1 - colors.opacity)};
+            }
+
+            .App.disconnected.attending .controls button, .App.disconnected.attending .controls input, .App.disconnected.attending .controls label {
+              color: ${colors.text2};
+            }
+
+            .App.disconnected .seek-bar--current {
+              background-color: ${colors.dangerousText};
+            }
+
+            .history, .history .icon, .upNext, .upNext .icon {
+              color: ${colors.text};
+            }
+
+            .playingNow .icon {
+              color: ${colors.textBg};
+            }
+
+            .App.attending .copyButton, .App.hosting .copyButton {
+              opacity: 1;
+            }
+          `}</style>
+          <style jsx>{`
+            .App {
+              padding: 0;
+              position: relative;
+              background-color: ${colors.primaryBg};
+              min-width: ${lengths.minWidth};
+              transition-property: background-color;
+              transition-duration: ${durations.moment};
+              transition-timing-function: ${tfns.easeInOutQuad};
+
+              &.connected {
+                background-color: ${colors.primary};
+              }
+              &.hosting  {
+                background-color: ${colors.hostingBg};
+              }
+              &.attending {
+                background-color: ${colors.attendingBg};
+              }
+              &.disconnected {
+                background-color: ${colors.textBg};
+              }
+            }
+
+            .bgImg {
+              position: fixed;
               top: 0;
               left: 0;
-              max-width: ${lengths.mediaWidth};
-              max-height: ${lengths.mediaHeight};
               width: 100%;
-              position: relative;
-              z-index: 0;
+              height: 100%;
             }
-          }
 
-          .hidden {
-            opacity: 0;
-          }
+            main {
+              margin-top: ${lengths.rowHeight};
+              position: relative;
+              width: 100%;
+              height: 100%;
+              overflow-y: scroll;
+              -webkit-overflow-scrolling: touch;
+              padding-bottom: 100px;
+              .postQueue {
+                margin: ${lengths.rowHeight} 0;
+              }
+              :global(.spotlight) {
+                width: 205px;
+                height: 205px;
+                border-radius: 205px;
+                padding: 10px;
+                margin: 0 auto;
+                :global(.jingles, .jingles-shadow) {
+                  width: 150px;
+                  height: 150px;
+                }
+                :global(.jingles-shadow) {
+                  filter: blur(5px);
+                }
+              }
+            }
 
-          .bar-list .toggle .idx {
-            color: ${colors.text2};
-          }
-          .bar-list .track .toggle .art {
-            transition-duration: ${durations.instant};
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
-          .bar-list .track .toggle .art-img {
-            transition-duration: ${durations.instant};
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
-          .track .icon {
-            width: 15px;
-          }
-
-          li:nth-child(odd) .actions {
-            background-color: ${colors.textBgOdd};
-          }
-
-          li:nth-child(even) .actions {
-            background-color: ${colors.textBgEven};
-          }
-
-          .history>h3 {
-            cursor: pointer;
-            font-size: medium;
-            padding: 10px;
-            transition-property: opacity, height;
-            transition-duration: ${durations.moment};
-            opacity: 1;
-          }
-
-          .history {
-            opacity: 1;
-            transition-property: opacity;
-            transition-duration: ${durations.moment};
-          }
-
-          .App.dragging .history>h3, .App.dragging .playingNow>h3, .App.dragging .upNext>h3 {
-            opacity: 1;
-          }
-
-          .collapsed>ol {
-            opacity: 0;
-            position: absolute;
-          }
-
-          .upNext, .history, .playingNow {
-            text-align: left;
-            margin: 0 auto;
-            width: 100%;
-            max-width: 640px;
-          }
-          .history, .upNext {
-            background: ${alpha(colors.textBg, colors.opacity)};
-          }
-          .playingNow {
-            background: ${alpha(colors.text, 1 - colors.opacity)};
-            color: ${colors.textBg};
-            .art {
-              .idx {
+            .playingNow {
+              background: ${alpha(colors.text, 1 - colors.opacity)};
+              color: ${colors.textBg};
+              :global(.art .idx) {
                 width: 0;
               }
-              .art-img {
+              :global(.art .art-img) {
                 width: 88px;
                 height: 60px;
                 border-radius: 0;
               }
+              :global(.emptyDropZone) {
+                padding: 20px;
+              }
             }
-            .emptyDropZone {
-              padding: 20px;
-            }
-          }
-
-          .upNext ol, .history ol, .playingNow ol {
-            min-height: 1px; /* Necessary for inserting into empty lists */
-            transition-property: background-color;
-            transition-duration: ${durations.moment};
-          }
-
-          .App.dragging .history ol, .App.dragging .upNext ol {
-            background: ${alpha(colors.textBg, colors.opacity)};
-          }
-
-          .App.dragging .playingNow ol {
-            background: ${alpha(colors.text, 1 - colors.opacity)};
-          }
-
-          .App.disconnected.attending .controls button, .App.disconnected.attending .controls input, .App.disconnected.attending .controls label {
-            color: ${colors.text2};
-          }
-
-          .App.disconnected .seek-bar--current {
-            background-color: ${colors.dangerousText};
-          }
-
-          .history, .history .icon, .upNext, .upNext .icon {
-            color: ${colors.text};
-          }
-
-          .playingNow .icon {
-            color: ${colors.textBg};
-          }
-
-          .App.attending .copyButton, .App.hosting .copyButton {
-            opacity: 1;
-          }
-        `}</style>
-        <style jsx>{`
-          .App {
-            padding: 0;
-            position: relative;
-            background-color: ${colors.primaryBg};
-            min-width: ${lengths.minWidth};
-            transition-property: background-color;
-            transition-duration: ${durations.moment};
-            transition-timing-function: ${tfns.easeInOutQuad};
-
-            &.connected {
-              background-color: ${colors.primary};
-            }
-            &.hosting  {
-              background-color: ${colors.hostingBg};
-            }
-            &.attending {
-              background-color: ${colors.attendingBg};
-            }
-            &.disconnected {
-              background-color: ${colors.textBg};
-            }
-          }
-
-          .bgImg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-          }
-
-          main {
-            margin-top: ${lengths.rowHeight};
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow-y: scroll;
-            -webkit-overflow-scrolling: touch;
-            padding-bottom: 100px;
-            .postQueue {
-              margin: ${lengths.rowHeight} 0;
-            }
-          }
-        `}</style>
-        <DragDropContext onDragStart={this.onDragStart} onDragUpdate={this.onDragUpdate} onDragEnd={this.onDragEnd}>
-          <Head title="Crowd's Play" />
+          `}</style>
           <div className={appClasses.join(' ')}>
             <img key='bgImg' className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
             <Bar
@@ -1147,10 +1160,12 @@ class App extends Component {
             <CancelDropZone className='cancelDropZone'>
               {this.dict.get('app.cancelDrop')}
             </CancelDropZone>
-            <Figure
+            <Menu
               socket={this.props.socket}
               partyState={state}
               dispatch={this.dispatch}
+              dict={this.dict}
+              notify={this.props.notify}
             />
             <main>
               <Header

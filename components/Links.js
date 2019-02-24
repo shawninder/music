@@ -10,32 +10,35 @@ import tfns from '../styles/timing-functions'
 
 class Links extends Component {
   render () {
+    const classes = this.props.className ? this.props.className.split(' ') : []
+    classes.push('links')
     return (
-      <footer>
+      <footer className={classes.join(' ')}>
         <ul>
-          <li><a href='/terms' target='_blank'>Terms and conditions</a></li>
-          <li><a href='/privacy' target='_blank'>Privacy</a></li>
+          <li><a href='https://github.com/shawninder/music/blob/master/static/texts/faq.en.md#faq' target='_blank'><acronym title='Frequently Asked Questions'>FAQ</acronym></a></li>
+          <li><a href='https://github.com/shawninder/music/blob/master/static/texts/privacy.en.md#privacy-policy' target='_blank'>Privacy</a></li>
+          <li><a href='https://github.com/shawninder/music/blob/master/static/texts/terms.en.md#terms' target='_blank'>Terms</a></li>
         </ul>
         <style jsx>{`
-          footer {
+          .links {
             margin-top: ${lengths.rowHeight};
-            padding-bottom: ${lengths.rowHeight};
+            padding: 10px;
             ul {
               list-style: none;
               li {
                 margin: 2px;
+                a {
+                  cursor: pointer;
+                  color: ${colors.link};
+                  transition-property: color;
+                  transition-duration: ${durations.instant};
+                  transition-timing-function: ${tfns.easeInOutQuad};
+                }
+                a:hover {
+                  color: ${colors.primary};
+                }
               }
             }
-          }
-          a {
-            cursor: pointer;
-            color: ${colors.link};
-            transition-property: color;
-            transition-duration: ${durations.instant};
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-          a:hover {
-            color: ${colors.primary};
           }
         `}</style>
       </footer>

@@ -87,9 +87,6 @@ class NoticeList extends Component {
           .notice-list li {
             margin-bottom: 10px;
           }
-          .notice-list button {
-            margin: 15px 5px 0 0;
-          }
           input[type=file] {
             margin: 10px;
             cursor: pointer;

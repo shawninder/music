@@ -11,6 +11,7 @@ import pauseIcon from './icons/pause'
 import nextIcon from './icons/next'
 import volumeIcon from './icons/volumeHigh'
 
+import alpha from '../helpers/alpha'
 import colors from '../styles/colors'
 import tfns from '../styles/timing-functions'
 import durations from '../styles/durations'
@@ -125,74 +126,64 @@ class Controls extends Component {
             live
           />
         </div>
-        <style global jsx>{`
+        <style jsx>{`
           .seek-bar {
             grid-area: seekBar;
-            border: 1px solid #333333;
+            border: 1px solid ${colors.text};
             cursor: pointer;
             background-color: black;
-            transition-property: background-color;
-            transition-duration: ${durations.moment};
             z-index: 1;
-          }
-          .seek-bar--current {
-            height: 10px;
-            background-color: red;
             transition-property: background-color;
             transition-duration: ${durations.moment};
-          }
-          .seek-bar--handle {
-            width: 30px;
-            height: 30px;
-            background: rgba(255, 0, 0, 0.4);
-            border-radius: 5px;
-            position: absolute;
-            top: -10px;
-            left: -15px;
-            transition-property: opacity;
-            transition-duration: ${durations.instant};
-            opacity: 0;
-          }
-          .seek-bar.seeking .seek-bar--handle {
-            opacity: 1;
+
+            :global(&.horizontal) {
+              width: 100%;
+              height: 10px;
+              :global(.current) {
+                height: 10px;
+                transition-property: background-color;
+                transition-duration: ${durations.moment};
+              }
+              :global(.handle) {
+                width: 30px;
+                height: 30px;
+                top: -10px;
+                left: -15px;
+                background: ${alpha(colors.textBg, 0.4)};
+              }
+            }
           }
           .volume {
             z-index: 2;
-            border: 1px solid #333333;
-            height: 150px;
-            width: 5px;
-            margin-left: 22px;
-            cursor: pointer;
+            border: 1px solid ${colors.text};
             background-color: black;
             transition-property: background-color;
             transition-duration: ${durations.moment};
+            :global(&.vertical) {
+              height: 150px;
+              width: 5px;
+              margin-left: 22px;
+              :global(.current) {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                background-color: red;
+                transition-property: background-color;
+                transition-duration: ${durations.moment};
+              }
+              :global(.handle) {
+                bottom: 0;
+                left: -23px;
+                width: 50px;
+                height: 50px;
+                background: ${alpha(colors.textBg, 0.4)};
+                border-radius: 5px;
+                transition-property: opacity;
+                transition-duration: ${durations.instant};
+                opacity: 0;
+              }
+            }
           }
-          .volume--current {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background-color: red;
-            transition-property: background-color;
-            transition-duration: ${durations.moment};
-          }
-          .volume--handle {
-            position: absolute;
-            bottom: 0;
-            left: -23px;
-            width: 50px;
-            height: 50px;
-            margin-bottom: -15px;
-            background: rgba(255, 255, 255, 0.4);
-            border-radius: 5px;
-            transition-property: opacity;
-            transition-duration: ${durations.instant};
-            opacity: 0;
-          }
-          .volume.seeking .volume--handle {
-            opacity: 1
-          }
-        `}</style>
-        <style jsx>{`
           .controls {
             position: fixed;
             z-index: 2;
@@ -263,6 +254,7 @@ class Controls extends Component {
             right: 1px;
             width: 50px;
             background: #333333;
+            cursor: pointer;
           }
           button, input {
             border: 0;

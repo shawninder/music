@@ -3,16 +3,10 @@ import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
+import colors from '../styles/colors'
+import durations from '../styles/durations'
+
 class Range extends Component {
-  static makeClassName (className) {
-    return `${className} range`
-  }
-  static makeCurrentClassName (className) {
-    return `${className}--current`
-  }
-  static makeHandleClassName (className) {
-    return `${className}--handle`
-  }
   constructor (props) {
     super(props)
     this.startSeeking = this.startSeeking.bind(this)
@@ -28,8 +22,8 @@ class Range extends Component {
   }
 
   componentWillUnmount () {
-    if (this.ref) {
-      this.ref.removeEventListener('touchmove', this.onTouchMove, false)
+    if (this.el) {
+      this.el.removeEventListener('touchmove', this.onTouchMove, false)
     }
   }
 
@@ -69,10 +63,10 @@ class Range extends Component {
 
   onRef (el) {
     if (el) {
-      if (this.ref) {
-        this.ref.removeEventListener('touchmove', this.onTouchMove, false)
+      if (this.el) {
+        this.el.removeEventListener('touchmove', this.onTouchMove, false)
       }
-      this.ref = el
+      this.el = el
       el.addEventListener('touchmove', this.onTouchMove, false)
     }
   }
@@ -82,17 +76,16 @@ class Range extends Component {
     const el = event.target
 
     // TODO this is all really risky, find better way
-    if (el.className.indexOf(Range.makeClassName(this.props.className)) !== -1) {
+    if (el === this.el) {
       return calcPos(this.props.vertical, el, pos)
     }
-    if (el.className.indexOf(Range.makeCurrentClassName(this.props.className)) !== -1) {
+    if (el === this.currentEl) {
       return calcPos(this.props.vertical, el.parentNode, pos)
     }
-    if (el.className.indexOf(Range.makeHandleClassName(this.props.className)) !== -1) {
+    if (el === this.handleEl) {
       return calcPos(this.props.vertical, el.parentNode, pos)
     } else {
-      const track = global.document.getElementsByClassName(this.props.className)[0]
-      return calcPos(this.props.vertical, track, pos)
+      return calcPos(this.props.vertical, this.el, pos)
     }
   }
 
@@ -100,12 +93,19 @@ class Range extends Component {
     const currentPercentage = `${chop(this.props.current, 0, 1) * 100}%`
     const seekToPercentage = `${chop(this.state.seekingTo, 0, 1) * 100}%`
     const handleTarget = this.state.seeking ? seekToPercentage : currentPercentage
-    const className = Range.makeClassName(this.props.className)
-    const currentClassName = Range.makeCurrentClassName(this.props.className)
-    const handleClassName = Range.makeHandleClassName(this.props.className)
+    const classes = this.props.className ? this.props.className.split(' ') : []
+    classes.push('range')
+    if (this.state.seeking) {
+      classes.push('seeking')
+    }
+    if (this.props.vertical) {
+      classes.push('vertical')
+    } else {
+      classes.push('horizontal')
+    }
     return (
       <div
-        className={`${className}${this.state.seeking ? ' seeking' : ''}`}
+        className={classes.join(' ')}
         onMouseUp={(event) => {
           this.props.onChange(this.eventValue(event))
         }}
@@ -113,24 +113,69 @@ class Range extends Component {
         ref={this.onRef}
       >
         <div
-          className={currentClassName}
+          className='current'
           style={this.props.vertical ? {
             height: currentPercentage
           } : {
             width: currentPercentage
           }}
+          ref={(el) => {
+            this.currentEl = el
+          }}
         />
         <div
-          className={handleClassName}
+          className='handle'
           style={this.props.vertical ? {
             bottom: handleTarget
           } : {
             marginLeft: handleTarget
           }}
+          ref={(el) => {
+            this.handleEl = el
+          }}
         />
         <style jsx>{`
           .range {
             position: relative;
+            cursor: pointer;
+            border: 1px solid black;
+            background-color: ${colors.text};
+            .handle {
+              position: absolute;
+              opacity: 0;
+              transition-property: opacity;
+              transition-duration: ${durations.instant};
+              border-radius: 5px;
+              border: 1px solid rgba(255, 0, 0, 0.4);
+            }
+            .current {
+              background-color: red;
+            }
+            &.horizontal {
+              .handle {
+                left: -15px;
+              }
+              .current {
+                height: 100%;
+              }
+            }
+            &.vertical {
+              display: inline-block;
+              .handle {
+                margin-bottom: -15px;
+                bottom: 0;
+              }
+              .current {
+                width: 100%;
+                position: absolute;
+                bottom: 0;
+              }
+            }
+            &.seeking {
+              .handle {
+                opacity: 1;
+              }
+            }
           }
         `}</style>
       </div>
@@ -139,7 +184,7 @@ class Range extends Component {
 }
 
 const props = [
-  { name: 'className', type: PropTypes.string.isRequired },
+  { name: 'className', type: PropTypes.string, val: '' },
   { name: 'vertical', type: PropTypes.bool, val: false },
   { name: 'current', type: PropTypes.number.isRequired },
   { name: 'live', type: PropTypes.bool, val: false },

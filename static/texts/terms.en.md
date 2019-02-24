@@ -1,9 +1,12 @@
-# Terms of Service | Terms and Conditions ("Terms") [WORK IN PROGRESS]
+# Terms
 
-> Last updated: November 10, 2018
+# Terms and Conditions ("Terms")
+
+> Effective date: TBD
+> Last updated: Feb 22, 2019
 
 Please read these Terms of Service ("Terms", "Terms of Service") carefully
-before using the https://crowds-play.com website (the "Service") operated by
+before using the https://crowds-play.com website or any of the accompanying apps and extensions (the "Service") operated by
 Crowd's Play ("us", "we", or "our").
 
 Your access to and use of the Service is conditioned on your acceptance of and
@@ -11,7 +14,7 @@ compliance with these Terms. These Terms apply to all visitors, users and
 others who access or use the Service.
 
 By accessing or using the Service you agree to be bound by these Terms. If you
-disagree with any part of the terms then you may not access the Service.
+disagree with any part of the terms and won't comply, then you may not access the Service.
 
 ## Links To Other Web Sites
 
@@ -64,4 +67,7 @@ the new terms, please stop using the Service.
 
 ## Contact Us
 
-If you have any questions about these Terms, please contact us.
+If you have any questions about these Terms, please [contact us](mailto:shawninder@gmail.com).
+
+- [faq](/static/texts/faq.en.md)
+- [privacy policy](/static/texts/privacy.en.md)
