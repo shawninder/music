@@ -219,6 +219,7 @@ class Bar extends Component {
           className='bar-field'
           autoFocus={this.props.autoFocus}
           placeholder={this.props.placeholder}
+          onFocus={this.props.onFocus}
           onChange={this.onChange}
           onEnter={this.onEnter}
           onDown={this.focusList}
@@ -341,6 +342,7 @@ const props = [
   { name: 'loadMore', type: PropTypes.func, val: () => {} },
   { name: 'areCommands', type: PropTypes.bool, val: true },
   { name: 'autoFocus', type: PropTypes.bool, val: false },
+  { name: 'onFocus', type: PropTypes.func, val: () => {} },
   { name: 'go', type: PropTypes.func.isRequired },
   { name: 'componentProps', type: PropTypes.object, val: {} },
   { name: 'ResultComponent', type: PropTypes.any.isRequired },
