@@ -5,6 +5,7 @@ export const textBgEven = '#f8f8ff'
 export const textBgOdd = '#f5f5f5'
 export const text = '#111111'
 export const text2 = 'dimgrey'
+export const hover = '#2597c3'
 export const link = '#001f3f'
 export const placeholder = '#aaaaaa'
 
@@ -34,6 +35,7 @@ export default {
   text,
   text2,
   link,
+  hover,
   placeholder,
   primary,
   primaryBg,
