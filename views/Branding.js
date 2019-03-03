@@ -257,7 +257,7 @@ class Branding extends Component {
             background: ${colors.textBg};
           }
         `}</style>
-        <Menu socket={{ connected: true }} />
+        <Menu socket={{ connected: true }} dict={this.dict} />
         <h1>Branding</h1>
         <dl>
           <dt>Icon</dt>
