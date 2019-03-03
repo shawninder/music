@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import unescape from 'lodash.unescape'
+
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
@@ -29,8 +31,8 @@ class YouTube extends Component {
         pending={this.props.pending}
         trackId={trackId}
       >
-        <p className='title'>{this.props.data.snippet.title}</p>
-        <p className='channel'>{this.props.data.snippet.channelTitle}</p>
+        <p className='title'>{unescape(this.props.data.snippet.title)}</p>
+        <p className='channel'>{unescape(this.props.data.snippet.channelTitle)}</p>
         <style jsx>{`
           .title {
             font-size: small;
