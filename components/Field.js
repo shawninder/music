@@ -29,6 +29,7 @@ class Field extends Component {
           placeholder={this.props.placeholder}
           className={this.props.className}
           autoFocus={this.props.autoFocus}
+          onFocus={this.props.onFocus}
           onKeyDown={this.keyDown}
           onChange={this.props.onChange}
           ref={(el) => {
@@ -68,6 +69,7 @@ class Field extends Component {
 }
 
 const props = [
+  { name: 'onFocus', type: PropTypes.func, val: () => {} },
   { name: 'onChange', type: PropTypes.func.isRequired },
   { name: 'onEnter', type: PropTypes.func.isRequired },
   { name: 'onDown', type: PropTypes.func.isRequired },
