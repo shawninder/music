@@ -197,7 +197,7 @@ class List extends Component {
                 >
                   <Component
                     data={itemClone}
-                    query={this.props.query}
+                    query={this.props.query ? this.props.query : undefined}
                     idx={idx}
                     queueIndex={itemClone.queueIndex}
                     dragHandleProps={draggableProvided.dragHandleProps}
@@ -217,7 +217,7 @@ class List extends Component {
           >
             <Component
               data={item}
-              query={this.props.query}
+              query={this.props.query ? this.props.query : undefined}
               idx={idx}
               queueIndex={item.queueIndex}
               key={`${classes[0]}-Component-nodrag-${item.key}`}
