@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 import Head from '../components/Head'
 import AuthForm from '../components/AuthForm'
+import Heatmap from '../components/Heatmap'
 
 import List from '../components/List'
 import Log from '../components/Log'
@@ -12,6 +14,7 @@ import Log from '../components/Log'
 import resetStyles from '../styles/reset'
 import baseStyles from '../styles/base'
 import colors from '../styles/colors'
+import lengths from '../styles/lengths'
 
 // const isServer = typeof window === 'undefined'
 
@@ -98,8 +101,8 @@ class Timeline extends Component {
       playlistName: '',
       minGuests: 0,
       maxGuests: 0,
-      from: '',
-      to: '',
+      from: moment().subtract(2, 'months').startOf('month').format('YYYY-MM-DD'),
+      to: moment().endOf('month').format('YYYY-MM-DD'),
       items: []
     }
   }
@@ -152,7 +155,7 @@ class Timeline extends Component {
       }
     }
     console.log('query object', JSON.stringify(query, null, 2))
-    this.props.findLogs({ query: JSON.stringify(query), limit: 100 }).then(({ items }) => {
+    this.props.findLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
       if (items.length > 0) {
         this.setState({ items })
       } else {
@@ -202,6 +205,10 @@ class Timeline extends Component {
           ${baseStyles}
         `}</style>
         <style jsx>{`
+          .header {
+            font-size: xx-large;
+            margin: 20px;
+          }
           .bgImg {
             position: fixed;
             top: 0;
@@ -215,18 +222,20 @@ class Timeline extends Component {
             border: 0;
             z-index: 2;
           }
-          .interest, .filters, .timespan {
+          .interest, .filters, .timespan, .buttons {
             padding: 10px;
             background: ${colors.textBg};
             input {
               margin: 10px;
             }
           }
-          .nbGuests input {
-            width: 50px;
+          .heatmap {
+            max-height: ${lengths.menuWidth};
           }
           .searchButton {
-
+            border-color: ${colors.primaryText};
+            color: ${colors.primaryText};
+            background: ${colors.primaryBg};
           }
         `}</style>
         <img key='bgImg' className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
@@ -234,21 +243,27 @@ class Timeline extends Component {
           <AuthForm dispatch={this.props.dispatch} className='authForm' />
           <h2 className='header'>Timeline</h2>
           <section className='interest'>
-            <label><input type='checkbox' name='interest' value='lifecycle' defaultChecked />lifecycle</label>
-            <label><input type='checkbox' name='interest' value='commands' />commands</label>
-            <label><input type='checkbox' name='interest' value='guests' defaultChecked />guests</label>
-            <label><input type='checkbox' name='interest' value='dispatches' />dispatches</label>
-            <label><input type='checkbox' name='interest' value='transfers' />transfers</label>
-            <label><input type='checkbox' name='interest' value='playlists' defaultChecked />playlists</label>
-            <label><input type='checkbox' name='interest' value='connections' />connections</label>
-            <label><input type='checkbox' name='interest' value='errors' defaultChecked />errors</label>
+            <label><input type='checkbox' name='interest' value='lifecycle' defaultChecked={this.state.lifecycle} />lifecycle</label>
+            <label><input type='checkbox' name='interest' value='commands' defaultChecked={this.state.commands} />commands</label>
+            <label><input type='checkbox' name='interest' value='guests' defaultChecked={this.state.guests} />guests</label>
+            <label><input type='checkbox' name='interest' value='dispatches' defaultChecked={this.state.dispatches} />dispatches</label>
+            <label><input type='checkbox' name='interest' value='transfers' defaultChecked={this.state.transfers} />transfers</label>
+            <label><input type='checkbox' name='interest' value='playlists' defaultChecked={this.state.playlists} />playlists</label>
+            <label><input type='checkbox' name='interest' value='connections' defaultChecked={this.state.connections} />connections</label>
+            <label><input type='checkbox' name='interest' value='errors' defaultChecked={this.state.errors} />errors</label>
           </section>
           <section className='filters'>
             <label>Playlist Name: <input type='text' name='playlistName' /></label>
           </section>
           <section className='timespan'>
-            <label>from: <input type='text' name='from' /></label>
-            <label>to: <input type='text' name='to' /></label>
+            <label>from: <input type='text' name='from' defaultValue={this.state.from} /></label>
+            <label>to: <input type='text' name='to' defaultValue={this.state.to} /></label>
+            <Heatmap
+              className='heatmap'
+              startDate={this.state.from}
+              endDate={this.state.to}
+              items={this.state.items}
+            />
           </section>
           <section className='buttons'>
             <button className='searchButton' onClick={(event) => {
