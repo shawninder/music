@@ -47,6 +47,14 @@
     "en": "Invite the crowd into your playlist!",
     "fr": "Invite la foule à jouer avec ta playlist!"
   },
+  "party.connected": {
+    "en": "Connected",
+    "fr": "Connecté"
+  },
+  "party.disconnected": {
+    "en": "Disconnected",
+    "fr": "Déconnecté"
+  },
   "party.placeholder": {
     "en": "Playlist name",
     "fr": "Nom de la playlist"

@@ -6,8 +6,11 @@ import propTypes from '../helpers/propTypes'
 import colors from '../styles/colors'
 import durations from '../styles/durations'
 import lengths from '../styles/lengths'
+import tfns from '../styles/timing-functions'
 
-import Login from './Login'
+import List from './List'
+import MenuItem from './MenuItem'
+import Integration from './Integration'
 import Links from './Links'
 import Happy from './icons/Happy'
 import Sad from './icons/Sad'
@@ -52,13 +55,33 @@ class Menu extends Component {
       : Sad
 
     const opened = {
-      width: '100%',
-      height: '100vh'
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      overflowY: 'scroll',
+      overflowScrolling: 'touch'
     }
     const collapsed = {
       overflow: 'hidden',
-      height: lengths.collapsedHeight
+      maxHeight: lengths.collapsedHeight
     }
+
+    const integrations = [
+      { name: 'YouTube', key: 'youtube-integration', icon: '/static/youtube.png' },
+      { name: 'iTunes', key: 'itunes-integration', icon: '/static/itunes.svg' },
+      { name: 'Spotify', key: 'spotify-integration', icon: '/static/spotify.png' },
+      { name: 'Other', key: 'other-integration', icon: '/static/plus.svg', alt: 'Request support for another service' }
+    ]
+
+    const computerApps = [
+      { name: 'Linux', key: 'youtube-integration', icon: '/static/linux.png' },
+      { name: 'Mac', key: 'itunes-integration', icon: '/static/mac.svg' },
+      { name: 'Windows', key: 'spotify-integration', icon: '/static/windows.svg' }
+    ]
+
+    const phoneApps = [
+      { name: 'Android', key: 'android-integration', icon: '/static/android.svg' },
+      { name: 'iOS', key: 'ios-integration', icon: '/static/ios.png' }
+    ]
 
     return (
       <div
@@ -67,7 +90,7 @@ class Menu extends Component {
         tabIndex='0'
         style={this.state.collapsed ? collapsed : opened}
       >
-        <section className='tab' onClick={this.onClick}>
+        <div className='tab' onClick={this.onClick}>
           <span className='branding' style={this.state.collapsed ? {} : { opacity: 1 }}>Crowd's Play</span>
           <span
             className='connectivity'
@@ -78,25 +101,72 @@ class Menu extends Component {
             />
           </span>
           <Image className='face' />
-        </section>
-        <section className='contents' style={this.state.collapsed ? { opacity: 0 } : { opacity: 1 }}>
-          <Login dict={this.props.dict} notify={this.props.notify} />
-          <Links dict={this.props.dict} />
-        </section>
+        </div>
+        <div className='contents' style={this.state.collapsed ? { opacity: 0 } : { opacity: 1 }}>
+          {this.props.showWIP ? (
+            <MenuItem
+              label='Login'
+              startsOpen
+            >
+              <div className='login'>
+                <label>@<input type='email' /></label>
+                <p>We'll send you a login link via e-mail</p>
+                <p>Click the login link we sent to <em>your@email.com</em></p>
+              </div>
+            </MenuItem>
+          ) : null}
+          {this.props.showWIP ? (
+            <MenuItem
+              label='Connect your other accounts'
+            >
+              <div className='integrations'>
+                <List items={integrations} defaultComponent={Integration} />
+              </div>
+            </MenuItem>
+          ) : null}
+          {this.props.showWIP ? (
+            <MenuItem
+              label='Settings'
+            >
+              <div className='settings'>
+                settings
+              </div>
+            </MenuItem>
+          ) : null}
+          {this.props.showWIP ? (
+            <MenuItem
+              label='Get the app'
+            >
+              <div className='apps'>
+                <List items={computerApps} defaultComponent={Integration} />
+                <List items={phoneApps} defaultComponent={Integration} />
+                <Integration
+                  key='request-new-device'
+                  data={{
+                    name: 'Other devices',
+                    icon: '/static/plus.svg',
+                    alt: 'Request support for another class of device'
+                  }}
+                />
+              </div>
+            </MenuItem>
+          ) : null}
+          <Links dict={this.props.dict} showWIP={this.props.showWIP} />
+        </div>
         <style jsx>{`
           .menu {
             position: fixed;
             top: 0;
             right: 0;
-            width: ${lengths.rowHeight};
-            max-width: 640px;
+            max-width: ${lengths.rowHeight};
             border-radius: 0 0 0 3px;
             font-size: medium;
             z-index: 4;
             color: ${colors.text};
             background-color: ${colors.textBg};
-            transition-property: width, height, background-color;
-            transition-duration: ${durations.instant};
+            transition-property: max-width, max-height, background-color;
+            transition-duration: ${durations.moment};
+            transition-timing-function: ${tfns.easeInOutCirc};
             font-family: palatino;
             box-shadow: -5px 0 5px 0px rgb(0, 0, 0, 0.25);
             .tab {
@@ -139,6 +209,7 @@ class Menu extends Component {
             .branding, .connectivity, .contents {
               transition-property: opacity;
               transition-duration: ${durations.instant};
+              transition-timing-function: ${tfns.easeInOutQuad};
             }
             .face {
               margin: 5px;
@@ -153,14 +224,33 @@ class Menu extends Component {
               background-color: ${colors.hosting};
             }
             .contents {
-              margin-top: ${lengths.rowHeight};
-              text-align: right;
-              padding: 5px;
+              text-align: center;
+              .login {
+                label {
+                  padding: 10px;
+                  font-family: monospace;
+                  font-size: 2em;
+                  input {
+                    margin-bottom: 5px;
+                    font-size: medium;
+                    line-height: 2em;
+                    font-family: sans-serif;
+                  }
+                }
+              }
+              .integrations {
+                :global(li) {
+                  display: inline-block;
+                }
+              }
+              .apps :global(.list li) {
+                display: inline-block;
+              }
             }
           }
           @media (min-width: ${lengths.mediaWidth}) {
             .menu {
-              width: ${lengths.menuWidth};
+              max-width: ${lengths.menuWidth};
               .branding, .connectivity {
                 opacity: 1;
               }
@@ -174,6 +264,7 @@ class Menu extends Component {
 
 const props = [
   { name: 'dict', type: PropTypes.object.isRequired },
+  { name: 'showWIP', type: PropTypes.bool, val: false },
   { name: 'notify', type: PropTypes.func, val: console.log },
   { name: 'dispatch', type: PropTypes.func.isRequired },
   { name: 'socket', type: PropTypes.object.isRequired }

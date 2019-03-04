@@ -34,6 +34,7 @@ const exampleInitialState = {
     showHistory: false,
     showUpNext: true,
     showFiles: false,
+    showWIP: false,
     partyCollapsed: true,
     dragging: false,
     pending: {}

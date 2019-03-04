@@ -15,6 +15,7 @@ class Links extends Component {
     return (
       <footer className={classes.join(' ')}>
         <ul>
+          {this.props.showWIP ? (<li><a href='/pricing'>Pricing</a></li>) : null}
           <li><a href='https://github.com/shawninder/music/blob/master/static/texts/faq.en.md#faq' target='_blank'><acronym title='Frequently Asked Questions'>FAQ</acronym></a></li>
           <li><a href='https://github.com/shawninder/music/blob/master/static/texts/privacy.en.md#privacy-policy' target='_blank'>Privacy</a></li>
           <li><a href='https://github.com/shawninder/music/blob/master/static/texts/terms.en.md#terms' target='_blank'>Terms</a></li>
@@ -26,7 +27,8 @@ class Links extends Component {
             ul {
               list-style: none;
               li {
-                margin: 2px;
+                margin: 2px 8px;
+                display: inline-block;
                 a {
                   cursor: pointer;
                   color: ${colors.link};

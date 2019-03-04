@@ -88,6 +88,7 @@ class App extends Component {
     this.toggleShowHistory = this.toggleShowHistory.bind(this)
     this.toggleShowUpNext = this.toggleShowUpNext.bind(this)
     this.toggleShowFiles = this.toggleShowFiles.bind(this)
+    this.toggleWIP = this.toggleWIP.bind(this)
     this.jumpTo = this.jumpTo.bind(this)
     this.jumpBackTo = this.jumpBackTo.bind(this)
     this.restartTrack = this.restartTrack.bind(this)
@@ -586,6 +587,12 @@ class App extends Component {
     })
   }
 
+  toggleWIP (data) {
+    this.dispatch({
+      type: 'App:toggleWIP'
+    })
+  }
+
   jumpTo (data, idx) {
     this.dispatch({
       type: 'Queue:jumpTo',
@@ -1070,7 +1077,7 @@ class App extends Component {
                 background: ${alpha(colors.text, 1 - colors.opacity)};
                 color: ${colors.textBg};
                 position: relative;
-                margin-bottom: 360px;
+                margin-bottom: ${lengths.mediaHeight};
                 :global(.Artwork) {
                   top: 0;
                   left: 0;
@@ -1094,6 +1101,16 @@ class App extends Component {
               }
               .postQueue {
                 margin: ${lengths.rowHeight} 0;
+              }
+              .warning {
+                display: block;
+                padding: 5px;
+                width: 100%;
+                text-align: center;
+                a {
+                  margin-left: ${lengths.rowHeight};
+                  text-decoration: underline;
+                }
               }
             }
           `}</style>
@@ -1124,14 +1141,15 @@ class App extends Component {
               ResultComponent={YouTube}
               onResult={this.getTrackEvents()}
               commands={{
+                clearAll: this.clearAll,
                 clearHistory: this.clearHistory,
                 clearPlayingNow: this.clearPlayingNow,
                 clearUpNext: this.clearUpNext,
-                clearAll: this.clearAll,
+                inspectPartyServer: this.inspectPartyServer,
+                file: this.file,
                 toggleShowHistory: this.toggleShowHistory,
                 toggleShowUpNext: this.toggleShowUpNext,
-                inspectPartyServer: this.inspectPartyServer,
-                file: this.file
+                toggleWIP: this.toggleWIP
               }}
               filters={{
                 // TODO
@@ -1160,8 +1178,19 @@ class App extends Component {
               dispatch={this.dispatch}
               dict={this.dict}
               notify={this.props.notify}
+              showWIP={this.props.app.showWIP}
             />
             <main>
+              {this.props.app.showWIP ? (
+                <mark className='warning'>
+                  Unfinished features enabled
+                  <a
+                    onClick={(event) => {
+                      this.dispatch({ type: 'App:toggleWIP' })
+                    }}
+                  >deactivate</a>
+                </mark>
+              ) : null}
               <Header
                 dict={this.dict}
                 notify={this.props.notify}
