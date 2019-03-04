@@ -58,11 +58,22 @@ class Menu extends Component {
       maxWidth: '100vw',
       maxHeight: '100vh',
       overflowY: 'scroll',
-      overflowScrolling: 'touch'
+      overflowScrolling: 'touch',
+      transition: `max-width ${durations.moment} ${tfns.easeInOutQuad}, max-height ${durations.moment} ${durations.instant} ${tfns.easeInOutQuad}`
     }
     const collapsed = {
-      overflow: 'hidden',
-      maxHeight: lengths.collapsedHeight
+      overflowY: 'hidden',
+      maxHeight: lengths.collapsedHeight,
+      transition: `max-width ${durations.moment} ${durations.shortMoment} ${tfns.easeInOutQuad}, max-height ${durations.moment} ${tfns.easeInOutQuad}`
+    }
+
+    const visible = {
+      transition: `opacity ${durations.moment} ${tfns.easeInExpo}`,
+      opacity: 1
+    }
+    const invisible = {
+      transition: `opacity ${durations.moment} ${tfns.easeOutExpo}`,
+      opacity: 0
     }
 
     const integrations = [
@@ -91,10 +102,10 @@ class Menu extends Component {
         style={this.state.collapsed ? collapsed : opened}
       >
         <div className='tab' onClick={this.onClick}>
-          <span className='branding' style={this.state.collapsed ? {} : { opacity: 1 }}>Crowd's Play</span>
+          <span className='branding' style={this.state.collapsed ? {} : visible}>Crowd's Play</span>
           <span
             className='connectivity'
-            style={this.state.collapsed ? {} : { opacity: 1 }}
+            style={this.state.collapsed ? {} : visible}
           >
             <Engine
               on={this.props.socket.connected}
@@ -102,7 +113,7 @@ class Menu extends Component {
           </span>
           <Image className='face' />
         </div>
-        <div className='contents' style={this.state.collapsed ? { opacity: 0 } : { opacity: 1 }}>
+        <div className='contents' style={this.state.collapsed ? invisible : visible}>
           {this.props.showWIP ? (
             <MenuItem
               label='Login'
@@ -164,9 +175,6 @@ class Menu extends Component {
             z-index: 4;
             color: ${colors.text};
             background-color: ${colors.textBg};
-            transition-property: max-width, max-height, background-color;
-            transition-duration: ${durations.moment};
-            transition-timing-function: ${tfns.easeInOutCirc};
             font-family: palatino;
             box-shadow: -5px 0 5px 0px rgb(0, 0, 0, 0.25);
             .tab {
@@ -205,11 +213,6 @@ class Menu extends Component {
                 color: ${colors.dangerousBg};
                 background-color: ${colors.dangerousText};
               }
-            }
-            .branding, .connectivity, .contents {
-              transition-property: opacity;
-              transition-duration: ${durations.instant};
-              transition-timing-function: ${tfns.easeInOutQuad};
             }
             .face {
               margin: 5px;

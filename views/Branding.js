@@ -24,6 +24,7 @@ import Sad from '../components/icons/Sad'
 import Dict from '../data/Dict.js'
 import Range from '../components/Range'
 import Links from '../components/Links'
+import TimingFunction from '../components/TimingFunction'
 
 import AudioFile from '../components/AudioFile'
 import YouTube from '../components/YouTube'
@@ -34,7 +35,7 @@ import resetStyles from '../styles/reset'
 
 import colors from '../styles/colors'
 import lengths from '../styles/lengths'
-
+import tfns from '../styles/timing-functions'
 import alpha from '../helpers/alpha'
 
 import txt from '../data/txt'
@@ -127,6 +128,12 @@ class Branding extends Component {
               height: 1em;
               font-weight: bold;
               background: ${colors.hostingBg}
+            }
+          }
+
+          .tfns {
+            label {
+              margin-right: 30px;
             }
           }
 
@@ -257,7 +264,9 @@ class Branding extends Component {
             background: ${colors.textBg};
           }
         `}</style>
-        <Menu socket={{ connected: true }} dict={this.dict} />
+        <Menu socket={{ connected: true }} dict={this.dict} dispatch={(action) => {
+          console.log('Branding page getting a dispatch?', action)
+        }} />
         <h1>Branding</h1>
         <dl>
           <dt>Icon</dt>
@@ -301,6 +310,18 @@ class Branding extends Component {
               })}
             </ul>
           </dd>
+          <dt id='timing-functions'>Timing functions</dt>
+          <dd>
+            <ul className='tfns'>
+              {Object.keys(tfns).map((tfn) => {
+                return (
+                  <li key={tfn} style={{ display: 'inline-block', margin: '20px' }}>
+                    <TimingFunction name={tfn} fn={tfns[tfn]} />
+                  </li>
+                )
+              })}
+            </ul>
+          </dd>
           <dt>Indicators</dt>
           <dd>
             <ul className='indicators'>
@@ -317,7 +338,7 @@ class Branding extends Component {
               <li className='result'>
                 <YouTube
                   data={{
-                    key: 'tintin',
+                    key: 'first-result',
                     snippet: {
                       thumbnails: {
                         default: {
@@ -333,7 +354,7 @@ class Branding extends Component {
               <li className='result'>
                 <YouTube
                   data={{
-                    key: 'tintin',
+                    key: 'result-even',
                     snippet: {
                       thumbnails: {
                         default: {
@@ -349,7 +370,7 @@ class Branding extends Component {
               <li className='result'>
                 <YouTube
                   data={{
-                    key: 'tintin',
+                    key: 'result-odd',
                     snippet: {
                       thumbnails: {
                         default: {
@@ -368,7 +389,7 @@ class Branding extends Component {
               <li className='history'>
                 <YouTube
                   data={{
-                    key: 'tintin',
+                    key: 'queued-history',
                     inQueue: true,
                     queueIndex: -1,
                     snippet: {
@@ -387,7 +408,7 @@ class Branding extends Component {
               <li className='playingNow'>
                 <YouTube
                   data={{
-                    key: 'tintin',
+                    key: 'queued-now',
                     inQueue: true,
                     queueIndex: 0,
                     snippet: {
@@ -406,7 +427,7 @@ class Branding extends Component {
               <li className='upNext'>
                 <YouTube
                   data={{
-                    key: 'tintin',
+                    key: 'queued-upnext',
                     inQueue: true,
                     queueIndex: 1,
                     snippet: {
@@ -424,6 +445,7 @@ class Branding extends Component {
               <li className='upNext'>
                 <AudioFile
                   data={{
+                    id: 'audio-upnext',
                     inQueue: true,
                     queueIndex: 2,
                     meta: {
@@ -483,7 +505,7 @@ class Branding extends Component {
               </li>
             </ul>
           </dd>
-          <dt>Messages</dt>
+          {/* <dt>Messages</dt>
           <dd>
             <NoticeList
               notices={[{
@@ -501,7 +523,7 @@ class Branding extends Component {
               }]}
               showing
             />
-          </dd>
+          </dd> */}
           <dt className='links'>Links</dt>
           <dd className='links'><Links dict={this.dict} /></dd>
         </dl>
