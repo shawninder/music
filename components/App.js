@@ -37,9 +37,9 @@ import jumpBackToIcon from './icons/jumpBackTo'
 import enqueueIcon from './icons/enqueue'
 import nextIcon from './icons/next'
 import dequeueIcon from './icons/dequeue'
-// import AddIcon from './icons/AddWink'
-// import PlayRandom from './icons/PlayRandom'
-// import TrackButton from './TrackButton'
+import AddIcon from './icons/AddWink'
+import PlayRandom from './icons/PlayRandom'
+import TrackButton from './TrackButton'
 
 import colors from '../styles/colors'
 import alpha from '../helpers/alpha'
@@ -810,7 +810,8 @@ class App extends Component {
             return (
               <ol ref={droppableProvided.innerRef} key='playingNow-droppable'>
                 <li className='emptyDropZone' key='playingNow-emptyDropZone'>
-                  <Spotlight />
+                  <Spotlight variant='surprised' />
+                  <p className='spotlight-caption'>Your playlist is empty...</p>
                 </li>
                 {droppableProvided.placeholder}
               </ol>
@@ -1060,6 +1061,10 @@ class App extends Component {
                   filter: blur(5px);
                 }
               }
+              :global(.spotlight-caption) {
+                text-align: center;
+                padding: 10px;
+              }
               .history {
                 opacity: 1;
                 transition-property: opacity;
@@ -1100,7 +1105,8 @@ class App extends Component {
                 }
               }
               .postQueue {
-                margin: ${lengths.rowHeight} 0;
+                margin: ${lengths.rowHeight} auto;
+                max-width: ${lengths.mediaWidth};
               }
               .warning {
                 display: block;
@@ -1299,28 +1305,30 @@ class App extends Component {
                 areDraggable
                 emptyComponent={<li key='upNext-emptyDropZone'><p className='emptyDropZone'>{this.dict.get('queue.upNext.emptyZone')}</p></li>}
               />
-              {/* <section className='postQueue'>
-                <TrackButton
-                  icon={PlayRandom}
-                  caption={(state.queue.now.key || state.queue.upNext.length > 0)
-                    ? 'Add random track'
-                    : 'Play random track'}
-                  onClick={() => {
-                    if (state.queue.now.key || state.queue.upNext.length > 0) {
-                      this.addRandom()
-                    } else {
-                      this.playRandom()
-                    }
-                  }}
-                />
-                <TrackButton
-                  icon={AddIcon}
-                  caption='Add a track from your device'
-                  onClick={() => {
-                    console.log('+track')
-                  }}
-                />
-              </section> */}
+              {this.props.app.showWIP ? (
+                <section className='postQueue'>
+                  <TrackButton
+                    icon={PlayRandom}
+                    caption={(state.queue.now.key || state.queue.upNext.length > 0)
+                      ? 'Add random track'
+                      : 'Play random track'}
+                    onClick={() => {
+                      if (state.queue.now.key || state.queue.upNext.length > 0) {
+                        this.addRandom()
+                      } else {
+                        this.playRandom()
+                      }
+                    }}
+                  />
+                  <TrackButton
+                    icon={AddIcon}
+                    caption='Add a track from your device'
+                    onClick={() => {
+                      console.log('+track')
+                    }}
+                  />
+                </section>
+              ) : null}
               <Feedback
                 dispatch={this.dispatch}
                 notify={this.props.notify}
@@ -1346,13 +1354,6 @@ class App extends Component {
                 this.toggleShowFiles()
               }}
               newFileInput={() => {
-                // if (this.props.party.attending) {
-                //   this.props.notify({
-                //     id: Math.random().toString().slice(2),
-                //     body: 'Still working on this feature, stay tuned!',
-                //     duration: 5000
-                //   })
-                // } else {
                 this.dispatch({
                   type: 'FileInput:new',
                   idx: this.props.fileInput.files.length > 0 ? this.props.fileInput.files.length - 1 : 0
@@ -1360,9 +1361,9 @@ class App extends Component {
                 if (!this.props.app.showFiles) {
                   this.toggleShowFiles()
                 }
-                // }
               }}
               showingFiles={this.props.app.showFiles}
+              showWIP={this.props.app.showWIP}
             />
             <FilesDialog
               items={this.props.fileInput.files}

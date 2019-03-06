@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import MrJingles from './Happy'
+import SadMrJingles from './Sad'
 
 import colors from '../../styles/colors'
 
@@ -33,7 +34,11 @@ class Spotlight extends Component {
           }
         `}</style>
         <MrJingles className='jingles' key='jingles' />
-        <MrJingles className='jingles-shadow' key='jingles-shadow' />
+        {this.props.variant === 'surprised' ? (
+          <SadMrJingles className='jingles-shadow' key='jingles-shadow' />
+        ) : (
+          <MrJingles className='jingles-shadow' key='jingles-shadow' />
+        )}
       </div>
     )
   }

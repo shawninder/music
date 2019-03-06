@@ -4,7 +4,7 @@ import Range from './Range'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
-// import AddIcon from './icons/AddWink'
+import AddIcon from './icons/AddWink'
 import prevIcon from './icons/prev'
 import playIcon from './icons/play'
 import pauseIcon from './icons/pause'
@@ -45,18 +45,25 @@ class Controls extends Component {
         />
 
         <div key='controls-buttons' className='controls-buttons'>
-          <p className='controls-newFile'>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-          <p className='controls-toggleFiles'>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-          {/* <button className='controls-newFile' onClick={this.props.newFileInput}>
-            <AddIcon />
-          </button>
-          <button
-            key='controls-toggleFiles'
-            className={`controls-toggleFiles${this.props.showingFiles ? ' showingFiles' : ''}${this.props.nbFiles > 0 ? ' hasFiles' : ''}`}
-            onClick={this.props.toggleShowFiles}
-          >
-            ({this.props.nbFiles})
-          </button> */}
+          {this.props.showWIP ? (
+            <React.Fragment>
+              <button className='controls-newFile' onClick={this.props.newFileInput}>
+                <AddIcon />
+              </button>
+              <button
+                key='controls-toggleFiles'
+                className={`controls-toggleFiles${this.props.showingFiles ? ' showingFiles' : ''}${this.props.nbFiles > 0 ? ' hasFiles' : ''}`}
+                onClick={this.props.toggleShowFiles}
+              >
+                ({this.props.nbFiles})
+              </button>
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <p className='controls-newFile'>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+              <p className='controls-toggleFiles'>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+            </React.Fragment>
+          )}
           <button
             key='controls-prev'
             className='controls-prev'
@@ -202,16 +209,11 @@ class Controls extends Component {
               "addMedia lspace prev togglePlaying next rspace volume";
             background: #333333;
           }
-          .controls-buttons svg {
-            width: 20px;
-          }
           .controls button:hover {
             color: ${colors.primaryBg};
           }
           .controls-newFile {
             grid-area: addMedia;
-            font-size: xx-large;
-            padding: 10px;
           }
           .controls-toggleFiles {
             border: 3px solid transparent;
@@ -267,8 +269,7 @@ class Controls extends Component {
           button {
             padding: 10px 5px;
             font-weight: bold;
-            -webkit-appearance: none;
-            -moz-appearance: none;
+            appearance: none;
           }
           button:focus {
             outline: none;
@@ -299,7 +300,8 @@ const props = [
   { name: 'toggleShowFiles', type: PropTypes.func.isRequired },
   { name: 'newFileInput', type: PropTypes.func.isRequired },
   { name: 'nbFiles', type: PropTypes.number, val: 0 },
-  { name: 'showingFiles', type: PropTypes.bool, val: 0 }
+  { name: 'showingFiles', type: PropTypes.bool, val: 0 },
+  { name: 'showWIP', type: PropTypes.bool, val: false }
 ]
 
 Controls.defaultProps = defaultProps(props)

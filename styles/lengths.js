@@ -1,6 +1,5 @@
 export const rowHeight = '50px'
 export const collapsedHeight = '53px'
-export const connectivityWidth = '20px'
 export const noticeRadius = '10px'
 export const iconWidth = '40px'
 export const menuWidth = '160px'
@@ -19,6 +18,5 @@ export default {
   toggleHeight,
   minWidth,
   mediaWidth,
-  collapsedHeight,
-  connectivityWidth
+  collapsedHeight
 }

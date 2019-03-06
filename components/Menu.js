@@ -15,8 +15,6 @@ import Links from './Links'
 import Happy from './icons/Happy'
 import Sad from './icons/Sad'
 
-import Engine from './icons/Engine'
-
 class Menu extends Component {
   constructor (props) {
     super(props)
@@ -103,14 +101,6 @@ class Menu extends Component {
       >
         <div className='tab' onClick={this.onClick}>
           <span className='branding' style={this.state.collapsed ? {} : visible}>Crowd's Play</span>
-          <span
-            className='connectivity'
-            style={this.state.collapsed ? {} : visible}
-          >
-            <Engine
-              on={this.props.socket.connected}
-            />
-          </span>
           <Image className='face' />
         </div>
         <div className='contents' style={this.state.collapsed ? invisible : visible}>
@@ -191,29 +181,6 @@ class Menu extends Component {
               left: 0;
               opacity: 0;
             }
-            .connectivity {
-              position: absolute;
-              top: 1.5em;
-              left: 0;
-              padding: 5px;
-              font-size: small;
-              text-transform: uppercase;
-              opacity: 0;
-              :global(svg) {
-                width: ${lengths.connectivityWidth};
-                height: ${lengths.connectivityWidth};
-                border-radius: ${lengths.connectivityWidth};
-                fill: currentColor;
-              }
-              :global(svg.on) {
-                color: ${colors.attendingBg};
-                background-color: ${colors.primary};
-              }
-              :global(svg.off) {
-                color: ${colors.dangerousBg};
-                background-color: ${colors.dangerousText};
-              }
-            }
             .face {
               margin: 5px;
               width: 30px;
@@ -254,7 +221,7 @@ class Menu extends Component {
           @media (min-width: ${lengths.mediaWidth}) {
             .menu {
               max-width: ${lengths.menuWidth};
-              .branding, .connectivity {
+              .branding {
                 opacity: 1;
               }
             }

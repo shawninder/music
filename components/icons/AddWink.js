@@ -4,7 +4,7 @@ import SvgSkeleton from '../SvgSkeleton'
 export default (props) => {
   return (
     <SvgSkeleton
-      viewBox='0 0 2080.7722 2080.7722'
+      viewBox='0 0 1463.8301 1412.9669'
       className={props.className}
     >
       <g transform='matrix(0.18247811,0,0,0.18247811,4.555025e-6,894.77303)'>
