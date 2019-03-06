@@ -61,7 +61,7 @@ Generic helpers destined to be moved out to their own repos
 App styles
 
 ### static/...
-Static assets accessible via `/static/...`
+Static assets accessible via `/static/...`, including privacy policy, terms, faq, pricing
 
 ### store.js
 - State store
@@ -82,5 +82,5 @@ What the name implies
 ### withBabelCacheBusting
 A Next.js-targetted webpack configuration "middleware" destined to be moved to its own repo
 
-### ...md
-Notes for eventual documentation
+### Markdown files
+Notes for eventual documentation, including this file
