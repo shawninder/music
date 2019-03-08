@@ -30,7 +30,9 @@ class Range extends Component {
   startSeeking (event) {
     this.followSeek(event)
     global.addEventListener('mousemove', this.followSeek, false)
+    global.addEventListener('touchmove', this.followSeek, false)
     global.addEventListener('mouseup', this.endSeek, false)
+    global.addEventListener('touchend', this.endSeek, false)
   }
 
   followSeek (event) {
@@ -48,7 +50,9 @@ class Range extends Component {
 
   endSeek (event) {
     global.removeEventListener('mousemove', this.followSeek, false)
+    global.removeEventListener('touchmove', this.followSeek, false)
     global.removeEventListener('mouseup', this.endSeek, false)
+    global.removeEventListener('touchend', this.endSeek, false)
     const value = this.eventValue(event)
     this.props.onChange(value)
     this.setState({
@@ -72,7 +76,12 @@ class Range extends Component {
   }
 
   eventValue (event) {
-    const pos = this.props.vertical ? event.clientY : event.clientX
+    const touches = (event.touches && event.touches.length > 0)
+      ? event.touches
+      : null
+    const x = (touches) ? touches[0].clientX : event.clientX
+    const y = (touches) ? touches[0].clientY : event.clientY
+    const pos = this.props.vertical ? y : x
     const el = event.target
 
     // TODO this is all really risky, find better way
@@ -105,75 +114,79 @@ class Range extends Component {
     }
     return (
       <div
-        className={classes.join(' ')}
-        onMouseUp={(event) => {
-          this.props.onChange(this.eventValue(event))
-        }}
+        className='container'
         onMouseDown={this.startSeeking}
+        onTouchStart={this.startSeeking}
+        onMouseUp={this.endSeek}
+        onTouchEnd={this.endSeek}
         ref={this.onRef}
       >
-        <div
-          className='current'
-          style={this.props.vertical ? {
-            height: currentPercentage
-          } : {
-            width: currentPercentage
-          }}
-          ref={(el) => {
-            this.currentEl = el
-          }}
-        />
-        <div
-          className='handle'
-          style={this.props.vertical ? {
-            bottom: handleTarget
-          } : {
-            marginLeft: handleTarget
-          }}
-          ref={(el) => {
-            this.handleEl = el
-          }}
-        />
+        <div className={classes.join(' ')}>
+          <div
+            className='current'
+            style={this.props.vertical ? {
+              height: currentPercentage
+            } : {
+              width: currentPercentage
+            }}
+            ref={(el) => {
+              this.currentEl = el
+            }}
+          />
+          <div
+            className='handle'
+            style={this.props.vertical ? {
+              bottom: handleTarget
+            } : {
+              marginLeft: handleTarget
+            }}
+            ref={(el) => {
+              this.handleEl = el
+            }}
+          />
+        </div>
         <style jsx>{`
-          .range {
-            position: relative;
-            cursor: pointer;
-            border: 1px solid black;
-            background-color: ${colors.text};
-            .handle {
-              position: absolute;
-              opacity: 0;
-              transition-property: opacity;
-              transition-duration: ${durations.instant};
-              border-radius: 5px;
-              border: 1px solid rgba(255, 0, 0, 0.4);
-            }
-            .current {
-              background-color: red;
-            }
-            &.horizontal {
+          .container {
+            .range {
+              position: relative;
+              cursor: pointer;
+              border: 1px solid black;
+              background-color: ${colors.text};
               .handle {
-                left: -15px;
-              }
-              .current {
-                height: 100%;
-              }
-            }
-            &.vertical {
-              display: inline-block;
-              .handle {
-                margin-bottom: -15px;
-                bottom: 0;
-              }
-              .current {
-                width: 100%;
                 position: absolute;
-                bottom: 0;
+                opacity: 0;
+                transition-property: opacity;
+                transition-duration: ${durations.instant};
+                border-radius: 5px;
+                border: 1px solid rgba(255, 0, 0, 0.4);
               }
-            }
-            &.seeking {
-              .handle {
-                opacity: 1;
+              .current {
+                background-color: red;
+              }
+              &.horizontal {
+                .handle {
+                  left: -15px;
+                }
+                .current {
+                  height: 100%;
+                }
+              }
+              &.vertical {
+                display: inline-block;
+                .handle {
+                  margin-bottom: -15px;
+                  bottom: 0;
+                }
+                .current {
+                  width: 100%;
+                  position: absolute;
+                  bottom: 0;
+                }
+              }
+              &.seeking {
+                .handle {
+                  opacity: 1;
+                }
               }
             }
           }
