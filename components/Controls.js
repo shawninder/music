@@ -41,6 +41,7 @@ class Controls extends Component {
           className='seek-bar'
           onChange={this.props.seekTo}
           current={this.props.f}
+          live
         />
 
         <div key='controls-buttons' className='controls-buttons'>

@@ -229,6 +229,8 @@ class App extends Component {
     this.props.dispatch(action)
     if (action.type === 'Player:setVolume') {
       this.setPlayerVolume(action.value)
+    } else if (action.type === 'Queue:seekTo') {
+      this.seekTo(action.value)
     }
     if (action.origin) {
       this.props.dispatch({
@@ -634,7 +636,7 @@ class App extends Component {
         type: 'Queue:seekTo',
         value
       })
-    } else if (this.playerEl) {
+    } else if (this.playerEl && value) {
       this.playerEl.seekTo(value)
     }
   }
