@@ -11,7 +11,7 @@ import tfns from '../styles/timing-functions'
 import List from './List'
 import MenuItem from './MenuItem'
 import Integration from './Integration'
-import Links from './Links'
+import Footer from './Footer'
 import Happy from './icons/Happy'
 import Sad from './icons/Sad'
 
@@ -152,7 +152,7 @@ class Menu extends Component {
               </div>
             </MenuItem>
           ) : null}
-          <Links dict={this.props.dict} showWIP={this.props.showWIP} />
+          <Footer dict={this.props.dict} showWIP={this.props.showWIP} />
         </div>
         <style jsx>{`
           .menu {

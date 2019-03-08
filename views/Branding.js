@@ -23,7 +23,7 @@ import Happy from '../components/icons/Happy'
 import Sad from '../components/icons/Sad'
 import Dict from '../data/Dict.js'
 import Range from '../components/Range'
-import Links from '../components/Links'
+import Footer from '../components/Footer'
 import TimingFunction from '../components/TimingFunction'
 
 import AudioFile from '../components/AudioFile'
@@ -524,8 +524,8 @@ class Branding extends Component {
               showing
             />
           </dd> */}
-          <dt className='links'>Links</dt>
-          <dd className='links'><Links dict={this.dict} /></dd>
+          <dt className='links'>Footer</dt>
+          <dd className='links'><Footer dict={this.dict} /></dd>
         </dl>
       </div>
     )
