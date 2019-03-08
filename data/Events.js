@@ -3,14 +3,14 @@ const fetch = require('isomorphic-unfetch')
 const qs = require('querystring')
 
 class Events {
-  search ({ query, limit = 10 }, nextPageToken, adminUsername, adminPassword) {
+  search ({ query, limit = 10, aggregate = false }, nextPageToken, adminUsername, adminPassword) {
     // Look in memory
     // Look in local and session storage
     // Look in network
     // Look online
     const start = Date.now()
     const token = btoa(`${adminUsername}:${adminPassword}`)
-    return fetch(`${process.env.API_URL}/logs?${qs.stringify({
+    return fetch(`${process.env.API_URL}/${aggregate ? 'aggs' : 'logs'}?${qs.stringify({
       q: query,
       l: limit,
       pageToken: nextPageToken

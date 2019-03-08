@@ -14,7 +14,6 @@ import Log from '../components/Log'
 import resetStyles from '../styles/reset'
 import baseStyles from '../styles/base'
 import colors from '../styles/colors'
-import lengths from '../styles/lengths'
 
 // const isServer = typeof window === 'undefined'
 
@@ -87,7 +86,10 @@ const errorEvents = [
 class Timeline extends Component {
   constructor (props) {
     super(props)
-    this.loadMode = this.getLogs.bind(this)
+    this.refresh = this.refresh.bind(this)
+    this.getLogs = this.getLogs.bind(this)
+    this.aggLogs = this.aggLogs.bind(this)
+    this.getQuery = this.getQuery.bind(this)
 
     this.state = {
       lifecycle: true,
@@ -103,10 +105,15 @@ class Timeline extends Component {
       maxGuests: 0,
       from: moment().subtract(2, 'months').startOf('month').format('YYYY-MM-DD'),
       to: moment().endOf('month').format('YYYY-MM-DD'),
-      items: []
+      logs: [],
+      aggs: []
     }
   }
-  getLogs () {
+  refresh () {
+    this.getLogs()
+    this.aggLogs()
+  }
+  getQuery () {
     const query = {}
     const $and = []
     if (this.state.playlistName) {
@@ -154,12 +161,35 @@ class Timeline extends Component {
         query.$and = $and
       }
     }
-    console.log('query object', JSON.stringify(query, null, 2))
+    return query
+  }
+  getLogs () {
+    const query = this.getQuery()
+    console.log('log query', JSON.stringify(query, null, 2))
     this.props.findLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
       if (items.length > 0) {
-        this.setState({ items })
+        this.setState({ logs: items })
       } else {
-        this.setState({ items: [] })
+        this.setState({ logs: [] })
+      }
+    })
+  }
+  aggLogs () {
+    const query = []
+    query.push({ $match: this.getQuery() })
+    query.push({
+      $group: {
+        _id: { month: { $month: '$_id' }, day: { $dayOfMonth: '$_id' }, year: { $year: '$_id' } },
+        count: { $sum: 1 }
+      }
+    })
+    console.log('AGG query', JSON.stringify(query, null, 2))
+    this.props.aggLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
+      console.log('AGG items', items)
+      if (items.length > 0) {
+        this.setState({ aggs: items })
+      } else {
+        this.setState({ aggs: [] })
       }
     })
   }
@@ -174,7 +204,7 @@ class Timeline extends Component {
               update[event.target.value] = event.target.checked
               this.setState(update)
               setTimeout(() => {
-                this.getLogs()
+                this.refresh()
               }, 10)
               break
             }
@@ -194,7 +224,7 @@ class Timeline extends Component {
         }}
         onKeyPress={(event) => {
           if (event.key === 'Enter' && !event.ctrlKey && !event.altKey && !event.shiftKey) {
-            this.getLogs()
+            this.refresh()
           }
         }}
       >
@@ -229,9 +259,6 @@ class Timeline extends Component {
               margin: 10px;
             }
           }
-          .heatmap {
-            max-height: ${lengths.menuWidth};
-          }
           .searchButton {
             border-color: ${colors.primaryText};
             color: ${colors.primaryText};
@@ -259,19 +286,18 @@ class Timeline extends Component {
             <label>from: <input type='text' name='from' defaultValue={this.state.from} /></label>
             <label>to: <input type='text' name='to' defaultValue={this.state.to} /></label>
             <Heatmap
-              className='heatmap'
               startDate={this.state.from}
               endDate={this.state.to}
-              items={this.state.items}
+              items={this.state.aggs}
             />
           </section>
           <section className='buttons'>
             <button className='searchButton' onClick={(event) => {
-              this.getLogs()
+              this.refresh()
             }}>Search</button>
           </section>
           <section className='hits'>
-            <List items={this.state.items} defaultComponent={Log} />
+            <List items={this.state.logs} defaultComponent={Log} />
           </section>
         </div>
       </div>

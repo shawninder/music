@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import Timeline from '../views/Timeline.js'
 
 import findLogs from '../actionCreators/findLogs'
+import aggLogs from '../actionCreators/aggLogs'
 import dispatch from '../actionCreators/dispatch'
 
 function mapStateToProps (state) {
@@ -14,7 +15,8 @@ function mapStateToProps (state) {
 const mapDispatchToProps = (_dispatch) => {
   return bindActionCreators({
     dispatch,
-    findLogs
+    findLogs,
+    aggLogs
   }, _dispatch)
 }
 
