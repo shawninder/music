@@ -23,7 +23,7 @@ export default function playerReducer (state = {}, action) {
       }
       break
     case 'Player:setVolume':
-      newState.v = action.value
+      newState.v = action.value ? action.value : state.v
       break
   }
   return newState

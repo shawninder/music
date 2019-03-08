@@ -54,11 +54,13 @@ class Range extends Component {
     global.removeEventListener('mouseup', this.endSeek, false)
     global.removeEventListener('touchend', this.endSeek, false)
     const value = this.eventValue(event)
-    this.props.onChange(value)
-    this.setState({
-      seeking: false,
-      seekingTo: value
-    })
+    if (value) {
+      this.props.onChange(value)
+      this.setState({
+        seeking: false,
+        seekingTo: value
+      })
+    }
   }
 
   onTouchMove (event) {
