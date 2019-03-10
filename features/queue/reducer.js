@@ -1,49 +1,8 @@
 import cloneDeep from 'lodash.clonedeep'
 
-function getItems (action) {
-  let items = cloneDeep(action.data)
-  if (!Array.isArray(items)) {
-    return [items]
-  }
-  return items
-}
-
-function playNext (state, action) {
-  const newState = cloneDeep(state)
-  let items = getItems(action)
-  items = items.map((item, idx) => {
-    item.inQueue = true
-    item.queueIndex = 1 + idx
-    if (action.origin) {
-      item.origin = action.origin
-    }
-    return item
-  })
-  newState.upNext = items.concat(newState.upNext.map((upcoming, idx) => {
-    upcoming.queueIndex = items.length + idx + 1
-    return upcoming
-  }))
-  return newState
-}
-function toHistory (state, action) {
-  const newState = cloneDeep(state)
-  let items = getItems(action)
-  newState.history = newState.history
-    .map((item, idx) => {
-      item.inQueue = true
-      item.queueIndex = -idx - 1 - items.length
-      return item
-    })
-    .concat(items.map((item, idx) => {
-      item.inQueue = true
-      item.queueIndex = -idx - 1
-      if (action.origin) {
-        item.origin = action.origin
-      }
-      return item
-    }))
-  return newState
-}
+import reIndexQueue from './reIndex'
+import playNext from './playNext'
+import toHistory from './toHistory'
 
 export default function queueReducer (state = {}, action) {
   let newState = cloneDeep(state)
@@ -124,7 +83,7 @@ export default function queueReducer (state = {}, action) {
           history.push(cloneDeep(item))
         }
 
-        // Play next track
+        // Shift UpNext and Play next track
         const next = upNext.shift()
         upNext = upNext.map((item, idx) => {
           item.queueIndex = 1 + idx
@@ -134,8 +93,6 @@ export default function queueReducer (state = {}, action) {
         next.key = next.key.slice(0, next.key.lastIndexOf(';'))
         next.queueIndex = 0
         newState.now = next
-      } else {
-        // TODO
       }
       newState.history = history
       newState.upNext = upNext
@@ -217,22 +174,5 @@ export default function queueReducer (state = {}, action) {
       break
     }
   }
-  return newState
-}
-
-function reIndexQueue (newState) {
-  const hLen = newState.history.length
-  newState.history = newState.history.map((item, idx) => {
-    item.queueIndex = -hLen + idx
-    item.inQueue = true
-    return item
-  })
-  newState.now.queueIndex = 0
-  newState.now.inQueue = true
-  newState.upNext = newState.upNext.map((item, idx) => {
-    item.queueIndex = 1 + idx
-    item.inQueue = true
-    return item
-  })
   return newState
 }
