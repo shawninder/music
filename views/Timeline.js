@@ -1,9 +1,6 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
 import moment from 'moment'
 
-import defaultProps from '../helpers/defaultProps'
-import propTypes from '../helpers/propTypes'
 import Head from '../components/Head'
 import AuthForm from '../components/AuthForm'
 import Heatmap from '../components/Heatmap'
@@ -11,11 +8,15 @@ import Heatmap from '../components/Heatmap'
 import List from '../components/List'
 import Log from '../components/Log'
 
+import useAuth from '../features/auth/use'
+
 import resetStyles from '../styles/reset'
 import baseStyles from '../styles/base'
 import colors from '../styles/colors'
 
-// const isServer = typeof window === 'undefined'
+import Events from '../data/Events'
+
+const events = new Events()
 
 const lifecycleEvents = [
   'Server started'
@@ -83,7 +84,7 @@ const errorEvents = [
   "Can't stop party, it doesn't exist!"
 ]
 
-function Timeline (props) {
+function Timeline () {
   const [lifecycle, setLifecycle] = useState(true)
   const [commands, setCommands] = useState(false)
   const [guests, setGuests] = useState(true)
@@ -97,6 +98,16 @@ function Timeline (props) {
   const [to, setTo] = useState(moment().endOf('month').format('YYYY-MM-DD'))
   const [logs, setLogs] = useState([])
   const [aggs, setAggs] = useState([])
+
+  const [authState, authDispatch] = useAuth()
+
+  function findLogs ({ query, limit }, nextPageToken) {
+    return events.search({ query, limit }, nextPageToken, authState.username, authState.password)
+  }
+
+  function aggLogs ({ query, limit }, nextPageToken) {
+    return events.search({ query, limit, aggregate: true }, nextPageToken, authState.username, authState.password)
+  }
 
   const update = {
     lifecycle: setLifecycle,
@@ -113,7 +124,7 @@ function Timeline (props) {
   }
   function refresh () {
     getLogs()
-    aggLogs()
+    aggregateLogs()
   }
   function getQuery () {
     const query = {}
@@ -168,7 +179,7 @@ function Timeline (props) {
   function getLogs () {
     const query = getQuery()
     console.log('log query', JSON.stringify(query, null, 2))
-    props.findLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
+    findLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
       if (items.length > 0) {
         setLogs(items)
       } else {
@@ -176,7 +187,7 @@ function Timeline (props) {
       }
     })
   }
-  function aggLogs () {
+  function aggregateLogs () {
     const query = []
     query.push({ $match: getQuery() })
     query.push({
@@ -186,7 +197,7 @@ function Timeline (props) {
       }
     })
     console.log('AGG query', JSON.stringify(query, null, 2))
-    props.aggLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
+    aggLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
       console.log('AGG items', items)
       if (items.length > 0) {
         setAggs(items)
@@ -260,7 +271,7 @@ function Timeline (props) {
       `}</style>
       <img key='bgImg' className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
       <div className='page'>
-        <AuthForm dispatch={props.dispatch} className='authForm' />
+        <AuthForm dispatch={authDispatch} className='authForm' />
         <h2 className='header'>Timeline</h2>
         <section className='interest'>
           <label><input type='checkbox' name='interest' value='lifecycle' defaultChecked={lifecycle} />lifecycle</label>
@@ -296,13 +307,5 @@ function Timeline (props) {
     </div>
   )
 }
-
-const props = [
-  { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'findLogs', type: PropTypes.func.isRequired }
-]
-
-Timeline.defaultProps = defaultProps(props)
-Timeline.propTypes = propTypes(props)
 
 export default Timeline

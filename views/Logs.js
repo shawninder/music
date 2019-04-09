@@ -1,29 +1,39 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import { useRef } from 'react'
 import debounce from 'lodash.debounce'
 
-import defaultProps from '../helpers/defaultProps'
-import propTypes from '../helpers/propTypes'
 import Head from '../components/Head'
 import Bar from '../components/Bar'
 import Log from '../components/Log'
 import AuthForm from '../components/AuthForm'
 
+import Store from '../components/Store'
+
+import useAuth from '../features/auth/use'
+
+import BarContext from '../features/bar/context'
+import useBar from '../features/bar/use'
+
 import lengths from '../styles/lengths'
 
 import resetStyles from '../styles/reset'
 import baseStyles from '../styles/base'
+import styles from './Logs.style.js'
 
-// const isServer = typeof window === 'undefined'
+import Events from '../data/Events'
 
-class Logs extends Component {
-  constructor (props) {
-    super(props)
-    this.loadMore = this.loadMore.bind(this)
-    this.debouncedLoadMore = debounce(this.loadMore, 500, { maxWait: 750 }).bind(this) // TODO remove this debounce (possible when "loading" is implemented wherein a subsequent call would cancel, but only if calling with a different query or pageToken)
+const events = new Events()
+
+function Logs () {
+  const [authState, authDispatch] = useAuth()
+  const [barState, barDispatch] = useBar()
+  const debouncedLoadMore = useRef(debounce(loadMore, 500, { maxWait: 750 }))
+
+  function findLogs ({ query, limit }, nextPageToken) {
+    return events.search({ query, limit }, nextPageToken, authState.username, authState.password)
   }
-  loadMore () {
-    this.props.findLogs({ query: this.props.bar.query }, this.props.bar.nextPageToken).then(({ items, hasMore, prevPageToken, nextPageToken }) => {
+
+  function loadMore () {
+    findLogs({ query: barState.query }, barState.nextPageToken).then(({ items, hasMore, prevPageToken, nextPageToken }) => {
       if (items.length > 0) {
         const newItems = items.map((item) => {
           const id = item._id
@@ -34,9 +44,9 @@ class Logs extends Component {
           }
           return obj
         })
-        this.props.dispatch({
+        barDispatch({
           type: 'Bar:setItems',
-          items: this.props.bar.items.concat(newItems),
+          items: barState.items.concat(newItems),
           hasMore,
           prevPageToken,
           nextPageToken
@@ -44,8 +54,12 @@ class Logs extends Component {
       }
     })
   }
-  render () {
-    return (
+
+  return (
+    <Store providers={[
+      [BarContext, { state: barState, dispatch: barDispatch }]
+    ]}
+    >
       <div className='logsPage'>
         <Head title="Crowd's Play | Logs" />
         <style jsx global>{`
@@ -97,45 +111,22 @@ class Logs extends Component {
             position: relative;
           }
         `}</style>
-        <style jsx>{`
-          .bgImg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-          }
-          .page {
-            position: relative;
-            border: 0;
-            z-index: 2;
-          }
-          .header {
-            margin: 15px;
-            font-size: 300%;
-            color: whitesmoke;
-          }
-        `}</style>
+        <style jsx>{styles}</style>
         <img key='bgImg' className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
         <div className='page'>
-          <AuthForm dispatch={this.props.dispatch} className='authForm' />
+          <AuthForm dispatch={authDispatch} className='authForm' />
           <h2 className='header'>Logs</h2>
           <div className='logsContainer'>
             <Bar
-              className='logsBar'
-              dispatch={this.props.dispatch}
-              query={this.props.bar.query}
-              items={this.props.bar.items}
-              hasMore={this.props.bar.hasMore}
-              loadMore={this.debouncedLoadMore}
+              dispatch={barDispatch}
+              query={barState.query}
+              items={barState.items}
+              hasMore={barState.hasMore}
+              loadMore={debouncedLoadMore.current}
               go={(query) => {
-                return this.props.findLogs({ query })
+                return findLogs({ query })
               }}
               ResultComponent={Log}
-              onRef={(ref) => {
-                this.bar = ref
-              }}
               autoFocus
               loadingTxt={'Loading...'}
               maxReachedTxt={'Max reached'}
@@ -143,17 +134,8 @@ class Logs extends Component {
           </div>
         </div>
       </div>
-    )
-  }
+    </Store>
+  )
 }
-
-const props = [
-  { name: 'dispatch', type: PropTypes.func.isRequired },
-  { name: 'findLogs', type: PropTypes.func.isRequired },
-  { name: 'bar', type: PropTypes.object.isRequired }
-]
-
-Logs.defaultProps = defaultProps(props)
-Logs.propTypes = propTypes(props)
 
 export default Logs

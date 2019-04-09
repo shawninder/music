@@ -43,6 +43,15 @@ function Notice (props) {
       <p className={classes.join(' ')}>{props.body}</p>
       {progress}
       {btns}
+      {!props.duration
+        ? (
+          <a onClick={() => {
+            dispatch({
+              type: 'Notice:remove',
+              id: props.id
+            })
+          }}>click to dismiss</a>
+        ) : null}
       <style jsx>{`
         .file-progress {
           background: ${colors.textBgEven};

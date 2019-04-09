@@ -335,7 +335,7 @@ const props = [
   { name: 'onResult', type: PropTypes.object, val: {} },
   { name: 'commands', type: PropTypes.object, val: {} },
   { name: 'filters', type: PropTypes.object, val: {} },
-  { name: 'onRef', type: PropTypes.object, val: {} },
+  { name: 'onRef', type: PropTypes.object, val: React.createRef() },
   { name: 'autoFocus', type: PropTypes.bool, val: false },
   { name: 'loadingTxt', type: PropTypes.string, val: 'Loading...' },
   { name: 'maxReachedTxt', type: PropTypes.string, val: 'Max Reached' },

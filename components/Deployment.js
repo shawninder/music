@@ -1,13 +1,17 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import PropTypes from 'prop-types'
 import fetch from 'isomorphic-unfetch'
 import btoa from 'btoa'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
+import NoticeContext from '../features/notice/context'
+
 function Deployment (props) {
   const [msg, setMsg] = useState('')
   const [att, setAtt] = useState('')
+
+  const { notify } = useContext(NoticeContext)
 
   function scaleDeployment (deploymentUid) {
     return (event) => {
@@ -52,12 +56,28 @@ function Deployment (props) {
     return (event) => {
       props.deleteDeployment(deploymentUid)
         .then((ok) => {
+          notify({
+            id: `deleted-${deploymentUid}`,
+            body: `Successfully deleted deployment ${JSON.stringify({ uid: deploymentUid })}`
+          })
           setMsg('Successfully deleted deployment')
           setAtt(JSON.stringify({
             uid: deploymentUid
           }))
         })
         .catch((reason) => {
+          notify({
+            id: `couldnt-delete-${deploymentUid}`,
+            body: `Error deleting deployment ${JSON.stringify({
+              headers: reason.headers,
+              ok: reason.ok,
+              redirected: reason.redirected,
+              status: reason.status,
+              statusText: reason.statusText,
+              type: reason.type,
+              url: reason.url
+            }, null, 2)}`
+          })
           setMsg('Error deleting deployment')
           setAtt(JSON.stringify({
             headers: reason.headers,

@@ -64,7 +64,7 @@ const props = [
   { name: 'onChange', type: PropTypes.func.isRequired },
   { name: 'onEnter', type: PropTypes.func.isRequired },
   { name: 'onDown', type: PropTypes.func.isRequired },
-  { name: 'onRef', type: PropTypes.object.isRequired },
+  { name: 'onRef', type: PropTypes.object, val: React.createRef() },
   { name: 'autoFocus', type: PropTypes.bool, val: false },
   { name: 'className', type: PropTypes.string, val: '' },
   { name: 'placeholder', type: PropTypes.string, val: '' }
