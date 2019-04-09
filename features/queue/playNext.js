@@ -1,9 +1,6 @@
-import cloneDeep from 'lodash.clonedeep'
-
 import getItems from './getItems'
 
-export default function playNext (state, action) {
-  const newState = cloneDeep(state)
+export default function playNext (newState, action) {
   let items = getItems(action)
   items = items.map((item, idx) => {
     item.inQueue = true

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
@@ -8,15 +8,18 @@ import AudioFileInput from './AudioFileInput'
 import fileToKey from '../helpers/fileToKey'
 import getFileMeta from '../features/fileInput/getFileMeta'
 
+import DictContext from '../features/dict/context'
+import NoticeContext from '../features/notice/context'
+import FileInputContext from '../features/fileInput/context'
+
 import durations from '../styles/durations'
 import colors from '../styles/colors'
 
-class FilesDialog extends Component {
-  constructor (props) {
-    super(props)
-    this.onFiles = this.onFiles.bind(this)
-  }
-  onFiles (event) {
+function FilesDialog (props) {
+  const { dict } = useContext(DictContext)
+  const { notify } = useContext(NoticeContext)
+  const { dispatch } = useContext(FileInputContext)
+  function onFiles (event) {
     const target = event.target
     const files = target.files
     const nbFiles = files.length
@@ -24,36 +27,36 @@ class FilesDialog extends Component {
     while (i < nbFiles) {
       const file = files[i]
       const key = fileToKey(file)
-      this.props.visibleFiles[key] = file
+      props.visibleFiles[key] = file
       const filePath = window.URL.createObjectURL(file)
-      this.props.dispatch({
+      dispatch({
         type: 'FileInput:newFile',
         file: file,
         key,
         filePath
       })
-      if (this.props.attending) {
+      if (props.attending) {
         const id = `sending:${key}`
-        const handler = this.sendFile({
+        const handler = props.sendFile({
           key,
           arrayBuffer: []
         })
         handler.on('progress', (progress) => {
-          this.props.notify({
+          notify({
             id,
             progress
           })
         })
         handler.on('success', () => {
           console.log('====B success')
-          this.props.notify({
+          notify({
             id,
-            body: this.dict.get('files.sending.success'),
+            body: dict.get('files.sending.success'),
             progress: 1,
             buttons: {
               no: {
-                label: this.dict.get('files.sending.undo'),
-                cb: () => {
+                label: dict.get('files.sending.undo'),
+                fn: () => {
                   console.log('====File sent successfully')
                 }
               }
@@ -62,9 +65,9 @@ class FilesDialog extends Component {
         })
         handler.on('error', (err) => {
           console.log('====C error', err)
-          this.props.notify({
+          notify({
             id,
-            body: this.dict.get('files.sending.error'),
+            body: dict.get('files.sending.error'),
             err,
             buttons: {
               no: null
@@ -72,23 +75,20 @@ class FilesDialog extends Component {
           })
         })
         console.log('====D sending')
-        this.props.notify({
+        notify({
           id,
-          body: this.dict.get('files.sending'),
+          body: dict.get('files.sending'),
           progress: 0,
           buttons: {
             ok: {
-              label: this.dict.get('files.sending.ok'),
-              cb: () => {
-                this.dispatch({
-                  type: 'Notice:remove',
-                  id
-                })
+              label: dict.get('files.sending.ok'),
+              fn: ({ remove }) => {
+                remove()
               }
             },
             no: {
-              label: this.dict.get('files.sending.cancel'),
-              cb: () => {
+              label: dict.get('files.sending.cancel'),
+              fn: () => {
                 handler.cancel()
                 console.log('====E TODO: Tell receiver to clean up partial download')
                 // TODO: Tell receiver to clean up partial download?
@@ -101,7 +101,7 @@ class FilesDialog extends Component {
       getFileMeta(file)
         .then((_meta) => {
           meta = _meta
-          this.props.dispatch({
+          dispatch({
             type: 'FileInput:meta',
             meta,
             target,
@@ -114,69 +114,66 @@ class FilesDialog extends Component {
       i += 1
     }
   }
-  render () {
-    const fileInputProps = {
-      ...this.props.getComponentProps(this.props.state),
-      actionsAbove: true,
-      onFiles: this.onFiles,
-      onCancel: (event) => {
-        this.props.dispatch({
-          type: 'FileInput:cancelNew'
-        })
-      },
-      actions: this.props.actions
-    }
-    return (
-      <div className={`filesDialog ${this.props.showFiles ? 'showing' : 'hidden'}`}>
-        <div className='card'>
-          <List
-            className='files'
-            items={this.props.items}
-            onItem={this.props.getTrackEvents()}
-            defaultComponent={AudioFileInput}
-            isDropDisabled
-            areDraggable
-            componentProps={fileInputProps}
-          />
-        </div>
-        <style jsx>{`
-          .filesDialog {
-            position: fixed;
-            bottom: 72px;
-            left: 0;
-            width: 100%;
-            max-width: 640px;
-            border-radius: 4px;
-            color: ${colors.textBg};
-            background: #333333;
-            z-index: 1;
-            transition-property: opacity;
-            transition-duration: ${durations.instant};
-            opacity: 0;
-          }
-
-          .filesDialog.showing {
-            opacity: 1;
-          }
-          .filesDialog .card {
-            width: 100%;
-          }
-        `}</style>
-      </div>
-    )
+  const fileInputProps = {
+    ...props.getComponentProps(props.state),
+    actionsAbove: true,
+    onFiles: onFiles,
+    onCancel: (event) => {
+      dispatch({
+        type: 'FileInput:cancelNew'
+      })
+    },
+    actions: props.actions
   }
+  return (
+    <div className={`filesDialog ${props.showFiles ? 'showing' : 'hidden'}`}>
+      <div className='card'>
+        <List
+          className='files'
+          items={props.items}
+          onItem={props.getTrackEvents()}
+          defaultComponent={AudioFileInput}
+          isDropDisabled
+          areDraggable
+          componentProps={fileInputProps}
+        />
+      </div>
+      <style jsx>{`
+        .filesDialog {
+          position: fixed;
+          bottom: 72px;
+          left: 0;
+          width: 100%;
+          max-width: 640px;
+          border-radius: 4px;
+          color: ${colors.textBg};
+          background: #333333;
+          z-index: 1;
+          transition-property: opacity;
+          transition-duration: ${durations.instant};
+          opacity: 0;
+        }
+
+        .filesDialog.showing {
+          opacity: 1;
+        }
+        .filesDialog .card {
+          width: 100%;
+        }
+      `}</style>
+    </div>
+  )
 }
 
 const props = [
-  { name: 'dispatch', type: PropTypes.func.isRequired },
   { name: 'visibleFiles', type: PropTypes.object.isRequired },
   { name: 'attending', type: PropTypes.bool.isRequired },
-  { name: 'notify', type: PropTypes.func.isRequired },
   { name: 'state', type: PropTypes.object.isRequired },
   { name: 'actions', type: PropTypes.object.isRequired },
   { name: 'items', type: PropTypes.array.isRequired },
   { name: 'getComponentProps', type: PropTypes.func.isRequired },
-  { name: 'getTrackEvents', type: PropTypes.func.isRequired }
+  { name: 'getTrackEvents', type: PropTypes.func.isRequired },
+  { name: 'sendFile', type: PropTypes.func.isRequired }
 ]
 
 FilesDialog.defaultProps = defaultProps(props)

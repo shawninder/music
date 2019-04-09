@@ -1,30 +1,29 @@
-import cloneDeep from 'lodash.clonedeep'
-
 export default function playerReducer (state = {}, action) {
-  let newState = cloneDeep(state)
+  function cloneMerge (partial) {
+    return Object.assign({}, state, partial)
+  }
   switch (action.type) {
     case 'Player:setPlaying':
-      newState.playing = action.playing
-      break
+      return cloneMerge({ playing: action.playing })
     case 'Player:togglePlaying':
-      newState.playing = !state.playing
-      break
+      return cloneMerge({ playing: !state.playing })
     case 'Player:duration':
-      newState.duration = action.seconds
-      break
+      return cloneMerge({ duration: action.seconds })
     case 'Player:progress':
-      newState.f = action.data.played
-      newState.t = action.data.playedSeconds
-      break
-    case 'Player:seek':
-      newState.t = action.seconds
-      if (newState.duration > 0) {
-        newState.f = action.seconds / newState.duration
+      return cloneMerge({
+        f: action.data.played,
+        t: action.data.playedSeconds
+      })
+    case 'Player:seek': {
+      const newState = cloneMerge({ t: action.seconds })
+      if (state.duration > 0) {
+        newState.f = action.seconds / state.duration
       }
-      break
+      return newState
+    }
     case 'Player:setVolume':
-      newState.v = action.value ? action.value : state.v
-      break
+      return cloneMerge({ v: action.value ? action.value : state.v })
+    default:
+      return state
   }
-  return newState
 }

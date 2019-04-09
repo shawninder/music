@@ -2,12 +2,10 @@ import React from 'react'
 import SvgSkeleton from '../SvgSkeleton'
 
 export default (props) => {
-  const classes = props.className ? props.className.split(' ') : []
   return (
     <SvgSkeleton
       viewBox='0 0.126 99.999998 100'
-      key='sad'
-      className={classes.join(' ')}
+      {...props}
     >
       <g
         transform='matrix(1.371373,0,0,1.371373,7.2441246,8.865029)'
@@ -76,12 +74,6 @@ export default (props) => {
           />
         </g>
       </g>
-      <style>{`
-        svg {
-          width: 30px;
-          height: 30px;
-        }
-      `}</style>
     </SvgSkeleton>
   )
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import C from './C.js'
 import r from './r.js'
@@ -24,16 +24,14 @@ const replaced = {
   y
 }
 
-class MusicFont extends Component {
-  render () {
-    const letters = this.props.children.split('').map((char) => {
-      return replaced[char] || char
-    })
-    return (
-      <React.Fragment>
-        {letters}
-      </React.Fragment>
-    )
-  }
+function MusicFont (props) {
+  const letters = props.children.split('').map((char) => {
+    return replaced[char] || char
+  })
+  return (
+    <React.Fragment>
+      {letters}
+    </React.Fragment>
+  )
 }
 export default MusicFont

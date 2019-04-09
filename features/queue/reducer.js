@@ -5,29 +5,39 @@ import playNext from './playNext'
 import toHistory from './toHistory'
 
 export default function queueReducer (state = {}, action) {
-  let newState = cloneDeep(state)
+  function cloneMerge (partial) {
+    return Object.assign({}, state, partial)
+  }
   switch (action.type) {
     case 'Queue:play':
-      newState.now = { ...cloneDeep(action.data), origin: action.origin }
-      newState.now.inQueue = true
-      newState.now.queueIndex = 0
-      break
+      return cloneMerge({
+        now: {
+          ...action.data,
+          origin: action.origin,
+          inQueue: true,
+          queueIndex: 0
+        }
+      })
     case 'Queue:toHistory': {
+      let newState = cloneMerge()
       newState = toHistory(newState, action)
-      break
+      return newState
     }
     case 'Queue:playNext': {
+      let newState = cloneMerge()
       newState = playNext(newState, action)
-      break
+      return newState
     }
     case 'Queue:enqueue': {
+      const newState = cloneMerge()
       const newItem = cloneDeep(action.data)
       newItem.inQueue = true
       newItem.queueIndex = newState.upNext.length + 1
       newState.upNext = newState.upNext.concat([newItem])
-      break
+      return newState
     }
-    case 'Queue:dequeue':
+    case 'Queue:dequeue': {
+      const newState = cloneMerge()
       if (action.newHistory) {
         newState.history = action.newHistory.map((item, idx) => {
           item.inQueue = true
@@ -41,13 +51,16 @@ export default function queueReducer (state = {}, action) {
           return item
         })
       }
-      break
+      return newState
+    }
     case 'Queue:prev': {
+      const newState = cloneMerge()
       const history = newState.history
       const len = history.length
       if (len !== 0) {
         const now = newState.now
         let upNext = newState.upNext
+        console.log('Array.isArray(history)', Array.isArray(history))
         const previous = cloneDeep(history.pop())
         previous.queueIndex = 0
         if (now && now.key) {
@@ -63,16 +76,17 @@ export default function queueReducer (state = {}, action) {
         newState.history = history
         newState.upNext = upNext
       }
-      break
+      return newState
     }
     case 'Queue:next': {
+      const newState = cloneMerge()
       let history = cloneDeep(newState.history)
       let now = cloneDeep(newState.now)
       let upNext = cloneDeep(newState.upNext)
       if (upNext.length > 0) {
         // Put playing now in history
         if (now && now.key) {
-          const item = cloneDeep(now)
+          const item = { ...now }
           item.queueIndex = -1
           delete item.Component
           history = history.map((i) => {
@@ -80,7 +94,7 @@ export default function queueReducer (state = {}, action) {
             i.inQueue = true
             return i
           })
-          history.push(cloneDeep(item))
+          history.push({ ...item })
         }
 
         // Shift UpNext and Play next track
@@ -96,28 +110,27 @@ export default function queueReducer (state = {}, action) {
       }
       newState.history = history
       newState.upNext = upNext
-      break
+      return newState
     }
     case 'Queue:clearHistory':
-      newState.history = []
-      break
+      return cloneMerge({ history: [] })
     case 'Queue:clearPlayingNow':
-      newState.now = {}
-      break
+      return cloneMerge({ now: {} })
     case 'Queue:clearUpNext':
-      newState.upNext = []
-      break
+      return cloneMerge({ upNext: [] })
     case 'Queue:clearAll':
-      newState.history = []
-      newState.now = {}
-      newState.upNext = []
-      break
+      return cloneMerge({
+        history: [],
+        now: {},
+        upNext: []
+      })
     case 'Queue:jumpTo': {
+      let newState = cloneMerge()
       const data = action.data
       const idx = action.idx
       let skipped = []
       if (newState.now && newState.now.key) {
-        const now = cloneDeep(newState.now)
+        const now = { ...newState.now }
         skipped.push(now)
       }
       if (idx >= 0) {
@@ -145,15 +158,17 @@ export default function queueReducer (state = {}, action) {
       newState.now = data
       // Reset queueIndex and inQueue
       newState = reIndexQueue(newState)
-      break
+      return newState
     }
     case 'Queue:move': {
+      let newState = cloneMerge()
       const item = newState[action.from.name].splice(action.from.idx, 1)[0]
       newState[action.to.name].splice(action.to.idx, 0, item)
       newState = reIndexQueue(newState)
-      break
+      return newState
     }
     case 'Queue:insert': {
+      const newState = cloneMerge()
       const item = { ...action.data, origin: action.origin }
       newState[action.at.name].splice(action.at.idx, 0, item)
       if (action.at.name === 'history') {
@@ -171,8 +186,9 @@ export default function queueReducer (state = {}, action) {
         })
       }
       // newState.now.queueIndex = 0
-      break
+      return newState
     }
+    default:
+      return state
   }
-  return newState
 }

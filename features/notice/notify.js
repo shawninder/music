@@ -1,11 +1,11 @@
-export default (msg) => {
-  return (dispatch, getState) => {
+export default (dispatch) => {
+  return (msg) => {
     dispatch({
       type: 'Notice:push',
       msg
     })
     if (msg.id && msg.duration) {
-      setTimeout(() => {
+      global.setTimeout(() => {
         dispatch({
           type: 'Notice:remove',
           id: msg.id

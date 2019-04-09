@@ -1,5 +1,4 @@
 import get from 'lodash.get'
-import cloneDeep from 'lodash.clonedeep'
 
 const decorate = (action) => {
   const meta = action.meta || {}
@@ -24,13 +23,18 @@ const decorate = (action) => {
 //   }, [])
 // }
 export default function fileInputReducer (state = {}, action) {
-  const newState = cloneDeep(state)
+  function cloneMerge (partial) {
+    return Object.assign({}, state, partial)
+  }
   switch (action.type) {
-    case 'FileInput:new':
+    case 'FileInput:new': {
+      const newState = cloneMerge()
       newState.files.push(decorate({ key: '' }))
-      break
+      return newState
+    }
     case 'FileInput:newFile': {
       const obj = { ...action, hydrated: false }
+      const newState = cloneMerge()
       const len = newState.files.length
       const lastIdx = len === 0 ? 0 : len - 1
       const lastItem = newState.files[lastIdx]
@@ -43,12 +47,15 @@ export default function fileInputReducer (state = {}, action) {
           newState.files[lastIdx] = decorate(obj)
         }
       }
-      break
+      return newState
     }
-    case 'FileInput:cancelNew':
+    case 'FileInput:cancelNew': {
+      const newState = cloneMerge()
       newState.files.pop()
-      break
-    case 'FileInput:meta':
+      return newState
+    }
+    case 'FileInput:meta': {
+      const newState = cloneMerge()
       for (let i = 0, len = newState.files.length; i < len; i += 1) {
         const file = newState.files[i]
         if (file.key === action.key) {
@@ -56,10 +63,14 @@ export default function fileInputReducer (state = {}, action) {
           newState.files[i] = decorate(obj)
         }
       }
-      break
-    case 'FileInput:setItems':
+      return newState
+    }
+    case 'FileInput:setItems': {
+      const newState = cloneMerge()
       newState.files = action.files
-      break
+      return newState
+    }
+    default:
+      return state
   }
-  return newState
 }

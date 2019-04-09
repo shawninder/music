@@ -10,7 +10,7 @@ const getTime = ({ year, month, day }) => {
   return date
 }
 
-export default (props) => {
+function Heatmap (props) {
   if (props.items.length === 0) {
     return null
   }
@@ -202,3 +202,5 @@ export default (props) => {
     </section>
   )
 }
+
+export default Heatmap

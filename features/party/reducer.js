@@ -1,80 +1,73 @@
-import cloneDeep from 'lodash.clonedeep'
+import defaultState from './defaultState'
 
-export default function partyReducer (state = {}, action) {
-  let newState = cloneDeep(state)
+export default function partyReducer (state = defaultState, action) {
+  function cloneMerge (partial) {
+    return Object.assign({}, state, partial)
+  }
   switch (action.type) {
+    case 'Party:setSocketKey':
+      return cloneMerge({ socketKey: action.value })
     case 'Party:connected':
-      newState.connected = action.value
-      break
+      return cloneMerge({ connected: action.value })
     case 'Party:setName':
-      newState.name = action.value
-      break
+      return cloneMerge({ name: action.value })
     case 'Party:checking':
-      newState.checking = action.value
-      break
+      return cloneMerge({ checking: action.value })
     case 'Party:exists':
-      newState.exists = action.value
-      break
+      return cloneMerge({ exists: action.value })
     case 'Party:started':
-      newState.exists = true
-      newState.hosting = true
-      break
+      return cloneMerge({
+        exists: true,
+        hosting: true
+      })
     case 'Party:stopped':
-      newState.exists = false
-      newState.hosting = false
-      break
+      return cloneMerge({
+        exists: false,
+        hosting: false
+      })
     case 'Party:joined':
-      newState.attending = true
-      newState.state = action.res.state
-      newState.name = action.res.name
-      break
+      console.log('joined: state: action.res.state =', action.res.state)
+      return cloneMerge({
+        attending: true,
+        state: action.res.state,
+        name: action.res.name
+      })
     case 'Party:left':
-      newState.attending = false
-      break
+      return cloneMerge({
+        attending: false
+      })
     case 'Party:failed':
-      newState.attending = false
-      newState.hosting = false
-      newState.exists = false
-      break
+      return cloneMerge({
+        attending: false,
+        hosting: false,
+        exists: false
+      })
     case 'Party:reconnected': {
+      const newState = cloneMerge()
       if (action.res) {
         if (action.res.exists) {
           newState.exists = true
         }
         if (action.res.state) {
+          console.log('reconnected: newState.state = action.res.state =', action.res.state)
           newState.state = action.res.state
         }
       }
-      break
+      return newState
     }
     case 'Party:gotState':
-      newState.state = action.state
-      break
+      return cloneMerge({ state: action.state })
     case 'Party:gotSlice':
-      Object.assign(newState.state, action.slice)
-      break
-    case 'Party:dispatch': {
-      // Don't modify the state here, it would create an infinite loop, see syncState redux middleware
-      break
-    }
-    case 'Party:transferStart':
+      return cloneMerge({ state: { ...state.state, ...action.slice } })
+    case 'Party:transferStart': {
+      const newState = cloneMerge()
       newState.transfers.push(action.data)
-      break
+      return newState
+    }
+    case 'Party:dispatch':
+      // Don't modify the state here, it would create an infinite loop, see syncState redux middleware
+      return state
+    default:
+      return state
   }
-  return newState
 }
-
-// if (socket.connected && state.party.attending.name !== '') {
-//   socket.emit({
-//     type: 'guestAction',
-//     action
-//   })
-// } else {
-//   dispatch(action)
-//   if (socket.connected && state.party.transmitting) {
-//     socket.emit({
-//       type: 'hostAction',
-//       action
-//     })
-//   }
-// }

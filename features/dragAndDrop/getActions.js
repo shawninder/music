@@ -29,10 +29,10 @@ const actionCreators = {
         }
       }]
     },
-    'droppable-bar-list': ({ source, destination, origin, props }) => {
+    'droppable-bar-list': ({ source, destination, origin, fromBar, state }) => {
       return [{
         type: 'Queue:insert',
-        data: props.bar.items[source.index],
+        data: fromBar,
         at: {
           name: 'upNext',
           idx: destination.index
@@ -40,10 +40,10 @@ const actionCreators = {
         origin
       }]
     },
-    'droppable-files': ({ source, destination, origin, props }) => {
+    'droppable-files': ({ source, destination, origin, state }) => {
       return [{
         type: 'Queue:insert',
-        data: props.fileInput.files[source.index],
+        data: state.fileInput.files[source.index],
         at: {
           name: 'upNext',
           idx: destination.index
@@ -79,10 +79,10 @@ const actionCreators = {
         }
       }]
     },
-    'droppable-bar-list': ({ source, destination, origin, props }) => {
+    'droppable-bar-list': ({ source, destination, origin, fromBar, state }) => {
       return [{
         type: 'Queue:insert',
-        data: props.bar.items[source.index],
+        data: fromBar,
         at: {
           name: 'history',
           idx: destination.index
@@ -126,11 +126,10 @@ const actionCreators = {
         playing: true
       }]
     },
-    'droppable-bar-list': ({ source, destination, origin, state }) => {
-      const dragged = state.bar.items[source.index]
+    'droppable-bar-list': ({ source, destination, origin, fromBar, state }) => {
       return [{
         type: 'Queue:play',
-        data: dragged,
+        data: fromBar,
         origin
       }, {
         type: 'Player:setPlaying',
@@ -150,14 +149,14 @@ function cancelDrag ({ source, destination }) {
   return []
 }
 
-export default function getDragAndDropActions ({ source, destination, origin, state, props }) {
+export default function getDragAndDropActions ({ source, destination, origin, fromBar, state }) {
   const src = source.droppableId
   const dst = destination.droppableId
   const dropZone = actionCreators[dst]
   if (dropZone) {
     const actionCreator = dropZone[src]
     if (actionCreator) {
-      return actionCreator({ source, destination, origin, state, props })
+      return actionCreator({ source, destination, origin, fromBar, state })
     }
     console.log(`Unhandled drag source ${src} dropped on ${dst}`)
   }

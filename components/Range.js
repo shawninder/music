@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
@@ -6,196 +6,177 @@ import propTypes from '../helpers/propTypes'
 import colors from '../styles/colors'
 import durations from '../styles/durations'
 
-class Range extends Component {
-  constructor (props) {
-    super(props)
-    this.startSeeking = this.startSeeking.bind(this)
-    this.followSeek = this.followSeek.bind(this)
-    this.endSeek = this.endSeek.bind(this)
-    this.eventValue = this.eventValue.bind(this)
-    this.onRef = this.onRef.bind(this)
+import passiveSupported from '../helpers/passiveSupported'
 
-    this.state = {
-      seeking: false,
-      seekingTo: props.current
+const listenerOptions = passiveSupported ? { passive: true, capture: false } : false
+
+function Range (props) {
+  const [seeking, setSeeking] = useState(false)
+  const [seekingTo, setSeekingTo] = useState(props.current)
+  const element = useRef(null)
+  const currentEl = useRef(null)
+  const handleEl = useRef(null)
+
+  useEffect(() => {
+    if (element.current) {
+      element.current.addEventListener('touchmove', onTouchMove, listenerOptions)
+      return () => {
+        if (element.current) {
+          element.current.removeEventListener('touchmove', onTouchMove, listenerOptions)
+        }
+      }
     }
+  })
+
+  function startSeeking (event) {
+    followSeek(event)
+    global.addEventListener('mousemove', followSeek, listenerOptions)
+    global.addEventListener('touchmove', followSeek, listenerOptions)
+    global.addEventListener('mouseup', endSeek, listenerOptions)
+    global.addEventListener('touchend', endSeek, listenerOptions)
   }
 
-  componentWillUnmount () {
-    if (this.el) {
-      this.el.removeEventListener('touchmove', this.onTouchMove, false)
-    }
-  }
-
-  startSeeking (event) {
-    this.followSeek(event)
-    global.addEventListener('mousemove', this.followSeek, false)
-    global.addEventListener('touchmove', this.followSeek, false)
-    global.addEventListener('mouseup', this.endSeek, false)
-    global.addEventListener('touchend', this.endSeek, false)
-  }
-
-  followSeek (event) {
+  function followSeek (event) {
     // TODO if mouseup happened outside of `global`, detect and end seek
-    const value = this.eventValue(event)
+    const value = eventValue(event)
 
-    if (this.props.live) {
-      this.props.onChange(value)
+    if (props.live) {
+      props.onChange(value)
     }
-    this.setState({
-      seeking: true,
-      seekingTo: value
-    })
+    setSeeking(true)
+    setSeekingTo(value)
   }
 
-  endSeek (event) {
-    global.removeEventListener('mousemove', this.followSeek, false)
-    global.removeEventListener('touchmove', this.followSeek, false)
-    global.removeEventListener('mouseup', this.endSeek, false)
-    global.removeEventListener('touchend', this.endSeek, false)
-    const value = this.eventValue(event)
+  function endSeek (event) {
+    global.removeEventListener('mousemove', followSeek, listenerOptions)
+    global.removeEventListener('touchmove', followSeek, listenerOptions)
+    global.removeEventListener('mouseup', endSeek, listenerOptions)
+    global.removeEventListener('touchend', endSeek, listenerOptions)
+    const value = eventValue(event)
     if (value) {
-      this.props.onChange(value)
-      this.setState({
-        seeking: false,
-        seekingTo: value
-      })
+      props.onChange(value)
+      setSeeking(false)
+      setSeekingTo(value)
     }
   }
 
-  onTouchMove (event) {
+  function onTouchMove (event) {
     event.preventDefault()
   }
 
-  onRef (el) {
-    if (el) {
-      if (this.el) {
-        this.el.removeEventListener('touchmove', this.onTouchMove, false)
-      }
-      this.el = el
-      el.addEventListener('touchmove', this.onTouchMove, false)
-    }
-  }
-
-  eventValue (event) {
+  function eventValue (event) {
     const touches = (event.touches && event.touches.length > 0)
       ? event.touches
       : null
     const x = (touches) ? touches[0].clientX : event.clientX
     const y = (touches) ? touches[0].clientY : event.clientY
-    const pos = this.props.vertical ? y : x
+    const pos = props.vertical ? y : x
     const el = event.target
 
     // TODO this is all really risky, find better way
-    if (el === this.el) {
-      return calcPos(this.props.vertical, el, pos)
+    if (element.current === el) {
+      return calcPos(props.vertical, el, pos)
     }
-    if (el === this.currentEl) {
-      return calcPos(this.props.vertical, el.parentNode, pos)
+    if (element.current === currentEl.current) {
+      return calcPos(props.vertical, el.parentNode, pos)
     }
-    if (el === this.handleEl) {
-      return calcPos(this.props.vertical, el.parentNode, pos)
+    if (element.current === handleEl.current) {
+      return calcPos(props.vertical, el.parentNode, pos)
     } else {
-      return calcPos(this.props.vertical, this.el, pos)
+      return calcPos(props.vertical, el, pos)
     }
   }
 
-  render () {
-    const currentPercentage = `${chop(this.props.current, 0, 1) * 100}%`
-    const seekToPercentage = `${chop(this.state.seekingTo, 0, 1) * 100}%`
-    const handleTarget = this.state.seeking ? seekToPercentage : currentPercentage
-    const classes = this.props.className ? this.props.className.split(' ') : []
-    classes.push('range')
-    if (this.state.seeking) {
-      classes.push('seeking')
-    }
-    if (this.props.vertical) {
-      classes.push('vertical')
-    } else {
-      classes.push('horizontal')
-    }
-    return (
-      <div
-        className='container'
-        onMouseDown={this.startSeeking}
-        onTouchStart={this.startSeeking}
-        onMouseUp={this.endSeek}
-        onTouchEnd={this.endSeek}
-        ref={this.onRef}
-      >
-        <div className={classes.join(' ')}>
-          <div
-            className='current'
-            style={this.props.vertical ? {
-              height: currentPercentage
-            } : {
-              width: currentPercentage
-            }}
-            ref={(el) => {
-              this.currentEl = el
-            }}
-          />
-          <div
-            className='handle'
-            style={this.props.vertical ? {
-              bottom: handleTarget
-            } : {
-              marginLeft: handleTarget
-            }}
-            ref={(el) => {
-              this.handleEl = el
-            }}
-          />
-        </div>
-        <style jsx>{`
-          .container {
-            .range {
-              position: relative;
-              cursor: pointer;
-              border: 1px solid black;
-              background-color: ${colors.text};
+  const currentPercentage = `${chop(props.current, 0, 1) * 100}%`
+  const seekToPercentage = `${chop(seekingTo, 0, 1) * 100}%`
+  const handleTarget = seeking ? seekToPercentage : currentPercentage
+  const classes = props.className ? props.className.split(' ') : []
+  classes.push('range')
+  if (seeking) {
+    classes.push('seeking')
+  }
+  if (props.vertical) {
+    classes.push('vertical')
+  } else {
+    classes.push('horizontal')
+  }
+  return (
+    <div
+      className='container'
+      onMouseDown={startSeeking}
+      onTouchStart={startSeeking}
+      onMouseUp={endSeek}
+      onTouchEnd={endSeek}
+      ref={element}
+    >
+      <div className={classes.join(' ')}>
+        <div
+          className='current'
+          style={props.vertical ? {
+            height: currentPercentage
+          } : {
+            width: currentPercentage
+          }}
+          ref={currentEl}
+        />
+        <div
+          className='handle'
+          style={props.vertical ? {
+            bottom: handleTarget
+          } : {
+            marginLeft: handleTarget
+          }}
+          ref={handleEl}
+        />
+      </div>
+      <style jsx>{`
+        .container {
+          .range {
+            position: relative;
+            cursor: pointer;
+            border: 1px solid black;
+            background-color: ${colors.text};
+            .handle {
+              position: absolute;
+              opacity: 0;
+              transition-property: opacity;
+              transition-duration: ${durations.instant};
+              border-radius: 5px;
+              border: 1px solid rgba(255, 0, 0, 0.4);
+            }
+            .current {
+              background-color: red;
+            }
+            &.horizontal {
               .handle {
-                position: absolute;
-                opacity: 0;
-                transition-property: opacity;
-                transition-duration: ${durations.instant};
-                border-radius: 5px;
-                border: 1px solid rgba(255, 0, 0, 0.4);
+                left: -15px;
               }
               .current {
-                background-color: red;
+                height: 100%;
               }
-              &.horizontal {
-                .handle {
-                  left: -15px;
-                }
-                .current {
-                  height: 100%;
-                }
+            }
+            &.vertical {
+              display: inline-block;
+              .handle {
+                margin-bottom: -15px;
+                bottom: 0;
               }
-              &.vertical {
-                display: inline-block;
-                .handle {
-                  margin-bottom: -15px;
-                  bottom: 0;
-                }
-                .current {
-                  width: 100%;
-                  position: absolute;
-                  bottom: 0;
-                }
+              .current {
+                width: 100%;
+                position: absolute;
+                bottom: 0;
               }
-              &.seeking {
-                .handle {
-                  opacity: 1;
-                }
+            }
+            &.seeking {
+              .handle {
+                opacity: 1;
               }
             }
           }
-        `}</style>
-      </div>
-    )
-  }
+        }
+      `}</style>
+    </div>
+  )
 }
 
 const props = [

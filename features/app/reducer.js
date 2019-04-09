@@ -1,41 +1,25 @@
-import cloneDeep from 'lodash.clonedeep'
-
 export default function appReducer (state = {}, action) {
-  let newState = cloneDeep(state)
+  function cloneMerge (partial) {
+    return Object.assign({}, state, partial)
+  }
   switch (action.type) {
     case 'App:restoreState':
-      Object.assign(newState, state.saved, { saved: null })
-      break
+      return cloneMerge({ saved: null })
     case 'App:mergeState':
-      Object.assign(newState, action.state)
-      break
+      return cloneMerge(action.state)
     case 'App:toggleShowHistory':
-      newState.showHistory = !state.showHistory
-      break
+      return cloneMerge({ showHistory: !state.showHistory })
     case 'App:toggleShowUpNext':
-      newState.showUpNext = !state.showUpNext
-      break
+      return cloneMerge({ showUpNext: !state.showUpNext })
     case 'App:toggleShowFiles':
-      newState.showFiles = !state.showFiles
-      break
-    case 'App:toggleParty':
-      newState.partyCollapsed = !state.partyCollapsed
-      break
+      return cloneMerge({ showFiles: !state.showFiles })
     case 'App:toggleWIP':
-      newState.showWIP = !state.showWIP
-      break
-    case 'App:collapseParty':
-      newState.partyCollapsed = true
-      break
-    case 'App:showParty':
-      newState.partyCollapsed = false
-      break
-    case 'App:openParty':
-      newState.partyCollapsed = false
-      break
+      return cloneMerge({ showWIP: !state.showWIP })
+    case 'App:toggleVolume':
+      return cloneMerge({ showVolume: !state.showVolume })
     case 'App:dragging':
-      newState.dragging = action.value
-      break
+      return cloneMerge({ dragging: action.value })
+    default:
+      return state
   }
-  return newState
 }

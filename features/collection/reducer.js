@@ -1,11 +1,12 @@
-import cloneDeep from 'lodash.clonedeep'
-
 export default function collectionReducer (state = {}, action) {
-  let newState = cloneDeep(state)
+  function cloneMerge (partial) {
+    return Object.assign({}, state, partial)
+  }
   switch (action.type) {
-    case 'Collection:toggle':
+    case 'Collection:toggle': {
       const key = action.data.key
-      const collection = cloneDeep(state.collection)
+      const newState = cloneMerge()
+      const collection = { ...state.collection }
       if (collection[key]) {
         delete collection[key]
         newState.collection = collection
@@ -13,7 +14,9 @@ export default function collectionReducer (state = {}, action) {
         collection[key] = action.data
         newState.collection = collection
       }
-      break
+      return newState
+    }
+    default:
+      return state
   }
-  return newState
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 
 import imgDataToUrl from '../helpers/imgDataToUrl'
@@ -11,229 +11,136 @@ import moreIcon from './icons/more'
 
 import ActionList from './ActionList'
 
-import lengths from '../styles/lengths'
-import durations from '../styles/durations'
-import tfns from '../styles/timing-functions'
+import style from './Track.style'
 
-const isServer = typeof window === 'undefined'
+function Track (props) {
+  const [showingActions, setShowingActions] = useState(false)
+  const actionListRef = useRef(null)
+  const el = useRef(null)
 
-class Track extends Component {
-  constructor (props) {
-    super(props)
-    this.globalClick = this.globalClick.bind(this)
-    this.showActions = this.showActions.bind(this)
-    this.hideActions = this.hideActions.bind(this)
-    this.toggleActions = this.toggleActions.bind(this)
-    this.onClick = this.onClick.bind(this)
-    this.onToggle = this.onToggle.bind(this)
-    this.state = {
-      showingActions: false
-    }
+  function hideActions () {
+    setShowingActions(false)
   }
-  componentDidMount () {
-    if (!isServer) {
-      global.addEventListener('click', this.globalClick, false)
-    }
-  }
-  componentWillUnmount () {
-    if (!isServer) {
-      global.removeEventListener('click', this.globalClick, false)
-    }
-  }
-  globalClick (event) {
-    if (this.state.showingActions) {
-      this.hideActions()
-    }
-  }
-  hideActions () {
-    this.setState({
-      showingActions: false
-    })
-  }
-  showActions () {
-    this.setState({
-      showingActions: true
-    })
-    setTimeout(() => {
-      if (this.actions) {
-        const li = this.actions.childNodes[0]
+  function showActions () {
+    setShowingActions(true)
+    global.setTimeout(() => {
+      if (actionListRef.current) {
+        const li = actionListRef.current.childNodes[0]
         if (li) {
           li.childNodes[0].focus()
         }
       }
     }, 0)
   }
-  toggleActions (event) {
+  function toggleActions (event) {
     event.stopPropagation()
-    if (this.state.showingActions) {
-      this.hideActions()
+    if (showingActions) {
+      hideActions()
     } else {
-      this.showActions()
+      showActions()
     }
   }
-  onClick (event) {
-    if (Object.keys(this.props.actions).length > 0) {
-      this.toggleActions(event)
+  function onClick (event) {
+    if (Object.keys(props.actions).length > 0) {
+      showActions()
     }
   }
-  onToggle (event) {
-    if (!this.props.data.inQueue) {
+  function onToggle (event) {
+    if (!props.data.inQueue) {
       event.stopPropagation()
-      if (!this.props.playingNow || !this.props.isPlaying) {
-        if (this.props.actions.play) {
-          this.props.actions.play.go(this.props.data)
+      if (!props.playingNow) {
+        if (props.actions.play) {
+          props.actions.play.go(props.data)
         }
       } else {
-        if (this.props.actions.enqueue) {
-          this.props.actions.enqueue.go(this.props.data)
+        if (props.actions.enqueue) {
+          props.actions.enqueue.go(props.data)
         }
       }
     }
   }
-  render () {
-    const trackClasses = this.props.className ? this.props.className.split(' ') : []
-    trackClasses.push('track')
-    const toggleClasses = this.props.toggleClasses ? this.props.toggleClasses.split(' ') : []
-    toggleClasses.push('toggle')
-    if (this.props.data.inQueue) {
-      toggleClasses.push('toggled')
-    }
-    if (this.props.busy) {
-      toggleClasses.push('busy')
-    }
-    const actionToggleClasses = ['actionToggle']
-    const actionToggleIcon = this.state.showingActions ? cancelIcon : moreIcon
-    const actionListClasses = ['actions']
-    let artSrc = this.props.artSrc
-    if (this.props.artFormat && this.props.artData) {
-      artSrc = imgDataToUrl(this.props.artData, this.props.artFormat)
-    }
-    return (
-      <div
-        className={trackClasses.join(' ')}
-        onClick={this.onClick}
-        key={`track-${this.props.trackId}`}
-      >
-        <div
-          className={toggleClasses.join(' ')}
-          onClick={this.onToggle}
-        >
-          <div className='art'>
-            <div className='idx'>
-              {this.props.data.queueIndex === 0 ? '' : this.props.data.queueIndex}
-            </div>
-            <img
-              className='art-img'
-              src={artSrc}
-              alt={this.props.artAlt}
-              {...this.props.dragHandleProps}
-            />
-          </div>
-        </div>
-        <div className='body'>
-          {this.props.children}
-        </div>
-        {Object.keys(this.props.actions).length > 0 ? (
-          <React.Fragment>
-            <button
-              className={actionToggleClasses.join(' ')}
-              onClick={this.toggleActions}
-            >
-              {actionToggleIcon}
-            </button>
-            <ActionList
-              className={actionListClasses.join(' ')}
-              actions={this.props.actions}
-              data={this.props.data}
-              idx={this.props.idx}
-              queueIndex={this.props.data.queueIndex}
-              showing={this.state.showingActions}
-              actionsAbove={this.props.actionsAbove}
-              onRef={(ref) => {
-                this.actions = ref
-              }}
-              onGo={() => {
-                this.setState({
-                  showingActions: false
-                })
-              }}
-            />
-          </React.Fragment>
-        ) : null}
-        <style jsx>{`
-          .track {
-            position: relative;
-            cursor: pointer;
-            display: grid;
-            grid-template-columns: 100px 1fr 50px;
-            grid-template-rows: 1fr minmax(${lengths.rowHeight}, min-content) 1fr;
-            grid-template-areas:
-              "actionListAbove  actionListAbove  actionListAbove"
-              "left             right            corner"
-              "actionListBelow  actionListBelow  actionListBelow"
-          }
 
-          .toggle {
-            width: 100px;
-            padding: 2px 5px;
-            font-size: x-small;
-            font-weight: bold;
-            grid-area: left;
-          }
-
-          .art {
-            border-radius: 5px;
-          }
-
-          .idx {
-            display: inline-block;
-            width: 25px;
-            text-align: right;
-            transform: translate(-25px);
-            transition-property: transform;
-            transition-duration: ${durations.instant};
-            transition-timing-function: ${tfns.easeInOutQuad};
-          }
-
-          .busy .idx {
-            transform: translate(-13px);
-          }
-
-          .toggled .idx {
-            transform: translate(-5px);
-          }
-
-          .art-img {
-            border-radius: 5px;
-            width: 60px;
-            height: 45px;
-            vertical-align: middle;
-            transform: translate(-25px);
-            transition-property: transform;
-            transition-duration: ${durations.instant};
-            transition-timing-function: ${tfns.easeInOutQuad}
-          }
-          .busy .art-img {
-            transform: translate(-13px);
-          }
-          .toggled .art-img {
-            transform: translate(0);
-          }
-
-          .body {
-            grid-area: right;
-          }
-          .actionToggle {
-            grid-area: corner;
-            padding: 7px 15px 5px 5px;
-            border: 0;
-            background: transparent;
-            color: inherit;
-          }
-        `}</style>
-      </div>
-    )
+  const trackClasses = props.className ? props.className.split(' ') : []
+  trackClasses.push('track')
+  if (showingActions) {
+    trackClasses.push('showingActions')
   }
+  const toggleClasses = props.toggleClasses ? props.toggleClasses.split(' ') : []
+  toggleClasses.push('toggle')
+  if (props.data.inQueue) {
+    toggleClasses.push('toggled')
+  }
+  if (props.busy) {
+    toggleClasses.push('busy')
+  }
+  const actionToggleClasses = ['actionToggle']
+  const actionToggleIcon = showingActions ? cancelIcon : moreIcon
+  const actionListClasses = ['actions']
+  const artSrc = (props.artFormat && props.artData)
+    ? imgDataToUrl(props.artData, props.artFormat)
+    : props.artSrc
+  return (
+    <div
+      className={trackClasses.join(' ')}
+      onClick={onClick}
+      key={`track-${props.trackId}`}
+      ref={el}
+    >
+      <div
+        className={toggleClasses.join(' ')}
+        onClick={onToggle}
+      >
+        <div className='art'>
+          <div className='idx'>
+            {props.data.queueIndex === 0 ? '' : props.data.queueIndex}
+          </div>
+          <img
+            className='art-img'
+            src={artSrc}
+            alt={props.artAlt}
+            {...props.dragHandleProps}
+          />
+        </div>
+      </div>
+      <div className='body'>
+        {props.children}
+      </div>
+      {Object.keys(props.actions).length > 0 ? (
+        <React.Fragment>
+          <button
+            className={actionToggleClasses.join(' ')}
+            onClick={toggleActions}
+          >
+            {actionToggleIcon}
+          </button>
+          {showingActions
+            ? (
+              <ActionList
+                className={actionListClasses.join(' ')}
+                actions={props.actions}
+                data={props.data}
+                idx={props.idx}
+                showing={showingActions}
+                actionsAbove={props.actionsAbove}
+                onRef={actionListRef}
+                onGo={() => {
+                  setShowingActions(false)
+                }}
+                onDismiss={() => {
+                  setShowingActions(false)
+                }}
+                onBlur={() => {
+                  if (el.current) {
+                    el.current.parentNode.focus()
+                  }
+                }}
+              />
+            ) : null}
+        </React.Fragment>
+      ) : null}
+      <style jsx>{style}</style>
+    </div>
+  )
 }
 
 const props = [
@@ -244,12 +151,11 @@ const props = [
   { name: 'dragHandleProps', type: PropTypes.object, val: {} },
   { name: 'artSrc', type: PropTypes.string, val: 'https://via.placeholder.com/150' },
   { name: 'busy', type: PropTypes.bool, val: false },
-  { name: 'actions', type: PropTypes.object, val: {} },
+  { name: 'actionListRef', type: PropTypes.object, val: {} },
   { name: 'onClick', type: PropTypes.func, val: () => {} },
   { name: 'idx', type: PropTypes.number, val: -1 },
   { name: 'playingNow', type: PropTypes.string, val: '' },
   { name: 'isPlaying', type: PropTypes.bool, val: false },
-  { name: 'queueIndex', type: PropTypes.oneOfType([ PropTypes.number, PropTypes.bool ]), val: false },
   { name: 'actionsAbove', type: PropTypes.bool, val: false },
   { name: 'pending', type: PropTypes.object, val: {} }
 ]

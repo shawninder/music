@@ -1,5 +1,3 @@
-import cloneDeep from 'lodash.clonedeep'
-
 function dedupe (items) {
   const keys = {}
   return items.filter((item) => {
@@ -12,17 +10,20 @@ function dedupe (items) {
 }
 
 export default function barReducer (state = {}, action) {
-  let newState = cloneDeep(state)
+  function cloneMerge (partial) {
+    return Object.assign({}, state, partial)
+  }
   switch (action.type) {
     case 'Bar:setItems':
-      newState.items = dedupe(action.data)
-      newState.hasMore = action.hasMore
-      newState.nextPageToken = action.nextPageToken
-      newState.areCommands = action.areCommands
-      break
+      return cloneMerge({
+        items: dedupe(action.items),
+        hasMore: action.hasMore,
+        nextPageToken: action.nextPageToken,
+        commands: action.commands || []
+      })
     case 'Bar:setQuery':
-      newState.query = action.data
-      break
+      return cloneMerge({ query: action.data })
+    default:
+      return state
   }
-  return newState
 }

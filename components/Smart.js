@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
@@ -11,18 +11,24 @@ const options = {
   AudioFile
 }
 
-class Smart extends Component {
-  render () {
-    let Chosen = options[this.props.data.type]
-    if (!Chosen) {
-      throw new Error(`Unknown Smart Component type ${this.props.data.type}; data: ${JSON.stringify(this.props.data, null, 2)}`)
+function Smart (props) {
+  let Chosen = options[props.data.type]
+  if (!Chosen) {
+    let dataStr
+    let jsonError
+    try {
+      dataStr = JSON.stringify(props.data, null, 2)
+    } catch (ex) {
+      dataStr = props.data.toString()
+      jsonError = ex
     }
-    return (
-      <Chosen
-        {...this.props}
-      />
-    )
+    throw new Error(`Unknown Smart Component type ${props.data.type}; data: ${dataStr};${jsonError || ''}`)
   }
+  return (
+    <Chosen
+      {...props}
+    />
+  )
 }
 
 const props = [

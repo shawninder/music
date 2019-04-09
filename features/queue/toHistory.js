@@ -1,9 +1,6 @@
-import cloneDeep from 'lodash.clonedeep'
-
 import getItems from './getItems'
 
-export default function toHistory (state, action) {
-  const newState = cloneDeep(state)
+export default function toHistory (newState, action) {
   let items = getItems(action)
   newState.history = newState.history
     .map((item, idx) => {

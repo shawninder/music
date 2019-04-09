@@ -1,7 +1,7 @@
 
 import SvgSkeleton from '../SvgSkeleton'
 
-export default (props) => {
+function AddWink (props) {
   return (
     <SvgSkeleton
       viewBox='0 0 1463.8301 1412.9669'
@@ -34,3 +34,5 @@ export default (props) => {
     </SvgSkeleton>
   )
 }
+
+export default AddWink

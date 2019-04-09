@@ -1,14 +1,13 @@
-import cloneDeep from 'lodash.clonedeep'
-
 export default function authReducer (state = {}, action) {
-  let newState = cloneDeep(state)
+  function cloneMerge (partial) {
+    return Object.assign({}, state, partial)
+  }
   switch (action.type) {
     case 'Auth:setUsername':
-      newState.username = action.value
-      break
+      return cloneMerge({ username: action.value })
     case 'Auth:setPassword':
-      newState.password = action.value
-      break
+      return cloneMerge({ password: action.value })
+    default:
+      return state
   }
-  return newState
 }

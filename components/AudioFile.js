@@ -8,69 +8,67 @@ import Track from './Track'
 import get from 'lodash.get'
 import cleanFakePath from '../helpers/cleanFakePath'
 
-class AudioFile extends Track {
-  render () {
-    const classes = this.props.className ? this.props.className.split(' ') : []
-    classes.push('inputFile')
-    let busy = false
-    const trackId = this.props.data.id
-    const list = this.props.pending[trackId]
-    if (list) {
-      busy = true
-    }
-    const title = get(this.props.data, 'meta.tags.title', '')
-    const artist = get(this.props.data, 'meta.tags.artist', '')
-    return (
-      <Track
-        className={classes.join(' ')}
-        data={this.props.data}
-        busy={busy}
-        artFormat={get(this.props.data, 'meta.tags.picture.format')}
-        artData={get(this.props.data, 'meta.tags.picture.data')}
-        dragHandleProps={this.props.dragHandleProps}
-        actions={this.props.actions}
-        queueIndex={this.props.queueIndex}
-        idx={this.props.idx}
-        playingNow={this.props.playingNow}
-        isPlaying={this.props.isPlaying}
-        actionsAbove={this.props.actionsAbove}
-        pending={this.props.pending}
-        trackId={trackId}
-      >
-        <React.Fragment>
-          {!title ? (
-            <p className='uri'>{cleanFakePath(this.props.data.fakePath || '')}</p>
-          ) : null}
-          {title ? (
-            <p className='title'>{title}</p>
-          ) : null}
-          {artist ? (
-            <p className='artist'>{artist}</p>
-          ) : null}
-          {this.props.children}
-          <style jsx>{`
-            .title, .artist, .uri {
-              padding: 5px;
-            }
-
-            .title, .uri {
-              font-size: small;
-              font-weight: bold;
-            }
-
-            .artist {
-              font-size: x-small;
-            }
-
-            .uri {
-              padding-top: 15px;
-              text-align: center;
-            }
-          `}</style>
-        </React.Fragment>
-      </Track>
-    )
+function AudioFile (props) {
+  const classes = props.className ? props.className.split(' ') : []
+  classes.push('inputFile')
+  let busy = false
+  const trackId = props.data.id
+  const list = props.pending[trackId]
+  if (list) {
+    busy = true
   }
+  const title = get(props.data, 'meta.tags.title', '')
+  const artist = get(props.data, 'meta.tags.artist', '')
+  return (
+    <Track
+      className={classes.join(' ')}
+      data={props.data}
+      busy={busy}
+      artFormat={get(props.data, 'meta.tags.picture.format')}
+      artData={get(props.data, 'meta.tags.picture.data')}
+      dragHandleProps={props.dragHandleProps}
+      actions={props.actions}
+      queueIndex={props.queueIndex}
+      idx={props.idx}
+      playingNow={props.playingNow}
+      isPlaying={props.isPlaying}
+      actionsAbove={props.actionsAbove}
+      pending={props.pending}
+      trackId={trackId}
+    >
+      <React.Fragment>
+        {!title ? (
+          <p className='uri'>{cleanFakePath(props.data.fakePath || '')}</p>
+        ) : null}
+        {title ? (
+          <p className='title'>{title}</p>
+        ) : null}
+        {artist ? (
+          <p className='artist'>{artist}</p>
+        ) : null}
+        {props.children}
+        <style jsx>{`
+          .title, .artist, .uri {
+            padding: 5px;
+          }
+
+          .title, .uri {
+            font-size: small;
+            font-weight: bold;
+          }
+
+          .artist {
+            font-size: x-small;
+          }
+
+          .uri {
+            padding-top: 15px;
+            text-align: center;
+          }
+        `}</style>
+      </React.Fragment>
+    </Track>
+  )
 }
 
 const props = [

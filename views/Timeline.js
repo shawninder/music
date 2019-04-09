@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
 
@@ -83,74 +83,76 @@ const errorEvents = [
   "Can't stop party, it doesn't exist!"
 ]
 
-class Timeline extends Component {
-  constructor (props) {
-    super(props)
-    this.refresh = this.refresh.bind(this)
-    this.getLogs = this.getLogs.bind(this)
-    this.aggLogs = this.aggLogs.bind(this)
-    this.getQuery = this.getQuery.bind(this)
+function Timeline (props) {
+  const [lifecycle, setLifecycle] = useState(true)
+  const [commands, setCommands] = useState(false)
+  const [guests, setGuests] = useState(true)
+  const [dispatches, setDispatches] = useState(false)
+  const [transfers, setTransfers] = useState(false)
+  const [playlists, setPlaylists] = useState(true)
+  const [connections, setConnections] = useState(false)
+  const [errors, setErrors] = useState(true)
+  const [playlistName, setPlaylistName] = useState('')
+  const [from, setFrom] = useState(moment().subtract(2, 'months').startOf('month').format('YYYY-MM-DD'))
+  const [to, setTo] = useState(moment().endOf('month').format('YYYY-MM-DD'))
+  const [logs, setLogs] = useState([])
+  const [aggs, setAggs] = useState([])
 
-    this.state = {
-      lifecycle: true,
-      commands: false,
-      guests: true,
-      dispatches: false,
-      transfers: false,
-      playlists: true,
-      connections: false,
-      errors: true,
-      playlistName: '',
-      minGuests: 0,
-      maxGuests: 0,
-      from: moment().subtract(2, 'months').startOf('month').format('YYYY-MM-DD'),
-      to: moment().endOf('month').format('YYYY-MM-DD'),
-      logs: [],
-      aggs: []
-    }
+  const update = {
+    lifecycle: setLifecycle,
+    commands: setCommands,
+    guests: setGuests,
+    dispatches: setDispatches,
+    transfers: setTransfers,
+    playlists: setPlaylists,
+    connections: setConnections,
+    errors: setErrors,
+    playlistName: setPlaylistName,
+    from: setFrom,
+    to: setTo
   }
-  refresh () {
-    this.getLogs()
-    this.aggLogs()
+  function refresh () {
+    getLogs()
+    aggLogs()
   }
-  getQuery () {
+  function getQuery () {
     const query = {}
     const $and = []
-    if (this.state.playlistName) {
-      $and.push({ party: this.state.playlistName })
+    if (playlistName) {
+      $and.push({ party: playlistName })
     }
-    if (!this.state.lifecycle) {
+    if (!lifecycle) {
       $and.push({ name: { $nin: lifecycleEvents } })
     }
-    if (!this.state.commands) {
+    if (!commands) {
       $and.push({ name: { $nin: commandEvents } })
     }
-    if (!this.state.guests) {
+    if (!guests) {
       $and.push({ name: { $nin: guestEvents } })
     }
 
-    if (!this.state.dispatches) {
+    if (!dispatches) {
       $and.push({ name: { $nin: dispatchEvents } })
     }
-    if (!this.state.transfers) {
+    if (!transfers) {
       $and.push({ name: { $nin: transferEvents } })
     }
-    if (!this.state.playlists) {
+    if (!playlists) {
       $and.push({ name: { $nin: playlistEvents } })
     }
-    if (!this.state.connections) {
+    if (!connections) {
       $and.push({ name: { $nin: connectionEvents } })
     }
-    if (!this.state.errors) {
+    if (!errors) {
       $and.push({ name: { $nin: errorEvents } })
     }
-    if (this.state.from || this.state.to) {
+    if (from || to) {
       const timeConstraints = {}
-      if (this.state.from) {
-        timeConstraints.$gte = this.state.from
+      if (from) {
+        timeConstraints.$gte = from
       }
-      if (this.state.to) {
-        timeConstraints.$lte = this.state.to
+      if (to) {
+        timeConstraints.$lte = to
       }
       $and.push({ _id: timeConstraints })
     }
@@ -163,20 +165,20 @@ class Timeline extends Component {
     }
     return query
   }
-  getLogs () {
-    const query = this.getQuery()
+  function getLogs () {
+    const query = getQuery()
     console.log('log query', JSON.stringify(query, null, 2))
-    this.props.findLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
+    props.findLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
       if (items.length > 0) {
-        this.setState({ logs: items })
+        setLogs(items)
       } else {
-        this.setState({ logs: [] })
+        setLogs([])
       }
     })
   }
-  aggLogs () {
+  function aggLogs () {
     const query = []
-    query.push({ $match: this.getQuery() })
+    query.push({ $match: getQuery() })
     query.push({
       $group: {
         _id: { month: { $month: '$_id' }, day: { $dayOfMonth: '$_id' }, year: { $year: '$_id' } },
@@ -184,125 +186,115 @@ class Timeline extends Component {
       }
     })
     console.log('AGG query', JSON.stringify(query, null, 2))
-    this.props.aggLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
+    props.aggLogs({ query: JSON.stringify(query), limit: 1000 }).then(({ items }) => {
       console.log('AGG items', items)
       if (items.length > 0) {
-        this.setState({ aggs: items })
+        setAggs(items)
       } else {
-        this.setState({ aggs: [] })
+        setAggs([])
       }
     })
   }
-  render () {
-    return (
-      <div
-        className='timelinePage'
-        onChange={(event) => {
-          switch (event.target.name) {
-            case 'interest': {
-              const update = {}
-              update[event.target.value] = event.target.checked
-              this.setState(update)
-              setTimeout(() => {
-                this.refresh()
-              }, 10)
-              break
-            }
-            case 'playlistName':
-            case 'minGuests':
-            case 'maxGuests':
-            case 'from':
-            case 'to': {
-              const update = {}
-              update[event.target.name] = event.target.value
-              this.setState(update)
-              break
-            }
-            default:
-              console.warn('unknown', event.target.name)
-          }
-        }}
-        onKeyPress={(event) => {
-          if (event.key === 'Enter' && !event.ctrlKey && !event.altKey && !event.shiftKey) {
-            this.refresh()
-          }
-        }}
-      >
-        <Head title="Crowd's Play | Timeline" />
-        <style jsx global>{`
-          ${resetStyles}
+  return (
+    <div
+      className='timelinePage'
+      onChange={(event) => {
+        switch (event.target.name) {
+          case 'interest':
+            update[event.target.value](event.target.checked)
+            global.setTimeout(() => {
+              refresh()
+            }, 10)
+            break
+          case 'playlistName':
+          case 'from':
+          case 'to':
+            update[event.target.name](event.target.value)
+            break
+          default:
+            console.warn('unknown', event.target.name)
+        }
+      }}
+      onKeyPress={(event) => {
+        if (event.key === 'Enter' && !event.ctrlKey && !event.altKey && !event.shiftKey) {
+          refresh()
+        }
+      }}
+    >
+      <Head title="Crowd's Play | Timeline" />
+      <style jsx global>{`
+        ${resetStyles}
 
-          ${baseStyles}
-        `}</style>
-        <style jsx>{`
-          .header {
-            font-size: xx-large;
-            margin: 20px;
+        ${baseStyles}
+      `}</style>
+      <style jsx>{`
+        .header {
+          font-size: xx-large;
+          margin: 20px;
+        }
+        .bgImg {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          z-index: 1;
+        }
+        .page {
+          position: relative;
+          border: 0;
+          z-index: 2;
+        }
+        .interest, .filters, .timespan, .buttons {
+          padding: 10px;
+          background: ${colors.textBg};
+          input {
+            margin: 10px;
           }
-          .bgImg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-          }
-          .page {
-            position: relative;
-            border: 0;
-            z-index: 2;
-          }
-          .interest, .filters, .timespan, .buttons {
-            padding: 10px;
-            background: ${colors.textBg};
-            input {
-              margin: 10px;
-            }
-          }
-          .searchButton {
-            border-color: ${colors.primaryText};
-            color: ${colors.primaryText};
-            background: ${colors.primaryBg};
-          }
-        `}</style>
-        <img key='bgImg' className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
-        <div className='page'>
-          <AuthForm dispatch={this.props.dispatch} className='authForm' />
-          <h2 className='header'>Timeline</h2>
-          <section className='interest'>
-            <label><input type='checkbox' name='interest' value='lifecycle' defaultChecked={this.state.lifecycle} />lifecycle</label>
-            <label><input type='checkbox' name='interest' value='commands' defaultChecked={this.state.commands} />commands</label>
-            <label><input type='checkbox' name='interest' value='guests' defaultChecked={this.state.guests} />guests</label>
-            <label><input type='checkbox' name='interest' value='dispatches' defaultChecked={this.state.dispatches} />dispatches</label>
-            <label><input type='checkbox' name='interest' value='transfers' defaultChecked={this.state.transfers} />transfers</label>
-            <label><input type='checkbox' name='interest' value='playlists' defaultChecked={this.state.playlists} />playlists</label>
-            <label><input type='checkbox' name='interest' value='connections' defaultChecked={this.state.connections} />connections</label>
-            <label><input type='checkbox' name='interest' value='errors' defaultChecked={this.state.errors} />errors</label>
-          </section>
-          <section className='filters'>
-            <label>Playlist Name: <input type='text' name='playlistName' /></label>
-          </section>
-          <section className='timespan'>
-            <label>from: <input type='text' name='from' defaultValue={this.state.from} /></label>
-            <label>to: <input type='text' name='to' defaultValue={this.state.to} /></label>
-            <Heatmap
-              startDate={this.state.from}
-              endDate={this.state.to}
-              items={this.state.aggs}
-            />
-          </section>
-          <section className='buttons'>
-            <button className='searchButton' onClick={(event) => {
-              this.refresh()
-            }}>Search</button>
-          </section>
-          <section className='hits'>
-            <List items={this.state.logs} defaultComponent={Log} />
-          </section>
-        </div>
+        }
+        .searchButton {
+          border-color: ${colors.primaryText};
+          color: ${colors.primaryText};
+          background: ${colors.primaryBg};
+        }
+      `}</style>
+      <img key='bgImg' className='bgImg' src='/static/bg.svg' alt='Blue gradient' />
+      <div className='page'>
+        <AuthForm dispatch={props.dispatch} className='authForm' />
+        <h2 className='header'>Timeline</h2>
+        <section className='interest'>
+          <label><input type='checkbox' name='interest' value='lifecycle' defaultChecked={lifecycle} />lifecycle</label>
+          <label><input type='checkbox' name='interest' value='commands' defaultChecked={commands} />commands</label>
+          <label><input type='checkbox' name='interest' value='guests' defaultChecked={guests} />guests</label>
+          <label><input type='checkbox' name='interest' value='dispatches' defaultChecked={dispatches} />dispatches</label>
+          <label><input type='checkbox' name='interest' value='transfers' defaultChecked={transfers} />transfers</label>
+          <label><input type='checkbox' name='interest' value='playlists' defaultChecked={playlists} />playlists</label>
+          <label><input type='checkbox' name='interest' value='connections' defaultChecked={connections} />connections</label>
+          <label><input type='checkbox' name='interest' value='errors' defaultChecked={errors} />errors</label>
+        </section>
+        <section className='filters'>
+          <label>Playlist Name: <input type='text' name='playlistName' /></label>
+        </section>
+        <section className='timespan'>
+          <label>from: <input type='text' name='from' defaultValue={from} /></label>
+          <label>to: <input type='text' name='to' defaultValue={to} /></label>
+          <Heatmap
+            startDate={from}
+            endDate={to}
+            items={aggs}
+          />
+        </section>
+        <section className='buttons'>
+          <button className='searchButton' onClick={(event) => {
+            refresh()
+          }}>Search</button>
+        </section>
+        <section className='hits'>
+          <List items={logs} defaultComponent={Log} />
+        </section>
       </div>
-    )
-  }
+    </div>
+  )
 }
 
 const props = [

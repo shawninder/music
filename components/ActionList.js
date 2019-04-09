@@ -1,92 +1,134 @@
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
 import Action from './Action'
 
-import colors from '../styles/colors'
+import style from './ActionList.style'
 
-class ActionList extends Component {
-  render () {
-    const actions = Object.keys(this.props.actions).reduce((arr, key, idx) => {
-      const action = this.props.actions[key]
-      if (!action.cdn || action.cdn(this.props.queueIndex)) {
-        arr.push(
-          <li key={key}>
-            <Action
-              data={this.props.data}
-              go={(...args) => {
-                this.props.onGo(...args)
-                return action.go(...args)
-              }}
-              txt={action.txt}
-              icon={action.icon}
-              idx={this.props.idx}
-              queueIndex={this.props.queueIndex}
-              targetIdx={action.targetIdx}
-            />
-          </li>
-        )
+import passiveSupported from '../helpers/passiveSupported'
+
+const listenerOptions = passiveSupported ? { passive: true, capture: false } : false
+
+const isServer = typeof window === 'undefined'
+
+const HIDDEN = 'hidden'
+const SHOWING = 'showing'
+
+function ActionList (props) {
+  const defaultClasses = props.className ? props.className.split(' ') : []
+  defaultClasses.push('action-list')
+  defaultClasses.push(HIDDEN)
+  defaultClasses.push(props.actionsAbove
+    ? 'above'
+    : 'below')
+  const [classes, setClasses] = useState(defaultClasses)
+
+  function show () {
+    setClasses(classes.filter(item => item !== HIDDEN).concat([SHOWING]))
+  }
+
+  function hide () {
+    setClasses(classes.filter(item => item !== SHOWING).concat([HIDDEN]))
+  }
+
+  useEffect(() => {
+    const tid = global.setTimeout(show, 10)
+    return () => {
+      global.clearTimeout(tid)
+    }
+  }, [])
+  useEffect(() => {
+    let tid = null
+    function onClickOutside (event) {
+      if (!props.onRef.current.contains(event.target)) {
+        hide()
+        tid = global.setTimeout(props.onDismiss, 100)
       }
-      return arr
-    }, [])
-    const classes = this.props.className ? this.props.className.split(' ') : []
-    classes.push('action-list')
-    if (this.props.showing) {
-      classes.push('showing')
-    } else {
-      classes.push('hidden')
     }
-    if (this.props.actionsAbove) {
-      classes.push('above')
-    } else {
-      classes.push('below')
+    if (!isServer) {
+      global.document.addEventListener('click', onClickOutside, listenerOptions)
+      return () => {
+        global.document.removeEventListener('click', onClickOutside, listenerOptions)
+        if (tid) {
+          global.clearTimeout(tid)
+        }
+      }
     }
-    return (
+  }, [])
+
+  function go (action, event) {
+    props.onGo()
+    return action.go(props.data, props.idx, props.data.queueIndex, event)
+  }
+
+  const actions = Object.keys(props.actions).reduce((arr, key, idx) => {
+    const action = props.actions[key]
+    if (!action.cdn || action.cdn(props.data.queueIndex)) {
+      arr.push(
+        <li key={key}>
+          <Action
+            on={{
+              click: (event) => {
+                props.onBlur()
+                return go(action, event)
+              },
+              esc: (event) => {
+                event.stopPropagation()
+                props.onDismiss()
+                props.onBlur()
+              },
+              enter: (event) => {
+                props.onBlur()
+                return go(action, event)
+              },
+              up: (event) => {
+                event.preventDefault()
+                const previousSibling = event.target.parentNode.previousSibling
+                if (previousSibling) {
+                  previousSibling.childNodes[0].focus()
+                }
+              },
+              down: (event) => {
+                event.preventDefault()
+                const nextSibling = event.target.parentNode.nextSibling
+                if (nextSibling) {
+                  nextSibling.childNodes[0].focus()
+                }
+              }
+            }}
+            txt={action.txt}
+            icon={action.icon}
+            targetIdx={action.targetIdx}
+          />
+        </li>
+      )
+    }
+    return arr
+  }, [])
+  return (
+    <>
       <ul
         className={classes.join(' ')}
-        ref={(ref) => {
-          this.props.onRef(ref)
-        }}
+        ref={props.onRef}
       >
         {actions.length > 0 ? actions : null}
-        <style jsx>{`
-          .below {
-            grid-area: actionListBelow;
-            border-radius: 0 0 5px 5px;
-            box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.5);
-          }
-          .above {
-            grid-area: actionListAbove;
-            border-radius: 5px 5px 0 0;
-            box-shadow: 0 -5px 5px 0 rgba(0, 0, 0, 0.5);
-            bottom: 0;
-          }
-          .action-list {
-            width: 90%;
-            position: absolute;
-            color: ${colors.text2};
-            background: ${colors.textBg};
-            z-index: 5;
-          }
-          .action-list.hidden {
-            display: none;
-          }
-        `}</style>
       </ul>
-    )
-  }
+      <style jsx>{style}</style>
+    </>
+  )
 }
 
 const props = [
   { name: 'actions', type: PropTypes.object.isRequired },
   { name: 'className', type: PropTypes.string, val: '' },
   { name: 'showing', type: PropTypes.bool, val: false },
-  { name: 'onRef', type: PropTypes.func, val: () => {} },
+  { name: 'onRef', type: PropTypes.object, val: React.createRef() },
   { name: 'idx', type: PropTypes.number, val: -1 },
-  { name: 'queueIndex', type: PropTypes.oneOfType([ PropTypes.number, PropTypes.bool ]), val: false },
   { name: 'onGo', type: PropTypes.func, val: () => {} },
+  { name: 'onDismiss', type: PropTypes.func, val: () => {} },
+  { name: 'onBlur', type: PropTypes.func, val: () => {} },
   { name: 'actionsAbove', type: PropTypes.bool, val: false }
 ]
 

@@ -36,11 +36,10 @@ class Logs extends Component {
         })
         this.props.dispatch({
           type: 'Bar:setItems',
-          data: this.props.bar.items.concat(newItems),
+          items: this.props.bar.items.concat(newItems),
           hasMore,
           prevPageToken,
-          nextPageToken,
-          areCommands: false
+          nextPageToken
         })
       }
     })

@@ -1,62 +1,20 @@
-import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
-import pull from 'lodash.pull'
+import url from 'url'
+import qs from 'querystring'
 
-import App from '../components/App'
-import Media from '../data/Media'
-import notify from '../features/notice/notify'
+import React, { Component } from 'react'
 
-const media = new Media()
+import AppComponent from '../components/App'
 
-const mapStateToProps = (state) => {
-  const { ack, app, bar, dict, player, queue, socketKey, party, notice, fileInput } = state
-  return { ack, app, bar, dict, player, queue, socketKey, party, notice, fileInput }
+class App extends Component {
+  static getInitialProps ({ req, res }) {
+    const headers = req ? req.headers : undefined
+    const acceptLanguage = headers ? headers['accept-language'] : ''
+    const linkedPartyName = req ? qs.parse(url.parse(req.url).query).name : undefined
+    return { headers, acceptLanguage, linkedPartyName }
+  }
+  render () {
+    return <AppComponent {...this.props} />
+  }
 }
 
-const middlewares = []
-// TODO clean up nested `_dispatch`s
-const mapDispatchToProps = (dispatch) => {
-  return bindActionCreators({
-    dispatch: (action) => {
-      return (_dispatch) => {
-        let stopPropagation = false
-        middlewares.forEach((mw) => {
-          if (mw(action)) {
-            stopPropagation = true
-          }
-        })
-        if (stopPropagation) {
-          console.log('Intercepted and stopped propagation of', action)
-        } else {
-          _dispatch(action)
-        }
-      }
-    },
-    registerMiddleware: (middleware) => {
-      return (_dispatch, getState) => {
-        console.log('REGISTERING DISPATCH MIDDLEWARE')
-        middlewares.push(middleware)
-      }
-    },
-    unregisterMiddleware: (middleware) => {
-      return (_dispatch, getState) => {
-        console.warn('UNREGISTERING DISPATCH MIDDLEWARE')
-        pull(middlewares, middleware)
-      }
-    },
-    findMusic: (query, nextPageToken) => {
-      return (_dispatch, getState) => {
-        console.log(`media.search('${query}')`)
-        return media.search({ query }, nextPageToken)
-      }
-    },
-    notify,
-    dev: () => {
-      return (_dispatch, getState) => {
-        return { _dispatch, getState }
-      }
-    }
-  }, dispatch)
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default App

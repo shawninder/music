@@ -8,6 +8,7 @@ export const text2 = 'dimgrey'
 export const hover = '#2597c3'
 export const link = '#001f3f'
 export const placeholder = '#aaaaaa'
+export const shadow = '#333333'
 
 export const primary = '#7fdbff'
 export const primaryBg = '#7fdbff'
@@ -47,5 +48,6 @@ export default {
   dangerousBg,
   dangerousText,
   warnBg,
-  spotlight
+  spotlight,
+  shadow
 }

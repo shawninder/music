@@ -9,7 +9,6 @@ import controlsReducer from './features/controls/reducer'
 import partyReducer from './features/party/reducer'
 import playerReducer from './features/player/reducer'
 import dictReducer from './features/dict/reducer'
-import noticeReducer from './features/notice/reducer'
 import fileInputReducer from './features/fileInput/reducer'
 // const logReducer = (state = {}, action) => {
 //   console.log('action', action)
@@ -31,6 +30,5 @@ export default combineReducers({
   socketKey: (state = {}) => {
     return state
   },
-  notice: noticeReducer,
   fileInput: fileInputReducer
 })

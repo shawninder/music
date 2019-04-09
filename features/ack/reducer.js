@@ -1,14 +1,15 @@
 import deepEqual from 'deep-equal'
-import cloneDeep from 'lodash.clonedeep'
 
 export default function ackReducer (state = {}, action) {
-  let newState = cloneDeep(state)
+  function cloneMerge (partial) {
+    return Object.assign({}, state, partial)
+  }
   switch (action.type) {
     case 'Ack:ack':
-      newState.origin = action.origin
-      break
+      return cloneMerge({ origin: action.origin })
     case 'Ack:addPending': {
       const id = action.data.key
+      const newState = cloneMerge()
       if (!newState.pending[id]) {
         newState.pending[id] = {}
       }
@@ -16,10 +17,11 @@ export default function ackReducer (state = {}, action) {
         type: action.dispatching,
         data: action.data
       }
-      break
+      return newState
     }
     case 'Ack:removePending': {
       const id = action.data.key
+      const newState = cloneMerge()
       if (newState.pending[id]) {
         if (newState.pending[id][action.origin]) {
           delete newState.pending[id][action.origin]
@@ -28,7 +30,9 @@ export default function ackReducer (state = {}, action) {
           }
         }
       }
+      return newState
     }
+    default:
+      return state
   }
-  return newState
 }

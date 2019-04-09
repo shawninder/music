@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import unescape from 'lodash.unescape'
 
@@ -7,49 +7,47 @@ import propTypes from '../helpers/propTypes'
 
 import Track from './Track'
 
-class YouTube extends Component {
-  render () {
-    let busy = false
-    const trackId = this.props.data.key
-    const list = this.props.pending[trackId]
-    if (list) {
-      busy = true
-    }
-    return (
-      <Track
-        className='youtube-result'
-        data={this.props.data}
-        busy={busy}
-        artSrc={this.props.data.snippet.thumbnails.default.url}
-        dragHandleProps={this.props.dragHandleProps}
-        actions={this.props.actions}
-        queueIndex={this.props.queueIndex}
-        idx={this.props.idx}
-        playingNow={this.props.playingNow}
-        isPlaying={this.props.isPlaying}
-        actionsAbove={this.props.actionsAbove}
-        pending={this.props.pending}
-        trackId={trackId}
-      >
-        <p className='title'>{unescape(this.props.data.snippet.title)}</p>
-        <p className='channel'>{unescape(this.props.data.snippet.channelTitle)}</p>
-        <style jsx>{`
-          .title {
-            font-size: small;
-            font-weight: bold;
-          }
-
-          .channel {
-            font-size: x-small;
-          }
-
-          .title, .channel {
-            padding: 5px;
-          }
-        `}</style>
-      </Track>
-    )
+function YouTube (props) {
+  let busy = false
+  const trackId = props.data.key
+  const list = props.pending[trackId]
+  if (list) {
+    busy = true
   }
+  return (
+    <Track
+      className='youtube-result'
+      data={props.data}
+      busy={busy}
+      artSrc={props.data.snippet.thumbnails.default.url}
+      dragHandleProps={props.dragHandleProps}
+      actions={props.actions}
+      queueIndex={props.queueIndex}
+      idx={props.idx}
+      playingNow={props.playingNow}
+      isPlaying={props.isPlaying}
+      actionsAbove={props.actionsAbove}
+      pending={props.pending}
+      trackId={trackId}
+    >
+      <p className='title'>{unescape(props.data.snippet.title)}</p>
+      <p className='channel'>{unescape(props.data.snippet.channelTitle)}</p>
+      <style jsx>{`
+        .title {
+          font-size: small;
+          font-weight: bold;
+        }
+
+        .channel {
+          font-size: x-small;
+        }
+
+        .title, .channel {
+          padding: 5px;
+        }
+      `}</style>
+    </Track>
+  )
 }
 
 const props = [

@@ -1,4 +1,4 @@
-export default (props) => {
+function Integration (props) {
   return (
     <figure className='integration'>
       <div className='iconMat'>
@@ -22,3 +22,5 @@ export default (props) => {
     </figure>
   )
 }
+
+export default Integration

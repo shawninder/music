@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
@@ -10,98 +10,89 @@ import tfns from '../styles/timing-functions'
 
 const isServer = typeof window === 'undefined'
 
-class AudioFileInput extends Component {
-  constructor (props) {
-    super(props)
-    this.onCB = this.onCB.bind(this)
-    this.ref = this.ref.bind(this)
-    this.el = null
-    this.firstTime = true
-    this.nbFiles = 0
-  }
-  componentDidMount () {
-    if (this.firstTime && this.el && !isServer) {
-      setTimeout(() => {
-        this.el.click()
-      })
-      this.firstTime = false
+function AudioFileInput (props) {
+  const [inputElement, setInputElement] = useState(null)
+  const [firstTime, setFirstTime] = useState(true)
+  const [nbFiles, setNbFiles] = useState(0)
+  useEffect(() => {
+    if (firstTime && inputElement && !isServer) {
+      inputElement.click()
+      setFirstTime(false)
+    }
+    return () => {
+      setInputElement(null)
+    }
+  }, [inputElement, firstTime])
+  function ref (el) {
+    setInputElement(el)
+    if (inputElement && inputElement.files && inputElement.files.length !== nbFiles) {
+      setNbFiles(inputElement.files.length)
     }
   }
-  componentWillUnmount () {
-    this.el = null
-  }
-  ref (el) {
-    this.el = el
-    if (el && el.files && el.files.length !== this.nbFiles) {
-      this.nbFiles = el.files.length
-    }
-  }
-  onCB (event) {
+  function onCB (event) {
     const target = event.target || event.srcElement
     if (target.value.length === 0) {
       const len = target.files.length
-      if (this.nbFiles === len) {
-        this.props.onCancel(event)
+      if (nbFiles === len) {
+        props.onCancel(event)
       } else {
-        this.nbFiles = len
-        this.props.onFiles([])
+        setNbFiles(len)
+        props.onFiles([])
       }
     } else {
-      this.nbFiles = target.files.length
-      this.props.onFiles(event)
+      setNbFiles(target.files.length)
+      props.onFiles(event)
     }
   }
-  render () {
-    const classes = this.props.className ? this.props.className.split(' ') : []
-    if (this.props.data.hydrated) {
-      classes.push('hidden')
-    }
-    return (
-      <AudioFile
-        data={this.props.data}
-        dragHandleProps={this.props.dragHandleProps}
-        actions={this.props.actions}
-        queueIndex={this.props.queueIndex}
-        idx={this.props.idx}
-        playingNow={this.props.playingNow}
-        isPlaying={this.props.isPlaying}
-        actionsAbove={this.props.actionsAbove}
-        pending={this.props.pending}
-      >
-        <input
-          type='file'
-          multiple
-          className={classes.join(' ')}
-          accept='mp3'
-          ref={this.ref}
-          onChange={this.onCB}
-          onClick={(event) => {
-            event.stopPropagation()
-          }}
-        />
-        <style jsx>{`
-          input {
-            display: block;
-            height: 100%;
-            padding: 15px;
-            transition-property: opacity;
-            transition-duration: ${durations.instant};
-            transition-timing-function: ${tfns.easeInOutQuad};
-            opacity: 1;
-          }
-          input.hidden {
-            position: absolute;
-            top: 0;
-            left: 0;
-            opacity: 0;
-            z-index: -1;
-            width: 1px;
-            height: 1px;
-          }
-        `}</style>
-      </AudioFile>
-    )
+  const classes = props.className ? props.className.split(' ') : []
+  if (props.data.hydrated) {
+    classes.push('hidden')
   }
+  return (
+    <AudioFile
+      data={props.data}
+      dragHandleProps={props.dragHandleProps}
+      actions={props.actions}
+      queueIndex={props.queueIndex}
+      idx={props.idx}
+      playingNow={props.playingNow}
+      isPlaying={props.isPlaying}
+      actionsAbove={props.actionsAbove}
+      pending={props.pending}
+    >
+      <input
+        type='file'
+        multiple
+        className={classes.join(' ')}
+        accept='mp3'
+        ref={ref}
+        onChange={onCB}
+        onClick={(event) => {
+          event.stopPropagation()
+        }}
+      />
+      <style jsx>{`
+        input {
+          display: block;
+          height: 100%;
+          padding: 15px;
+          transition-property: opacity;
+          transition-duration: ${durations.instant};
+          transition-timing-function: ${tfns.easeInOutQuad};
+          opacity: 1;
+        }
+        input.hidden {
+          position: absolute;
+          top: 0;
+          left: 0;
+          opacity: 0;
+          z-index: -1;
+          width: 1px;
+          height: 1px;
+        }
+      `}</style>
+    </AudioFile>
+  )
 }
 
 const props = [

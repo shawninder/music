@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
 import get from 'lodash.get'
@@ -7,42 +7,35 @@ import imgDataToUrl from '../helpers/imgDataToUrl'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
 
-class Artwork extends Component {
-  render () {
-    let thumbs = get(this.props.playingNow, 'snippet.thumbnails')
-    let src
-    if (thumbs) {
-      src = get(thumbs, 'high.url') || get(thumbs, 'medium.url') || get(thumbs, 'default.url')
-    } else {
-      const data = get(this.props.playingNow, 'meta.tags.picture.data')
-      if (data) {
-        src = imgDataToUrl(data, get(this.props.playingNow, 'meta.tags.picture.format'))
-      }
+function Artwork (props) {
+  let thumbs = get(props.playingNow, 'snippet.thumbnails')
+  let src
+  if (thumbs) {
+    src = get(thumbs, 'high.url') || get(thumbs, 'medium.url') || get(thumbs, 'default.url')
+  } else {
+    const data = get(props.playingNow, 'meta.tags.picture.data')
+    if (data) {
+      src = imgDataToUrl(data, get(props.playingNow, 'meta.tags.picture.format'))
     }
-    if (!src) {
-      src = 'https://placeholder.pics/svg/640x320/000000-2A2A2A/F1F1F1-000000/%E2%98%86'
-    }
-    return (
-      <img
-        key='artwork'
-        src={src}
-        className={this.props.className}
-        onClick={(event) => {
-          event.stopPropagation()
-          this.props.dispatch({
-            type: 'Player:togglePlaying'
-          })
-        }}
-      />
-    )
   }
+  if (!src) {
+    src = 'https://placeholder.pics/svg/640x320/000000-2A2A2A/F1F1F1-000000/%E2%98%86'
+  }
+  return (
+    <img
+      key='artwork'
+      src={src}
+      className={props.className}
+      onClick={props.onClick}
+    />
+  )
 }
 
 const props = [
-  { name: 'dispatch', type: PropTypes.func.isRequired },
   { name: 'className', type: PropTypes.string, val: '' },
   { name: 'playingNow', type: PropTypes.object.isRequired },
-  { name: 'isPlaying', type: PropTypes.bool.isRequired }
+  { name: 'isPlaying', type: PropTypes.bool.isRequired },
+  { name: 'onClick', type: PropTypes.func, val: () => {} }
 ]
 
 Artwork.defaultProps = defaultProps(props)

@@ -7,8 +7,8 @@ import aggLogs from '../actionCreators/aggLogs'
 import dispatch from '../actionCreators/dispatch'
 
 function mapStateToProps (state) {
-  const { auth, bar } = state
-  return { auth, bar }
+  const { auth } = state
+  return { auth }
 }
 
 // TODO clean up nested `_dispatch`s

@@ -1,19 +1,33 @@
 import App, { Container } from 'next/app'
 import React from 'react'
-import withReduxStore from '../with-redux-store'
-import { Provider } from 'react-redux'
+
+import Dict from '../data/Dict'
+import DictContext from '../features/dict/context'
+
+import txt from '../data/txt.json'
 
 class MyApp extends App {
+  // static async getInitialProps ({ Component, ctx }) {
+  //   const pageProps = Component.getInitialProps
+  //     ? await Component.getInitialProps(ctx)
+  //     : {}
+  //   return { pageProps }
+  // }
+
   render () {
-    const { Component, pageProps, reduxStore, socket } = this.props
+    const { Component, pageProps } = this.props
     return (
       <Container>
-        <Provider store={reduxStore}>
-          <Component {...pageProps} socket={socket} />
-        </Provider>
+        <DictContext.Provider
+          value={{
+            dict: new Dict(txt, ['en', 'fr'], this.props.acceptLanguage, global.navigator)
+          }}
+        >
+          <Component {...pageProps} />
+        </DictContext.Provider>
       </Container>
     )
   }
 }
 
-export default withReduxStore(MyApp)
+export default MyApp

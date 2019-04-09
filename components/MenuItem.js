@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import defaultProps from '../helpers/defaultProps'
 import propTypes from '../helpers/propTypes'
@@ -7,68 +7,60 @@ import colors from '../styles/colors'
 import durations from '../styles/durations'
 import tfns from '../styles/timing-functions'
 
-class MenuItem extends Component {
-  constructor (props) {
-    super(props)
-    this.toggleDrawer = this.toggleDrawer.bind(this)
-    this.state = {
-      opened: props.startsOpen
-    }
+function MenuItem (props) {
+  const [opened, setOpened] = useState(props.startsOpen)
+
+  function toggleDrawer () {
+    setOpened(!opened)
   }
 
-  toggleDrawer () {
-    this.setState({ opened: !this.state.opened })
+  const classes = props.className ? props.className.split(' ') : []
+  classes.push('menuItem')
+  const openedStyles = {
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+    overflowY: 'scroll',
+    overflowScrolling: 'touch'
   }
-
-  render () {
-    const classes = this.props.className ? this.props.className.split(' ') : []
-    classes.push('menuItem')
-    const openedStyles = {
-      maxWidth: '100vw',
-      maxHeight: '100vh',
-      overflowY: 'scroll',
-      overflowScrolling: 'touch'
-    }
-    const closedStyles = {
-      overflow: 'hidden',
-      maxHeight: '0'
-    }
-    return (
-      <section className={classes.join(' ')}>
-        <h3 onClick={this.toggleDrawer}>{this.props.label}</h3>
-        <div className='drawer' style={this.state.opened ? openedStyles : closedStyles}>
-          <div className='innards'>
-            {this.props.children}
-          </div>
+  const closedStyles = {
+    overflow: 'hidden',
+    maxHeight: '0'
+  }
+  return (
+    <section className={classes.join(' ')}>
+      <h3 onClick={toggleDrawer}>{props.label}</h3>
+      <div className='drawer' style={opened ? openedStyles : closedStyles}>
+        <div className='innards'>
+          {props.children}
         </div>
-        <style jsx>{`
-          .menuItem {
-            h3 {
-              font-size: x-large;
-              font-weight: bold;
-              padding: 15px 10px 0;
-              cursor: pointer;
-              color: ${colors.link};
-              &:hover {
-                color: ${colors.hover};
-              }
-              &:active {
-                color: ${colors.primary};
-              }
+      </div>
+      <style jsx>{`
+        .menuItem {
+          h3 {
+            font-size: x-large;
+            font-weight: bold;
+            padding: 15px 10px 0;
+            cursor: pointer;
+            color: ${colors.link};
+            &:hover {
+              color: ${colors.hover};
             }
-            .drawer {
-              transition-property: max-width, max-height, background-color;
-              transition-duration: ${durations.moment};
-              transition-timing-function: ${tfns.easeInOutQuad};
-              .innards {
-                padding: 0 10px 10px;
-              }
+            &:active {
+              color: ${colors.primary};
             }
           }
-        `}</style>
-      </section>
-    )
-  }
+          .drawer {
+            transition-property: max-width, max-height, background-color;
+            transition-duration: ${durations.moment};
+            transition-timing-function: ${tfns.easeInOutQuad};
+            .innards {
+              padding: 0 10px 10px;
+            }
+          }
+        }
+      `}</style>
+    </section>
+  )
 }
 
 const props = [
