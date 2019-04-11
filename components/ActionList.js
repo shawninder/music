@@ -65,7 +65,8 @@ function ActionList (props) {
 
   const actions = Object.keys(props.actions).reduce((arr, key, idx) => {
     const action = props.actions[key]
-    if (!action.cdn || action.cdn(props.data.queueIndex)) {
+    const cdn = action.cdn || (() => true)
+    if (cdn(props.data.queueIndex)) {
       arr.push(
         <li key={key}>
           <Action

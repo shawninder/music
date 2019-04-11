@@ -151,11 +151,6 @@ function App (props) {
     },
     'ctrl+space': () => {
       togglePlaying()
-    },
-    'down': () => {
-      if (document.activeElement === document.body) {
-        console.log('+++++++++++++++')
-      }
     }
   }, { eventTarget: global, listenerOptions })
 
@@ -688,12 +683,23 @@ function App (props) {
   function getTrackEvents () {
     const state = getPartyState()
     return {
-      'space': (...args) => {
-        console.log(`args (${typeof args})`, args)
-        if (state.queue.now.key) {
-          enqueue(...args)
+      'space': (data, idx, event) => {
+        if (data.inQueue) {
+          if (data.queueIndex < 0) {
+            dequeue(data, idx, data.queueIndex, event)
+          } else if (data.queueIndex > 0) {
+            dequeue(data, idx, data.queueIndex, event)
+          } else if (data.queueIndex === 0) {
+            togglePlaying()
+          } else {
+            throw new Error('Non-numerical queue index')
+          }
         } else {
-          playNow(...args)
+          if (state.queue.now.key) {
+            enqueue(data, idx, event)
+          } else {
+            playNow(data, idx, event)
+          }
         }
       },
       'ctrl+enter': enqueue,
@@ -719,18 +725,7 @@ function App (props) {
   }
 
   const state = getPartyState()
-  const cdn = (queueIndex) => {
-    return !queueIndex
-  }
-  const cdnNeg = (queueIndex) => {
-    return queueIndex < 0
-  }
-  const cdnPos = (queueIndex) => {
-    return queueIndex > 0
-  }
-  const cdnQueued = (queueIndex) => {
-    return queueIndex === 0 || !!queueIndex
-  }
+
   const appClasses = ['App']
 
   if (socket) {
@@ -792,6 +787,18 @@ function App (props) {
   playingNowClasses.push(appState.playerMode)
   const upNextClasses = ['upNext']
 
+  const cdn = (queueIndex) => {
+    return !queueIndex
+  }
+  const cdnNeg = (queueIndex) => {
+    return queueIndex < 0
+  }
+  const cdnPos = (queueIndex) => {
+    return queueIndex > 0
+  }
+  const cdnQueued = (queueIndex) => {
+    return queueIndex === 0 || !!queueIndex
+  }
   const defaultActions = {
     enqueue: {
       targetIdx: state.queue.upNext.length + 1,
@@ -967,10 +974,6 @@ function App (props) {
 
           .playingNow .icon {
             color: ${colors.textBg};
-          }
-
-          .App.attending .copyButton, .App.hosting .copyButton {
-            opacity: 1;
           }
         `}</style>
         <style jsx>{`
@@ -1155,21 +1158,26 @@ function App (props) {
               </mark>
             ) : null}
             <div className='copyButtonContainer'>
-              <CopyButton
-                text={dict.get('party.copyBtn')}
-                onSuccess={(event) => {
-                  // event.clearSelection()
-                  notify({
-                    id: `party.linkCopied${Math.random()}`,
-                    body: dict.get('party.linkCopied'),
-                    duration: 2000
-                  })
-                }}
-                onError={(event) => {
-                  console.error('Clipboard error', event)
-                  // TODO
-                }}
-              />
+              {'\u00A0'} {/* &nbsp; */}
+              {partyState.hosting || partyState.attending
+                ? (
+                  <CopyButton
+                    text={dict.get('party.copyBtn')}
+                    onSuccess={(event) => {
+                      // event.clearSelection()
+                      notify({
+                        id: `party.linkCopied${Math.random()}`,
+                        body: dict.get('party.linkCopied'),
+                        duration: 2000
+                      })
+                    }}
+                    onError={(event) => {
+                      console.error('Clipboard error', event)
+                      // TODO
+                    }}
+                  />
+                ) : null
+              }
             </div>
             <Party
               placeholder={dict.get('party.placeholder')}
@@ -1188,20 +1196,7 @@ function App (props) {
               items={state.queue.history}
               componentProps={{
                 ...getComponentProps(state),
-                actions: {
-                  jumpTo: {
-                    targetIdx: 0,
-                    go: jumpBackTo,
-                    txt: dict.get('actions.jumpBackTo'),
-                    icon: jumpBackToIcon
-                  },
-                  remove: {
-                    targetIdx: null,
-                    go: dequeue,
-                    txt: dict.get('actions.remove'),
-                    icon: dequeueIcon
-                  }
-                }
+                actions: defaultActions
               }}
               defaultComponent={Smart}
               startsClosed
@@ -1242,20 +1237,7 @@ function App (props) {
               items={state.queue.upNext}
               componentProps={{
                 ...getComponentProps(state),
-                actions: {
-                  jumpTo: {
-                    targetIdx: 0,
-                    go: jumpTo,
-                    txt: dict.get('actions.jumpTo'),
-                    icon: jumpToIcon
-                  },
-                  remove: {
-                    targetIdx: null,
-                    go: dequeue,
-                    txt: dict.get('actions.remove'),
-                    icon: dequeueIcon
-                  }
-                }
+                actions: defaultActions
               }}
               defaultComponent={Smart}
               areDraggable

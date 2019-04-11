@@ -55,14 +55,10 @@ function CopyButton (props) {
           cursor: pointer;
           text-decoration: underline;
           padding: 3px 5px;
-          opacity: 0;
           transition-property: opacity;
           transition-duration: ${durations.instant};
           transition-timing-function: ${tfns.easeInOutQuad};
           color: ${colors.text};
-        }
-        .copyButton.enabled {
-          opacity: 1;
         }
       `}</style>
     </>

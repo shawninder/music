@@ -3,6 +3,7 @@ import colors from '../styles/colors'
 
 export default css`
   .action {
+    cursor: pointer;
     width: 100%;
     height: 32px;
     display: grid;

@@ -578,7 +578,7 @@ function Party (props) {
 
           .hosting input, .attending input {
             background-color: transparent;
-            border-width: 0;
+            border-color: transparent;
             &:disabled {
               color: ${colors.placeholder};
             }
