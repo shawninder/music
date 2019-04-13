@@ -28,7 +28,7 @@ function FilesDialog (props) {
       const file = files[i]
       const key = fileToKey(file)
       props.visibleFiles[key] = file
-      const filePath = window.URL.createObjectURL(file)
+      const filePath = global.URL.createObjectURL(file)
       dispatch({
         type: 'FileInput:newFile',
         file: file,
