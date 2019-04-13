@@ -1,12 +1,15 @@
 const idbProtocol = 'indexeddb://'
+
+const isServer = typeof window === 'undefined'
+
 export default function isIndexedDBAudioStream (url) {
   return (
-    typeof window !== 'undefined' &&
+    typeof !isServer &&
     (
-      typeof window.indexedDB !== 'undefined' ||
-      typeof window.mozIndexedDB !== 'undefined' ||
-      typeof window.webkitIndexedDB !== 'undefined' ||
-      typeof window.msIndexedDB !== 'undefined'
+      typeof global.indexedDB !== 'undefined' ||
+      typeof global.mozIndexedDB !== 'undefined' ||
+      typeof global.webkitIndexedDB !== 'undefined' ||
+      typeof global.msIndexedDB !== 'undefined'
     ) &&
     url.startsWith(idbProtocol)
   )
