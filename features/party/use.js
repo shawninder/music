@@ -9,7 +9,7 @@ import sessionStore from '../sessionStore'
 
 const isServer = typeof window === 'undefined'
 
-function useParty ({ intercept = [] }) {
+function useParty ({ intercept = [] } = {}) {
   const { startState, updateState } = sessionStore('partyState')
 
   const [state, dispatch] = useReducer(partyReducer, defaultPartyState, startState)
