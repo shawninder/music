@@ -12,7 +12,7 @@ function AudioFile (props) {
   const classes = props.className ? props.className.split(' ') : []
   classes.push('inputFile')
   let busy = false
-  const trackId = props.data.id
+  const trackId = props.data.key
   const list = props.pending[trackId]
   if (list) {
     busy = true
