@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import createSinglePlayer from 'react-player/lib/singlePlayer'
 import isIndexedDBAudioStream from '../helpers/isIndexedDBAudioStream'
 
-const IOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream
+const IOS = typeof global.navigator !== 'undefined' && /iPad|iPhone|iPod/.test(global.navigator.userAgent) && !global.MSStream
 const AUDIO_EXTENSIONS = /\.(m4a|mp4a|mpga|mp2|mp2a|mp3|m2a|m3a|wav|weba|aac|oga|spx)($|\?)/i
 // const VIDEO_EXTENSIONS = /\.(mp4|og[gv]|webm|mov|m4v)($|\?)/i
 const HLS_EXTENSIONS = /\.(m3u8)($|\?)/i
