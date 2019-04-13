@@ -211,7 +211,7 @@ function App (props) {
   }
 
   function file (data) {
-    window.document.querySelector('.controls-newFile').click()
+    global.document.querySelector('.controls-newFile').click()
   }
 
   function makeOrigin () {
@@ -251,7 +251,7 @@ function App (props) {
       const chunk = msg.arrayBuffer
       let newLength = chunk.byteLength
       if (get.result) {
-        const concatenated = new window.Blob([get.result, chunk], { type: 'audio' })
+        const concatenated = new global.Blob([get.result, chunk], { type: 'audio' })
         newLength = concatenated.size
         const put = objectStore.put(concatenated, key)
         put.onsuccess = function (event) {
@@ -261,7 +261,7 @@ function App (props) {
           console.log('====PUT ERROR', event, put.result)
         }
       } else {
-        const chunkBlob = new window.Blob([chunk], { type: 'audio' })
+        const chunkBlob = new global.Blob([chunk], { type: 'audio' })
         newLength = chunkBlob.size
         const add = objectStore.add(chunkBlob, key)
         add.onsuccess = (event) => {
@@ -349,7 +349,7 @@ function App (props) {
     const key = action.key
     const file = visibleFiles.current[key]
     const fileSize = file.size
-    const fileReader = new window.FileReader()
+    const fileReader = new global.FileReader()
     const firstSlice = file.slice(0, Math.min(CHUNK_SIZE, fileSize), 'audio')
     fileReader.readAsArrayBuffer(firstSlice)
     const fn = ({ fileKey, start }) => {
@@ -358,7 +358,7 @@ function App (props) {
         if (!canceled) {
           const chunkSize = Math.min(CHUNK_SIZE, fileSize - start)
           const slice = file.slice(start, start + chunkSize, 'audio')
-          const reader = new window.FileReader()
+          const reader = new global.FileReader()
           reader.readAsArrayBuffer(slice)
           reader.onload = (event) => {
             const arrayBuffer = reader.result
