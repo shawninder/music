@@ -800,6 +800,7 @@ function App (props) {
                         <>
                           <Spotlight variant='surprised' />
                           <p className='spotlight-caption'>Your playlist is empty...</p>
+                          <span {...draggableProvided.dragHandleProps} style={{ display: 'none' }} />
                         </>
                       )}
                   </li>
