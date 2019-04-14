@@ -13,16 +13,16 @@ const listenerOptions = passiveSupported ? { passive: true, capture: false } : f
 function Range (props) {
   const [seeking, setSeeking] = useState(false)
   const [seekingTo, setSeekingTo] = useState(props.current)
-  const element = useRef(null)
+  const container = useRef(null)
   const currentEl = useRef(null)
   const handleEl = useRef(null)
 
   useEffect(() => {
-    if (element.current) {
-      element.current.addEventListener('touchmove', onTouchMove, listenerOptions)
+    if (container.current) {
+      container.current.addEventListener('touchmove', onTouchMove, listenerOptions)
       return () => {
-        if (element.current) {
-          element.current.removeEventListener('touchmove', onTouchMove, listenerOptions)
+        if (container.current) {
+          container.current.removeEventListener('touchmove', onTouchMove, listenerOptions)
         }
       }
     }
@@ -40,11 +40,13 @@ function Range (props) {
     // TODO if mouseup happened outside of `global`, detect and end seek
     const value = eventValue(event)
 
-    if (props.live) {
-      props.onChange(value)
+    if (value) {
+      if (props.live) {
+        props.onChange(value)
+      }
+      setSeeking(true)
+      setSeekingTo(value)
     }
-    setSeeking(true)
-    setSeekingTo(value)
   }
 
   function endSeek (event) {
@@ -74,13 +76,13 @@ function Range (props) {
     const el = event.target
 
     // TODO this is all really risky, find better way
-    if (element.current === el) {
+    if (el === container.current) {
       return calcPos(props.vertical, el, pos)
     }
-    if (element.current === currentEl.current) {
+    if (el === currentEl.current) {
       return calcPos(props.vertical, el.parentNode, pos)
     }
-    if (element.current === handleEl.current) {
+    if (el === handleEl.current) {
       return calcPos(props.vertical, el.parentNode, pos)
     } else {
       return calcPos(props.vertical, el, pos)
@@ -107,7 +109,7 @@ function Range (props) {
       onTouchStart={startSeeking}
       onMouseUp={endSeek}
       onTouchEnd={endSeek}
-      ref={element}
+      ref={container}
     >
       <div className={classes.join(' ')}>
         <div
