@@ -113,24 +113,40 @@ const actionCreators = {
       }])
     },
     'droppable-bar-list': ({ source, destination, origin, fromBar, state }) => {
-      return [{
+      const actions = []
+      if (state.queue.now.key) {
+        actions.push({
+          type: 'Queue:toHistory',
+          data: state.queue.now,
+          origin
+        })
+      }
+      return actions.concat([{
         type: 'Queue:play',
         data: fromBar,
         origin
       }, {
         type: 'Player:setPlaying',
         playing: true
-      }]
+      }])
     },
     'droppable-files': ({ source, destination, origin, state }) => {
-      return [{
+      const actions = []
+      if (state.queue.now.key) {
+        actions.push({
+          type: 'Queue:toHistory',
+          data: state.queue.now,
+          origin
+        })
+      }
+      return actions.concat([{
         type: 'Queue:play',
         data: state.fileInput.files[source.index],
         origin
       }, {
         type: 'Player:setPlaying',
         playing: true
-      }]
+      }])
     }
   },
   'droppable-upNext': {
