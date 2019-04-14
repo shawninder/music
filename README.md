@@ -23,6 +23,10 @@ You may also want to set the following environment variables
 
 `npm run`
 
+## Testing
+
+You can run `npm run test-node` and `npm run test-jsdom` at any time, but before running `npm run test-lighthouse` (and consequently `npm test` as well) you must first `npm run build && npm start` to provide the audits with a production build of the app at http://localhost:3000.
+
 ## Understanding and navigating the source code
 
 In general the code is split out in the following way:

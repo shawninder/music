@@ -4,6 +4,10 @@
   "private": true,
   "scripts": {
     "lint": "standard",
+    "test": "npm run test-node; npm run test-jsdom; npm run test-lighthouse",
+    "test-node": "jest --testEnvironment=node",
+    "test-jsdom": "jest --testEnvironment=jsdom",
+    "test-lighthouse": "jest --testEnvironment=node --testMatch=**/audits/**/*.js",
     "dev": "next",
     "clean": "rm -rf .next bundles",
     "analyze": "BUNDLE_ANALYZE=both next",
@@ -65,10 +69,19 @@
     "styled-jsx-plugin-postcss": "2.0.0"
   },
   "devDependencies": {
+    "@babel/core": "7.4.3",
+    "@zeit/next-bundle-analyzer": "0.1.2",
+    "babel-jest": "24.7.1",
+    "chrome-launcher": "0.10.5",
+    "enzyme": "3.9.0",
+    "enzyme-adapter-react-16": "1.12.1",
+    "jest": "24.7.1",
     "jsinspect": "0.12.7",
+    "lighthouse": "4.3.0",
+    "react-addons-test-utils": "15.6.2",
+    "react-test-renderer": "16.8.6",
     "standard": "12.0.1",
-    "webpack-bundle-analyzer": "3.3.0",
-    "@zeit/next-bundle-analyzer": "0.1.2"
+    "webpack-bundle-analyzer": "3.3.0"
   },
   "homepage": "https://crowds-play.com",
   "engines": {
@@ -79,5 +92,10 @@
     "last 4 versions",
     "Firefox ESR",
     "not ie < 9"
-  ]
+  ],
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  }
 }

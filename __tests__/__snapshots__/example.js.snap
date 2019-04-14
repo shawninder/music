@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`With Snapshot Testing CopyButton shows "copy" by default 1`] = `
+Array [
+  <span
+    className="jsx-4241117872 copyLink"
+  >
+    
+  </span>,
+  <a
+    className="jsx-4241117872 copyButton"
+  >
+    copy
+  </a>,
+]
+`;
