@@ -84,7 +84,6 @@ export default function queueReducer (state = {}, action) {
       let now = cloneDeep(newState.now)
       let upNext = cloneDeep(newState.upNext)
       if (upNext.length > 0) {
-        // Put playing now in history
         if (now && now.key) {
           const item = { ...now }
           item.queueIndex = -1
@@ -97,7 +96,6 @@ export default function queueReducer (state = {}, action) {
           history.push({ ...item })
         }
 
-        // Shift UpNext and Play next track
         const next = upNext.shift()
         upNext = upNext.map((item, idx) => {
           item.queueIndex = 1 + idx
@@ -156,7 +154,6 @@ export default function queueReducer (state = {}, action) {
         }
       }
       newState.now = data
-      // Reset queueIndex and inQueue
       newState = reIndexQueue(newState)
       return newState
     }
@@ -165,6 +162,17 @@ export default function queueReducer (state = {}, action) {
       const item = newState[action.from.name].splice(action.from.idx, 1)[0]
       newState[action.to.name].splice(action.to.idx, 0, item)
       newState = reIndexQueue(newState)
+      return newState
+    }
+    case 'Queue:moveNow': {
+      let newState = cloneMerge()
+      if (action.to.name === 'history') {
+        const items = newState[action.to.name].splice(action.to.idx)
+        newState.upNext = items.concat(newState.upNext)
+      } else if (action.to.name === 'upNext') {
+        const items = newState[action.to.name].splice(0, action.to.idx)
+        newState.history = newState.history.concat(items)
+      }
       return newState
     }
     case 'Queue:insert': {
@@ -185,7 +193,6 @@ export default function queueReducer (state = {}, action) {
           return upNextItem
         })
       }
-      // newState.now.queueIndex = 0
       return newState
     }
     default:

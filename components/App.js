@@ -2,7 +2,7 @@ import { EventEmitter } from 'events'
 
 import React, { useEffect, useContext, useRef, useState, useCallback } from 'react'
 
-import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import cloneDeep from 'lodash.clonedeep'
 import pullAt from 'lodash.pullat'
 import debounce from 'lodash.debounce'
@@ -214,12 +214,6 @@ function App (props) {
     }
   }, [])
 
-  function getPartyState () {
-    return partyState.attending
-      ? partyState.state
-      : { queue: queueState, player: playerState }
-  }
-
   function file (data) {
     global.document.querySelector('.controls-newFile').click()
   }
@@ -328,7 +322,7 @@ function App (props) {
     // TODO Use `announce` to deliver an aural message to screen readers
   }
 
-  function onDragEnd ({ type, reason, destination, source }, { announce }) {
+  const onDragEnd = useCallback(({ type, reason, destination, source }, { announce }) => {
     // TODO Use `announce` to deliver an aural message to screen readers
     appDispatch({
       type: 'App:dragging',
@@ -336,14 +330,13 @@ function App (props) {
     })
     if (type === 'DEFAULT' && reason === 'DROP') {
       if (destination) { // else item was returned to initial position or such noop
-        const currentPartyState = getPartyState()
         const origin = makeOrigin()
         const fromBar = barState.items[source.index]
-        getDragAndDropActions({ source, destination, origin, fromBar, state: { ...currentPartyState, fileInput: fileInputState } })
+        getDragAndDropActions({ source, destination, origin, fromBar, state: { ...currentState, fileInput: fileInputState } })
           .map(centralDispatch)
       }
     }
-  }
+  }, [currentState])
 
   function sendFile (action) {
     const handler = new EventEmitter()
@@ -723,13 +716,13 @@ function App (props) {
     // TODO
   }
 
-  function getComponentProps (_state) {
+  const getComponentProps = useCallback((_state) => {
     return {
       pending: ackState.pending,
       playingNow: _state.queue.now.key,
       isPlaying: _state.player.playing
     }
-  }
+  }, [ackState])
 
   const appClasses = ['App']
 
@@ -750,42 +743,75 @@ function App (props) {
     appClasses.push('dragging')
   }
 
-  let playingNowZone
+  const [playingNowLiClassName, setPlayingNowLiClassName] = useState('emptyDropZone')
+  const [playingNowLiKey, setPlayingNowLiKey] = useState('playingNow-emptyDropZone')
 
-  if (currentState.queue.now.key) {
-    playingNowZone = (
-      <Smart
-        key='Playing-Now'
-        data={{
-          ...currentState.queue.now,
-          inQueue: true,
-          queueIndex: 0
-        }}
-        onClick={togglePlaying}
-        pending={ackState.pending}
-        playingNow={currentState.queue.now.key}
-        isPlaying={currentState.player.playing}
-        idx={0}
-        queueIndex={0}
-      />
-    )
-  } else {
-    playingNowZone = (
-      <Droppable droppableId={`droppable-playingNow`}>
-        {(droppableProvided, snapshot) => {
-          return (
-            <ol ref={droppableProvided.innerRef} key='playingNow-droppable'>
-              <li className='emptyDropZone' key='playingNow-emptyDropZone'>
-                <Spotlight variant='surprised' />
-                <p className='spotlight-caption'>Your playlist is empty...</p>
-              </li>
-              {droppableProvided.placeholder}
-            </ol>
-          )
-        }}
-      </Droppable>
-    )
-  }
+  useEffect(() => {
+    setPlayingNowLiClassName(currentState.queue.now.key
+      ? ''
+      : 'emptyDropZone')
+  }, [currentState])
+
+  useEffect(() => {
+    setPlayingNowLiKey(currentState.queue.now.key
+      ? 'playingNow-dropZone'
+      : 'playingNow-emptyDropZone')
+  }, [currentState])
+
+  const playingNowZone = (
+    <Droppable droppableId={`droppable-playingNow`}>
+      {(droppableProvided, snapshot) => {
+        return (
+          <ol ref={droppableProvided.innerRef} key='playingNow-droppable'>
+            <Draggable
+              key={`${playingNowLiClassName}-draggable-Playing-Now`}
+              draggableId='draggable-Playing-Now'
+              index={0}
+            >
+              {(draggableProvided, snapshot) => {
+                return (
+                  <li
+                    className={`${playingNowLiClassName}${snapshot.isDragging ? ' dragging' : ''}`}
+                    key={playingNowLiKey}
+                    ref={draggableProvided.innerRef}
+                    {...draggableProvided.draggableProps}
+                  >
+                    {currentState.queue.now.key
+                      ? (
+                        <Smart
+                          key='Playing-Now'
+                          data={{
+                            ...currentState.queue.now,
+                            inQueue: true,
+                            queueIndex: 0
+                          }}
+                          onClick={togglePlaying}
+                          pending={ackState.pending}
+                          playingNow={currentState.queue.now.key}
+                          isPlaying={currentState.player.playing}
+                          idx={0}
+                          queueIndex={0}
+                          {...getComponentProps(currentState)}
+                          actions={defaultActions}
+                          dragHandleProps={draggableProvided.dragHandleProps}
+                        />
+                      )
+                      : (
+                        <>
+                          <Spotlight variant='surprised' />
+                          <p className='spotlight-caption'>Your playlist is empty...</p>
+                        </>
+                      )}
+                  </li>
+                )
+              }}
+            </Draggable>
+            {droppableProvided.placeholder}
+          </ol>
+        )
+      }}
+    </Droppable>
+  )
 
   const historyClasses = ['history']
   const playingNowClasses = ['playingNow']
