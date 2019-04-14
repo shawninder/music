@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 
-import React, { useEffect, useContext, useRef } from 'react'
+import React, { useEffect, useContext, useRef, useState, useCallback } from 'react'
 
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import cloneDeep from 'lodash.clonedeep'
@@ -113,6 +113,16 @@ function App (props) {
   ] = useParty({
     intercept: [originalPlayerDispatch, originalQueueDispatch]
   })
+
+  const [currentState, setCurrentState] = useState(partyState.attending
+    ? partyState.state
+    : { queue: queueState, player: playerState })
+
+  useEffect(() => {
+    setCurrentState(partyState.attending
+      ? partyState.state
+      : { queue: queueState, player: playerState })
+  }, [partyState, queueState, playerState])
 
   useSync(ackState, 'ack')
   useSync(playerState, 'player')
@@ -403,13 +413,12 @@ function App (props) {
     })
   }
 
-  function playNow (data) {
-    const state = getPartyState()
+  const playNow = useCallback((data) => {
     const origin = makeOrigin()
-    if (state.queue.now.key) {
+    if (currentState.queue.now.key) {
       queueDispatch({
         type: 'Queue:toHistory',
-        data: state.queue.now,
+        data: currentState.queue.now,
         origin
       })
     }
@@ -419,12 +428,15 @@ function App (props) {
       data,
       origin
     })
-  }
+    playerDispatch({
+      type: 'Player:setPlaying',
+      playing: true
+    })
+  }, [currentState])
 
-  function togglePlaying () {
-    const state = getPartyState()
-    if (state.queue.now.key) {
-      const newPlaying = !state.player.playing
+  const togglePlaying = useCallback(() => {
+    if (currentState.queue.now.key) {
+      const newPlaying = !currentState.player.playing
       playerDispatch({
         type: 'Player:setPlaying',
         playing: newPlaying
@@ -434,7 +446,7 @@ function App (props) {
         type: 'Queue:next'
       })
     }
-  }
+  }, [currentState])
 
   function playNext (data) {
     const newData = cloneDeep(data)
@@ -476,12 +488,11 @@ function App (props) {
     })
   }
 
-  function dequeue (data, idx, queueIndex, event) {
-    const state = getPartyState()
+  const dequeue = useCallback((data, idx, queueIndex, event) => {
     const origin = makeOrigin()
 
     if (queueIndex > 0) {
-      const newUpNext = cloneDeep(state.queue.upNext)
+      const newUpNext = cloneDeep(currentState.queue.upNext)
       pullAt(newUpNext, queueIndex - 1)
       queueDispatch({
         type: 'Queue:dequeue',
@@ -489,7 +500,7 @@ function App (props) {
         origin
       })
     } else if (queueIndex < 0) {
-      const newHistory = cloneDeep(state.queue.history)
+      const newHistory = cloneDeep(currentState.queue.history)
       pullAt(newHistory, newHistory.length + queueIndex)
       queueDispatch({
         type: 'Queue:dequeue',
@@ -499,7 +510,7 @@ function App (props) {
     } else if (queueIndex === 0) {
       // TODO
     }
-  }
+  }, [currentState])
 
   // remember (data) {
   //   props.dispatch({
@@ -576,16 +587,15 @@ function App (props) {
     })
   }
 
-  function jumpBackTo (data, idx) {
-    const state = getPartyState()
-    const len = state.queue.history.length
+  const jumpBackTo = useCallback((data, idx) => {
+    const len = currentState.queue.history.length
     queueDispatch({
       type: 'Queue:jumpTo',
       data,
       idx: -(len - 1 - idx + 1)
     })
     setPlaying(true)
-  }
+  }, [currentState])
 
   function restartTrack () {
     if (partyState.attending) {
@@ -616,9 +626,8 @@ function App (props) {
     }
   }
 
-  function onTrackEnd () {
-    const state = getPartyState()
-    const len = state.queue.upNext.length
+  const onTrackEnd = useCallback(() => {
+    const len = currentState.queue.upNext.length
     if (len > 0) {
       queueDispatch({
         type: 'Queue:next'
@@ -629,13 +638,12 @@ function App (props) {
         playing: false
       })
     }
-  }
+  }, [currentState])
 
-  function decorateItem (item) {
-    const state = getPartyState()
+  const decorateItem = useCallback((item) => {
     const decorated = cloneDeep(item)
     let queueIndex = null
-    const history = state.queue.history
+    const history = currentState.queue.history
     if (history.length > 0) {
       history.forEach((track) => {
         if (track.key === decorated.key) {
@@ -643,7 +651,7 @@ function App (props) {
         }
       })
     }
-    const upNext = state.queue.upNext
+    const upNext = currentState.queue.upNext
     if (upNext.length > 0) {
       upNext.forEach((track) => {
         if (track.key === decorated.key) {
@@ -651,7 +659,7 @@ function App (props) {
         }
       })
     }
-    const now = state.queue.now
+    const now = currentState.queue.now
     if (now.key === decorated.key) {
       queueIndex = now.queueIndex
     }
@@ -659,7 +667,7 @@ function App (props) {
     decorated.inQueue = inQueue
     decorated.queueIndex = queueIndex
     return decorated
-  }
+  }, [currentState])
 
   function findMusic (query, nextPageToken) {
     return media.search({ query }, nextPageToken)
@@ -680,8 +688,7 @@ function App (props) {
     })
   }
 
-  function getTrackEvents () {
-    const state = getPartyState()
+  const getTrackEvents = useCallback(() => {
     return {
       'space': (data, idx, event) => {
         if (data.inQueue) {
@@ -695,7 +702,7 @@ function App (props) {
             throw new Error('Non-numerical queue index')
           }
         } else {
-          if (state.queue.now.key) {
+          if (currentState.queue.now.key) {
             enqueue(data, idx, event)
           } else {
             playNow(data, idx, event)
@@ -706,7 +713,7 @@ function App (props) {
       'shift+enter': playNext,
       'ctrl+shift+enter': play
     }
-  }
+  }, [currentState])
 
   function playRandom () {
     // TODO
@@ -723,8 +730,6 @@ function App (props) {
       isPlaying: _state.player.playing
     }
   }
-
-  const state = getPartyState()
 
   const appClasses = ['App']
 
@@ -747,19 +752,19 @@ function App (props) {
 
   let playingNowZone
 
-  if (state.queue.now.key) {
+  if (currentState.queue.now.key) {
     playingNowZone = (
       <Smart
         key='Playing-Now'
         data={{
-          ...state.queue.now,
+          ...currentState.queue.now,
           inQueue: true,
           queueIndex: 0
         }}
         onClick={togglePlaying}
         pending={ackState.pending}
-        playingNow={state.queue.now.key}
-        isPlaying={state.player.playing}
+        playingNow={currentState.queue.now.key}
+        isPlaying={currentState.player.playing}
         idx={0}
         queueIndex={0}
       />
@@ -801,7 +806,7 @@ function App (props) {
   }
   const defaultActions = {
     enqueue: {
-      targetIdx: state.queue.upNext.length + 1,
+      targetIdx: currentState.queue.upNext.length + 1,
       go: enqueue,
       txt: dict.get('actions.enqueue'),
       icon: enqueueIcon,
@@ -1108,7 +1113,7 @@ function App (props) {
               return findMusic(query)
             }}
             componentProps={{
-              ...getComponentProps(state),
+              ...getComponentProps(currentState),
               actions: defaultActions
             }}
             ResultComponent={YouTube}
@@ -1143,7 +1148,7 @@ function App (props) {
             {dict.get('app.cancelDrop')}
           </CancelDropZone>
           <Menu
-            partyState={state}
+            partyState={currentState}
             showWIP={appState.showWIP}
           />
           <main>
@@ -1190,38 +1195,38 @@ function App (props) {
               autoFocus
             />
             <List
-              showLabel={`${dict.get('queue.history.show')} (${state.queue.history.length})`}
-              hideLabel={`${dict.get('queue.history.hide')} (${state.queue.history.length})`}
+              showLabel={`${dict.get('queue.history.show')} (${currentState.queue.history.length})`}
+              hideLabel={`${dict.get('queue.history.hide')} (${currentState.queue.history.length})`}
               className={historyClasses.join(' ')}
-              items={state.queue.history}
+              items={currentState.queue.history}
               componentProps={{
-                ...getComponentProps(state),
+                ...getComponentProps(currentState),
                 actions: defaultActions
               }}
               defaultComponent={Smart}
               startsClosed
               collapsible
               areDraggable
-              hidden={state.queue.history.length === 0}
+              hidden={currentState.queue.history.length === 0}
             />
             <div className={playingNowClasses.join(' ')} key='playingNow'>
               {playingNowZone}
-              {(state.queue.now.key && !partyState.attending)
+              {(currentState.queue.now.key && !partyState.attending)
                 ? (
                   <Player
                     onRef={playerEl}
-                    playingNow={state.queue.now}
-                    playing={state.player.playing}
+                    playingNow={currentState.queue.now}
+                    playing={currentState.player.playing}
                     onEnded={onTrackEnd}
                     listeners={listeners}
                     controls
                   />
                 ) : null}
-              {(state.queue.now.key && partyState.attending)
+              {(currentState.queue.now.key && partyState.attending)
                 ? (
                   <Artwork
-                    playingNow={state.queue.now}
-                    isPlaying={state.player.playing}
+                    playingNow={currentState.queue.now}
+                    isPlaying={currentState.player.playing}
                     className='Artwork'
                     onClick={(event) => {
                       event.stopPropagation()
@@ -1234,9 +1239,9 @@ function App (props) {
             </div>
             <List
               className={upNextClasses.join(' ')}
-              items={state.queue.upNext}
+              items={currentState.queue.upNext}
               componentProps={{
-                ...getComponentProps(state),
+                ...getComponentProps(currentState),
                 actions: defaultActions
               }}
               defaultComponent={Smart}
@@ -1247,11 +1252,11 @@ function App (props) {
               <section className='postQueue'>
                 <TrackButton
                   icon={PlayRandom}
-                  caption={(state.queue.now.key || state.queue.upNext.length > 0)
+                  caption={(currentState.queue.now.key || currentState.queue.upNext.length > 0)
                     ? 'Add random track'
                     : 'Play random track'}
                   onClick={() => {
-                    if (state.queue.now.key || state.queue.upNext.length > 0) {
+                    if (currentState.queue.now.key || currentState.queue.upNext.length > 0) {
                       addRandom()
                     } else {
                       playRandom()
@@ -1270,12 +1275,12 @@ function App (props) {
             <Feedback />
           </main>
           <Controls
-            f={state.player.f}
-            t={state.player.t}
-            history={state.queue.history}
-            upNext={state.queue.upNext}
+            f={currentState.player.f}
+            t={currentState.player.t}
+            history={currentState.queue.history}
+            upNext={currentState.queue.upNext}
             restartTrack={restartTrack}
-            playing={state.player.playing}
+            playing={currentState.player.playing}
             togglePlaying={() => {
               playerDispatch({
                 type: 'Player:togglePlaying'
@@ -1303,7 +1308,7 @@ function App (props) {
           />
           <FilesDialog
             items={fileInputState.files}
-            state={state}
+            state={currentState}
             actions={defaultActions}
             attending={partyState.attending}
             getComponentProps={getComponentProps}
