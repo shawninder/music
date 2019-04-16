@@ -819,60 +819,58 @@ function App (props) {
   playingNowClasses.push(appState.playerMode)
   const upNextClasses = ['upNext']
 
-  const cdn = (queueIndex) => {
-    return !queueIndex
-  }
-  const cdnNeg = (queueIndex) => {
+  const inHistory = (queueIndex) => {
     return queueIndex < 0
   }
-  const cdnPos = (queueIndex) => {
+  const inUpNext = (queueIndex) => {
     return queueIndex > 0
   }
-  const cdnQueued = (queueIndex) => {
-    return queueIndex === 0 || !!queueIndex
+  const inQueueNotNow = (queueIndex) => {
+    return !!queueIndex
   }
+  const always = () => true
   const defaultActions = {
-    enqueue: {
-      targetIdx: currentState.queue.upNext.length + 1,
-      go: enqueue,
-      txt: dict.get('actions.enqueue'),
-      icon: enqueueIcon,
-      cdn
-    },
-    playNext: {
-      targetIdx: 1,
-      go: playNext,
-      txt: dict.get('actions.playNext'),
-      icon: nextIcon,
-      cdn
-    },
-    play: {
-      targetIdx: 0,
-      go: play,
-      txt: dict.get('actions.playNow'),
-      icon: playNowIcon,
-      cdn
+    remove: {
+      targetIdx: null,
+      go: dequeue,
+      txt: dict.get('actions.remove'),
+      icon: dequeueIcon,
+      cdn: inQueueNotNow
     },
     jumpBackTo: {
       targetIdx: 0,
       go: jumpBackTo,
       txt: dict.get('actions.jumpBackTo'),
       icon: jumpBackToIcon,
-      cdn: cdnNeg
+      cdn: inHistory
     },
     jumpTo: {
       targetIdx: 0,
       go: jumpTo,
       txt: dict.get('actions.jumpTo'),
       icon: jumpToIcon,
-      cdn: cdnPos
+      cdn: inUpNext
     },
-    remove: {
-      targetIdx: null,
-      go: dequeue,
-      txt: dict.get('actions.remove'),
-      icon: dequeueIcon,
-      cdn: cdnQueued
+    enqueue: {
+      targetIdx: currentState.queue.upNext.length + 1,
+      go: enqueue,
+      txt: dict.get('actions.enqueue'),
+      icon: enqueueIcon,
+      cdn: always
+    },
+    playNext: {
+      targetIdx: 1,
+      go: playNext,
+      txt: dict.get('actions.playNext'),
+      icon: nextIcon,
+      cdn: always
+    },
+    play: {
+      targetIdx: 0,
+      go: play,
+      txt: dict.get('actions.playNow'),
+      icon: playNowIcon,
+      cdn: always
     }
   }
 

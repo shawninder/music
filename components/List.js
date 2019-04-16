@@ -155,7 +155,7 @@ function List (props) {
     const Component = itemClone.Component || props.defaultComponent
     if (props.areDraggable) {
       return (
-        <Draggable key={`${classes[0]}-list-draggable-${itemClone.key}`} draggableId={`draggable-${itemClone.key}`} index={idx}>
+        <Draggable key={`${classes[0]}-list-draggable-${itemClone.key}-${itemClone.queueIndex}`} draggableId={`draggable-${itemClone.key}-${itemClone.queueIndex}`} index={idx}>
           {(draggableProvided, snapshot) => {
             const liClasses = ['list-li']
             if (snapshot.isDragging) {
