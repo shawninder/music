@@ -51,7 +51,7 @@
     "postcss-nested": "4.1.2",
     "prop-types": "15.7.2",
     "react": "16.8.6",
-    "react-beautiful-dnd": "10.1.1",
+    "react-beautiful-dnd": "11.0.0",
     "react-calendar-heatmap": "1.8.0",
     "react-dom": "16.8.6",
     "react-player": "1.11.0",
