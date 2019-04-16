@@ -1,4 +1,4 @@
-import React, { useRef, useMemo, useContext, useEffect } from 'react'
+import React, { useRef, useMemo, useContext, useEffect, useState } from 'react'
 
 import { filter, match, score } from 'fuzzaldrin'
 import trim from 'lodash.trim'
@@ -15,9 +15,7 @@ import Command from './Command'
 import searchIcon from './icons/search'
 import clearIcon from './icons/clear'
 
-import lengths from '../styles/lengths'
-import colors from '../styles/colors'
-import durations from '../styles/durations'
+import styles from './Bar.style'
 
 import AppContext from '../features/app/context'
 import BarContext from '../features/bar/context'
@@ -31,6 +29,7 @@ function Bar (props) {
   const { dispatch: appDispatch } = useContext(AppContext)
   const { state: barState, dispatch: barDispatch } = useContext(BarContext)
   const list = useRef(null)
+  const [readOnly, setReadOnly] = useState(false)
 
   const isServer = typeof window === 'undefined'
 
@@ -71,7 +70,24 @@ function Bar (props) {
   }
 
   function onEnter (event) {
+    setReadOnly(true)
     go(event.target.value)
+      .then(() => {
+        setReadOnly(false)
+      })
+  }
+
+  function go (query) {
+    return props.go(query)
+      .then(({ items, hasMore, prevPageToken, nextPageToken }) => {
+        console.log(`Setting items for "${query}"`, Date.now())
+        barDispatch({
+          type: 'Bar:setItems',
+          items,
+          hasMore,
+          nextPageToken
+        })
+      })
   }
 
   function suggest (value) {
@@ -110,19 +126,6 @@ function Bar (props) {
     }
   }
 
-  function go (query) {
-    props.go(query)
-      .then(({ items, hasMore, prevPageToken, nextPageToken }) => {
-        console.log(`Setting items for "${query}"`, Date.now())
-        barDispatch({
-          type: 'Bar:setItems',
-          items,
-          hasMore,
-          nextPageToken
-        })
-      })
-  }
-
   function clear () {
     barDispatch({
       type: 'Bar:setQuery',
@@ -144,7 +147,7 @@ function Bar (props) {
     props.onRef.current.focus()
   }
 
-  function cede (event) {
+  function cede () {
     props.onRef.current.blur()
   }
 
@@ -197,6 +200,7 @@ function Bar (props) {
         onEnter={onEnter}
         onDown={focusList}
         onRef={props.onRef}
+        readOnly={readOnly}
       />
       {barState.items.length > 0
         ? (
@@ -252,68 +256,7 @@ function Bar (props) {
             }}>{clearIcon}</button>
           ) : null
       }
-      <style jsx>{`
-        button {
-          border: 0;
-          background: transparent;
-        }
-        .bar {
-          position: fixed;
-          top: 0;
-          left: 0;
-          z-index: 3;
-          height: ${lengths.rowHeight};
-          width: 100%;
-          display: grid;
-          grid-template-columns: ${lengths.rowHeight} 1fr ${lengths.rowHeight} ${lengths.rowHeight};
-          grid-template-rows: ${lengths.rowHeight};
-          grid-template-areas:
-            "bar-menu bar-field bar-dismiss menu";
-
-          .bar-menu {
-            grid-area: bar-menu;
-            cursor: pointer;
-            color: ${colors.textBg};
-            z-index: 5;
-            padding: 12px;
-            &:focus, &:hover {
-              color: ${colors.primaryBg};
-            }
-          }
-          .bar-dismiss {
-            grid-area: bar-dismiss;
-            cursor: pointer;
-            z-index: 4;
-            padding: 12px;
-            color: ${colors.textBg};
-          }
-          .bar-list {
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-rows: ${lengths.rowHeight} 1fr;
-            grid-template-areas:
-              "nothing"
-              "results";
-            transition-property: opacity;
-            transition-duration: ${durations.moment};
-            color: ${colors.black};
-            .loader {
-              text-align: center;
-              cursor: text;
-            }
-            & > ol {
-              grid-area: results;
-              max-height: 100vh;
-              overflow: auto;
-            }
-          }
-        }
-        @media (min-width: ${lengths.mediaWidth}) {
-          .bar {
-            grid-template-columns: ${lengths.rowHeight} 1fr ${lengths.rowHeight} ${lengths.menuWidth};
-          }
-        }
-      `}</style>
+      <style jsx>{styles}</style>
     </div>
   ), [barState.items, props.componentProps, props.query])
 }
