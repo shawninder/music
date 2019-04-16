@@ -171,7 +171,6 @@ function Bar (props) {
 
   function focusList () {
     if (barState.items.length > 0 || barState.commands.length > 0) {
-      console.log('list.current.childNodes[0]', list.current.childNodes[0])
       list.current.childNodes[0].focus()
     }
   }
