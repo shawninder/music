@@ -9,6 +9,8 @@ import flush from 'styled-jsx/server'
 
 import DictContext from '../features/dict/context'
 
+import { resetServerContext } from 'react-beautiful-dnd'
+
 function Doc (props) {
   const { dict } = useContext(DictContext)
   return (
@@ -44,6 +46,7 @@ function Doc (props) {
 
 class MyDocument extends Document {
   static getInitialProps ({ renderPage, req }) {
+    resetServerContext()
     const bits = renderPage()
     const headers = req ? req.headers : undefined
     const acceptLanguage = headers ? headers['accept-language'] : ''
