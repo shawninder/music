@@ -1315,7 +1315,7 @@ function App (props) {
             toggleShowUpNext={toggleShowUpNext}
             seekTo={seekTo}
             setVolume={setVolume}
-            volume={partyState.attending ? partyState.state.player.v : playerState.v}
+            volume={currentState.player.v}
             nbFiles={fileInputState.files.length}
             toggleShowFiles={toggleShowFiles}
             newFileInput={() => {
