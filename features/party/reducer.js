@@ -1,3 +1,5 @@
+import merge from 'lodash.merge'
+
 import defaultState from './defaultState'
 
 export default function partyReducer (state = defaultState, action) {
@@ -57,8 +59,11 @@ export default function partyReducer (state = defaultState, action) {
     }
     case 'Party:gotState':
       return cloneMerge({ state: action.state })
-    case 'Party:gotSlice':
-      return cloneMerge({ state: { ...state.state, ...action.slice } })
+    case 'Party:gotSlice': {
+      const newState = cloneMerge()
+      merge(newState, { state: { ...state.state, ...action.slice } })
+      return newState
+    }
     case 'Party:transferStart': {
       const newState = cloneMerge()
       newState.transfers.push(action.data)

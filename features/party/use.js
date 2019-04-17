@@ -49,11 +49,11 @@ function useParty ({ intercept = [] } = {}) {
   }
 
   function useSync (newState, key) {
-    const oldState = useRef({})
+    const oldState = useRef(defaultPartyState)
     useEffect(() => {
       if (state.hosting && socket.connected) {
-        // TODO send patch instead of version
         const slice = deepDiff(oldState.current, newState)
+        oldState.current = newState
         const emitting = {
           type: 'Party:slice',
           slice: {},
