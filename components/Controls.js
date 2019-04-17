@@ -124,7 +124,7 @@ function Controls (props) {
         data-id={`opacity ${durations.instant} ${tfns.easeInOutQuad}`}
         style={{
           opacity: showingVolume ? 1 : 0,
-          transform: showingVolume ? 'translate(0, 0)' : 'translateY(100%, 100%)'
+          transform: showingVolume ? 'translate(0, 0)' : 'translateY(200%, 200%)'
         }}
       >
         <Range
