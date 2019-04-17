@@ -157,7 +157,6 @@ function Party (props) {
 
       socket.on('slice', (slice) => {
         console.log('SOCKET slice')
-        console.log('partyStateRef.current.attending', partyStateRef.current.attending)
         if (partyStateRef.current.attending) {
           props.gotSlice(slice)
         }
