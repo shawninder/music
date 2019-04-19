@@ -1,8 +1,6 @@
 import { useEffect } from 'react'
 
-import passiveSupported from '../../helpers/passiveSupported'
-
-const listenerOptions = passiveSupported ? { passive: true, capture: false } : false
+const listenerOptions = false
 const isServer = typeof window === 'undefined'
 
 export default function useOnViewport (cb) {
