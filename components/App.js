@@ -1233,6 +1233,9 @@ function App (props) {
               collapsible
               areDraggable
               hidden={currentState.queue.history.length === 0}
+              buildKey={(item) => {
+                return `${item.key}-${item.queueIndex}`
+              }}
             />
             <div className={playingNowClasses.join(' ')} key='playingNow'>
               {playingNowZone}
@@ -1272,6 +1275,9 @@ function App (props) {
               defaultComponent={Smart}
               areDraggable
               emptyComponent={<li key='upNext-emptyDropZone'><p className='emptyDropZone'>{dict.get('queue.upNext.emptyZone')}</p></li>}
+              buildKey={(item) => {
+                return `${item.key}-${item.queueIndex}`
+              }}
             />
             {appState.showWIP ? (
               <section className='postQueue'>

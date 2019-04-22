@@ -156,7 +156,11 @@ function List (props) {
     const Component = itemClone.Component || props.defaultComponent
     if (props.areDraggable) {
       return (
-        <Draggable key={`${classes[0]}-list-draggable-${itemClone.key}-${itemClone.queueIndex}`} draggableId={`draggable-${itemClone.key}-${itemClone.queueIndex}`} index={idx}>
+        <Draggable
+          key={`${classes[0]}-list-draggable-${props.buildKey(itemClone)}`}
+          draggableId={`draggable-${props.buildKey(itemClone)}`}
+          index={idx}
+        >
           {(draggableProvided, snapshot) => {
             const liClasses = ['list-li']
             if (snapshot.isDragging) {
@@ -164,7 +168,7 @@ function List (props) {
             }
             return (
               <li
-                key={`${classes[0]}-list-draggable-li-${itemClone.key}`}
+                key={`${classes[0]}-list-draggable-li-${props.buildKey(itemClone)}`}
                 tabIndex='0'
                 ref={draggableProvided.innerRef}
                 className={liClasses.join(' ')}
@@ -176,7 +180,7 @@ function List (props) {
                   idx={idx}
                   queueIndex={itemClone.queueIndex}
                   dragHandleProps={draggableProvided.dragHandleProps}
-                  key={`${classes[0]}-Component-draggable-${itemClone.key}`}
+                  key={`${classes[0]}-Component-draggable-${props.buildKey(itemClone)}`}
                   {...props.componentProps}
                 />
               </li>
@@ -187,7 +191,7 @@ function List (props) {
     } else {
       return (
         <li
-          key={`${classes[0]}-list-nodrag-li-${item.key}`}
+          key={`${classes[0]}-list-nodrag-li-${props.buildKey(item)}`}
           tabIndex='0'
         >
           <Component
@@ -195,7 +199,7 @@ function List (props) {
             query={props.query ? props.query : undefined}
             idx={idx}
             queueIndex={item.queueIndex}
-            key={`${classes[0]}-Component-nodrag-${item.key}`}
+            key={`${classes[0]}-Component-nodrag-${props.buildKey(item)}`}
             {...props.componentProps}
           />
         </li>
@@ -296,7 +300,13 @@ const props = [
   { name: 'hidden', type: PropTypes.bool, val: false },
   { name: 'loadsMore', type: PropTypes.bool, val: false },
   { name: 'componentProps', type: PropTypes.object, val: {} },
-  { name: 'startsCollapsed', type: PropTypes.bool, val: false }
+  { name: 'startsCollapsed', type: PropTypes.bool, val: false },
+  { name: 'buildKey',
+    type: PropTypes.func,
+    val: (item) => {
+      return `${item.key}`
+    }
+  }
 ]
 
 List.defaultProps = defaultProps(props)
