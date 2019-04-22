@@ -23,6 +23,7 @@ function List (props) {
   const [closed, setClosed] = useState(props.startsCollapsed)
   const [classes, setClasses] = useState(defaultClasses)
   const [dropZoneClasses] = useState(['actual-list'])
+  const ref = props.onRef || useRef()
   const loader = useRef(null)
 
   useEffect(() => {
@@ -46,7 +47,7 @@ function List (props) {
   const { keyDown } = useListeners({
     'enter': (event) => {
       const idx = getIdx(event)
-      if (idx !== -1 && props.onRef.current) {
+      if (idx !== -1 && ref.current) {
         event.preventDefault()
         if (props.onItem['enter']) {
           props.onItem['enter'](props.items[idx], idx, event)
@@ -57,7 +58,7 @@ function List (props) {
     },
     'ctrl+enter': (event) => {
       const idx = getIdx(event)
-      if (idx !== -1 && props.onRef.current) {
+      if (idx !== -1 && ref.current) {
         event.preventDefault()
         if (props.onItem['ctrl+enter']) {
           props.onItem['ctrl+enter'](props.items[idx], idx, event)
@@ -66,7 +67,7 @@ function List (props) {
     },
     'shift+enter': (event) => {
       const idx = getIdx(event)
-      if (idx !== -1 && props.onRef.current) {
+      if (idx !== -1 && ref.current) {
         event.preventDefault()
         if (props.onItem['shift+enter']) {
           props.onItem['shift+enter'](props.items[idx], idx, event)
@@ -75,7 +76,7 @@ function List (props) {
     },
     'ctrl+shift+enter': (event) => {
       const idx = getIdx(event)
-      if (idx !== -1 && props.onRef.current) {
+      if (idx !== -1 && ref.current) {
         event.preventDefault()
         if (props.onItem['ctrl+shift+enter']) {
           props.onItem['ctrl+shift+enter'](props.items[idx], idx, event)
@@ -84,7 +85,7 @@ function List (props) {
     },
     'space': (event) => {
       const idx = getIdx(event)
-      if (idx !== -1 && props.onRef.current) {
+      if (idx !== -1 && ref.current) {
         event.preventDefault()
         if (props.onItem['space']) {
           props.onItem['space'](props.items[idx], idx, event)
@@ -133,7 +134,7 @@ function List (props) {
   }
 
   function getIdx (event) {
-    return Array.prototype.indexOf.call(props.onRef.current.childNodes, event.target)
+    return Array.prototype.indexOf.call(ref.current.childNodes, event.target)
   }
 
   function checkLoader (event) {
@@ -212,7 +213,7 @@ function List (props) {
               onKeyDown={keyDown}
               onScroll={checkLoader}
               ref={(element) => {
-                props.onRef.current = element
+                ref.current = element
                 if (droppableProvided) {
                   droppableProvided.innerRef(element)
                 }
@@ -233,7 +234,7 @@ function List (props) {
       <ol
         onKeyDown={keyDown}
         onScroll={checkLoader}
-        ref={props.onRef}
+        ref={ref}
         key={`${classes[0]}-list-nodrop`}
         className={dropZoneClasses.join(' ')}
       >
@@ -274,7 +275,7 @@ const props = [
   { name: 'className', type: PropTypes.string, val: '' },
   { name: 'query', type: PropTypes.string, val: '' },
   { name: 'onUp', type: PropTypes.func, val: () => {} },
-  { name: 'onRef', type: PropTypes.object, val: { current: null } },
+  { name: 'onRef', type: PropTypes.object, val: null },
   { name: 'items', type: PropTypes.array.isRequired },
   { name: 'onItem', type: PropTypes.object, val: {} },
   { name: 'defaultComponent',
