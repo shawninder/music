@@ -28,7 +28,6 @@ export default function partyReducer (state = defaultState, action) {
         hosting: false
       })
     case 'Party:joined':
-      console.log('joined: state: action.res.state =', action.res.state)
       return cloneMerge({
         attending: true,
         state: action.res.state,
@@ -51,7 +50,6 @@ export default function partyReducer (state = defaultState, action) {
           newState.exists = true
         }
         if (action.res.state) {
-          console.log('reconnected: newState.state = action.res.state =', action.res.state)
           newState.state = action.res.state
         }
       }
